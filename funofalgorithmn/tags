@@ -1,0 +1,53 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+$	tags	/^begin	stacks\/expression_evaluation.cpp	\/^            for_each(begin(strE), end(strE),[&](char ch)->{$\/;"	p	language:C++	file:	signature:(strE)$/;"	m	language:C++	class:__anon1::__anon2::__anon3::__anon4	file:	access:private
+$	tags	/^calculate	stacks\/expression_evaluation.cpp	\/^        double calculate(const std::string strE) const{$\/;"	f	language:C++	class:Evaluation	access:public	signature:(const std::string strE) const$/;"	m	language:C++	class:__anon1	file:	access:private
+$	tags	/^isBracketsMatch	stacks\/expression_evaluation.cpp	\/^        bool isBracketsMatch(const std:: string &strE) const {$\/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std:: string &strE) const$/;"	m	language:C++	class:__anon1::__anon2::__anon3	file:	access:private
+$	tags	/^isValidExpression	stacks\/expression_evaluation.cpp	\/^        bool isValidExpression(const std::string &strE) const {$\/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std::string &strE) const$/;"	m	language:C++	class:__anon1::__anon2	file:	access:private
+$	tags	/^miao	cat.cpp	\/^void miao(){$\/;"	f	language:C++	signature:()$/;"	m	language:C++	class:__anon1::__anon2::__anon3::__anon4::__anon5	file:	access:private
+Evaluation	stacks/expression_evaluation.cpp	/^        Evaluation() = default;$/;"	p	language:C++	class:Evaluation	file:	access:public	signature:()
+Evaluation	stacks/expression_evaluation.cpp	/^class Evaluation{$/;"	c	language:C++	file:
+Evaluation	tags	/^Evaluation	stacks\/expression_evaluation.cpp	\/^        Evaluation() = default;$\/;"	p	language:C++	class:Evaluation	file:	access:public	signature:()$/;"	p	language:C++	file:	signature:()
+Evaluation::Evaluation	stacks/expression_evaluation.cpp	/^        Evaluation() = default;$/;"	p	language:C++	class:Evaluation	file:	access:public	signature:()
+Evaluation::begin	stacks/expression_evaluation.cpp	/^            for_each(begin(strE), end(strE),[&](char ch)->{$/;"	p	language:C++	file:	signature:(strE)
+Evaluation::bracketStack	stacks/expression_evaluation.cpp	/^            std::stack<char> bracketStack;$/;"	l	language:C++
+Evaluation::calculate	stacks/expression_evaluation.cpp	/^        double calculate(const std::string strE) const{$/;"	f	language:C++	class:Evaluation	access:public	signature:(const std::string strE) const
+Evaluation::end	stacks/expression_evaluation.cpp	/^            for_each(begin(strE), end(strE),[&](char ch)->{$/;"	p	language:C++	file:	signature:(strE)
+Evaluation::isBracketsMatch	stacks/expression_evaluation.cpp	/^        bool isBracketsMatch(const std:: string &strE) const {$/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std:: string &strE) const
+Evaluation::isValidExpression	stacks/expression_evaluation.cpp	/^        bool isValidExpression(const std::string &strE) const {$/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std::string &strE) const
+Evaluation::isValide	stacks/expression_evaluation.cpp	/^            bool isValide = true;$/;"	l	language:C++
+Evaluation::numberStack	stacks/expression_evaluation.cpp	/^        std::stack<double> numberStack;$/;"	m	language:C++	class:Evaluation	file:	access:private
+Evaluation::opStack	stacks/expression_evaluation.cpp	/^        std::stack<std::string> opStack;$/;"	m	language:C++	class:Evaluation	file:	access:private
+Evaluation::pop	stacks/expression_evaluation.cpp	/^                        bracketStack.pop();$/;"	p	language:C++	file:	signature:()
+__anon1::$	tags	/^calculate	stacks\/expression_evaluation.cpp	\/^        double calculate(const std::string strE) const{$\/;"	f	language:C++	class:Evaluation	access:public	signature:(const std::string strE) const$/;"	m	language:C++	class:__anon1	file:	access:private
+__anon1::__anon2::$	tags	/^isValidExpression	stacks\/expression_evaluation.cpp	\/^        bool isValidExpression(const std::string &strE) const {$\/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std::string &strE) const$/;"	m	language:C++	class:__anon1::__anon2	file:	access:private
+__anon1::__anon2::__anon3::$	tags	/^isBracketsMatch	stacks\/expression_evaluation.cpp	\/^        bool isBracketsMatch(const std:: string &strE) const {$\/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std:: string &strE) const$/;"	m	language:C++	class:__anon1::__anon2::__anon3	file:	access:private
+__anon1::__anon2::__anon3::__anon4::$	tags	/^begin	stacks\/expression_evaluation.cpp	\/^            for_each(begin(strE), end(strE),[&](char ch)->{$\/;"	p	language:C++	file:	signature:(strE)$/;"	m	language:C++	class:__anon1::__anon2::__anon3::__anon4	file:	access:private
+__anon1::__anon2::__anon3::__anon4::__anon5::$	tags	/^miao	cat.cpp	\/^void miao(){$\/;"	f	language:C++	signature:()$/;"	m	language:C++	class:__anon1::__anon2::__anon3::__anon4::__anon5	file:	access:private
+__anon1::__anon2::__anon3::__anon4::begin	tags	/^end	stacks\/expression_evaluation.cpp	\/^            for_each(begin(strE), end(strE),[&](char ch)->{$\/;"	p	language:C++	file:	signature:(strE)$/;"	p	language:C++	class:__anon1::__anon2::__anon3::__anon4	file:	access:private	signature:(strE)
+__anon1::__anon2::__anon3::__anon4::end	tags	/^end	stacks\/expression_evaluation.cpp	\/^            for_each(begin(strE), end(strE),[&](char ch)->{$\/;"	p	language:C++	file:	signature:(strE)$/;"	p	language:C++	class:__anon1::__anon2::__anon3::__anon4	file:	access:private	signature:(strE)
+__anon1::__anon2::__anon3::__anon4::pop	tags	/^pop	stacks\/expression_evaluation.cpp	\/^                        bracketStack.pop();$\/;"	p	language:C++	file:	signature:()$/;"	p	language:C++	file:	signature:()
+begin	stacks/expression_evaluation.cpp	/^            for_each(begin(strE), end(strE),[&](char ch)->{$/;"	p	language:C++	file:	signature:(strE)
+begin	tags	/^end	stacks\/expression_evaluation.cpp	\/^            for_each(begin(strE), end(strE),[&](char ch)->{$\/;"	p	language:C++	file:	signature:(strE)$/;"	p	language:C++	class:__anon1::__anon2::__anon3::__anon4	file:	access:private	signature:(strE)
+bracketStack	stacks/expression_evaluation.cpp	/^            std::stack<char> bracketStack;$/;"	l	language:C++
+calculate	stacks/expression_evaluation.cpp	/^        double calculate(const std::string strE) const{$/;"	f	language:C++	class:Evaluation	access:public	signature:(const std::string strE) const
+end	stacks/expression_evaluation.cpp	/^            for_each(begin(strE), end(strE),[&](char ch)->{$/;"	p	language:C++	file:	signature:(strE)
+end	tags	/^end	stacks\/expression_evaluation.cpp	\/^            for_each(begin(strE), end(strE),[&](char ch)->{$\/;"	p	language:C++	file:	signature:(strE)$/;"	p	language:C++	class:__anon1::__anon2::__anon3::__anon4	file:	access:private	signature:(strE)
+endl	main.cpp	/^    cout << "hello world" << endl;	$/;"	l	language:C++
+format	tags	/^!_TAG_FILE_FORMAT	2	\/extended format; --format=1 will not append ;" to lines\/$/;"	v	language:C++
+hello	main.cpp	/^int hello(){$/;"	f	language:C++	signature:()
+isBracketsMatch	stacks/expression_evaluation.cpp	/^        bool isBracketsMatch(const std:: string &strE) const {$/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std:: string &strE) const
+isValidExpression	stacks/expression_evaluation.cpp	/^        bool isValidExpression(const std::string &strE) const {$/;"	f	language:C++	class:Evaluation	access:protected	signature:(const std::string &strE) const
+isValide	stacks/expression_evaluation.cpp	/^            bool isValide = true;$/;"	l	language:C++
+main	main.cpp	/^int main() {$/;"	f	language:C++	signature:()
+miao	cat.cpp	/^void miao(){$/;"	f	language:C++	signature:()
+miao	cat.h	/^void miao();$/;"	p	language:C++	signature:()
+numberStack	stacks/expression_evaluation.cpp	/^        std::stack<double> numberStack;$/;"	m	language:C++	class:Evaluation	file:	access:private
+opStack	stacks/expression_evaluation.cpp	/^        std::stack<std::string> opStack;$/;"	m	language:C++	class:Evaluation	file:	access:private
+pop	stacks/expression_evaluation.cpp	/^                        bracketStack.pop();$/;"	p	language:C++	file:	signature:()
+pop	tags	/^pop	stacks\/expression_evaluation.cpp	\/^                        bracketStack.pop();$\/;"	p	language:C++	file:	signature:()$/;"	p	language:C++	file:	signature:()
+ss	main.cpp	/^    stack<char> ss;$/;"	l	language:C++
