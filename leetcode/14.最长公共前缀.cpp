@@ -36,13 +36,60 @@
  * 
  */
 #include<iostream>
+#include<vector>
+#include<string>
 using namespace std;
 // @lc code=start
 class Solution {
 public:
     string longestCommonPrefix(vector<string>& strs) {
-        
+        if (strs.size() == 0) {
+            return "";
+        }
+        if (strs.size() == 1) {
+            return strs[0];
+        }
+        int index = 0;
+        if (strs[0].size() == 0) {
+            return "";
+        }
+        // import
+        // char* 以\0 为结束符
+        char buffer[strs[0].size() + 1];
+        memset(buffer, '\0', sizeof(buffer));
+        bool ok = true;
+        for (; index < strs[0].size(); ++index) {
+            if (!ok) {
+                break;
+            }
+            char c = strs[0][index];
+            for (int i = 1; i < strs.size(); i++) {
+                if (strs[i].size() <= index || strs[i][index] != c) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                buffer[index] = c;
+            }
+        }
+        cout << index << ":" << endl;
+        // for (size_t i = 0; i < sizeof(buffer); i++)
+        // {
+        //     cout << buffer[i] << endl;
+        // }
+        if (index == 0) {
+            return "";
+        }
+        const char* st = buffer;
+        //cout << st << ":" << sizeof(buffer) << endl;
+        return st;
     }
 };
 // @lc code=end
 
+int main () {
+    Solution s;
+    vector<string> vec = {"c", "c"};
+    s.longestCommonPrefix(vec);
+}

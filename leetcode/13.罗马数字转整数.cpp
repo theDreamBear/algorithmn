@@ -67,7 +67,7 @@
  * 解释: M = 1000, CM = 900, XC = 90, IV = 4.
  * 
  */
-#include <string.h>
+#include <string>
 using namespace std;
 // @lc code=start
 class Solution {
