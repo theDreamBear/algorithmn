@@ -38,6 +38,9 @@
  * 
  */
 #include <string>
+
+#include<string.h>
+#include<iostream>
 using namespace std;
 // @lc code=start
 class Solution {
@@ -74,9 +77,44 @@ public:
         }
         return -1;
         #endif
-
         // sunday字符串匹配法
+        int hashmap[300];
+        //cout << sizeof(hashmap) << endl;
+        for (int i = 0; i < 300; i++) {
+            hashmap[i] = -1;
+        }
+        // 遗漏点 2  memset sizeof 返回的不是字节大小
+        //memset(hashmap, -1, sizeof(hashmap));
+        // 遗漏点3
+        //  memset -1 是不行的
+        for (int i = 0; i < needle.size(); ++i) {
+            hashmap[needle[i]] = i;
+        }
+        int needleIndex = 0;
+        int haySize = haystack.size();
+        int needleSize = needle.size();
+        int hayIndex = 0;
+        for (;hayIndex + needleSize < haySize + 1;) {
+            if (haystack[hayIndex + needleIndex] != needle[needleIndex]) {
+                int pos = hashmap[haystack[hayIndex + needleSize]];
+                hayIndex = hayIndex + needleSize - pos;
+                needleIndex = 0;
+            } else {
+                ++needleIndex;
+                /**
+                 *  遗漏点1 终止条件问题
+                 * **/
+                if (needleIndex == needleSize) {
+                    return hayIndex;
+                }
+            }
+        }
+        return -1;
     }
 };
 // @lc code=end
 
+int main() {
+    //Solution s;
+    //cout << s.strStr("hello", "ll");
+}
