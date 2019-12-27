@@ -46,12 +46,10 @@ public:
     }
 
     void padding(char* arr, string& source, int n) {
-        //cout << arr << endl;
         int startIndex = n - 1 - source.size();
         for (int i = 0; i <= source.size() - 1; ++i, ++startIndex) {
             arr[startIndex] = source[i];
         }
-        //cout << arr << endl;
     }
 
     void add(char* des, const char* source, int n) {
@@ -65,7 +63,6 @@ public:
             } else {
                 over = 0;
             }
-            cout << index << " " << over << des[index] << endl;
         }
     }
 
@@ -78,22 +75,24 @@ public:
     string addBinary1(string a, string b) {
         // 预处理, 先对齐
         int ansSize = max(a.size(), b.size()) + 1 + 1;
-        //cout << ansSize << endl;
         char aChar[ansSize], bChar[ansSize];
         
+        // 初始化
         init(aChar, ansSize);
         init(bChar, ansSize);
 
+        // 对齐填充
         padding(aChar, a, ansSize);
         padding(bChar, b, ansSize);
 
+        // 计算
         add(aChar, bChar, ansSize);
         
         return judge(aChar);
     }
 
     string addBinary(string a, string b) {
-
+        return "";
     }
 };
 // @lc code=end
