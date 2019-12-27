@@ -92,7 +92,52 @@ public:
     }
 
     string addBinary(string a, string b) {
-        return "";
+        int ansSize = max(a.size(), b.size()) + 2;
+        char ans[ansSize];
+        memset(ans, '0', ansSize);
+        ans[ansSize - 1] = '\0';
+        int index = ansSize - 2;
+        int aIndex = a.size() - 1;
+        int bIndex = b.size() - 1;
+        int over = 0;
+        while(aIndex >= 0 || bIndex >= 0) {
+            if (aIndex >= 0 && bIndex >= 0) {
+                ans[index] = a[aIndex] - '0' + b[bIndex] + over;
+                over = 0;
+                if (ans[index] >= '2') {
+                    over = 1;
+                    ans[index] -= 2;
+                }
+                --aIndex;
+                --bIndex;
+                --index;
+            } else if (aIndex >= 0) {
+                ans[index] = a[aIndex] + over;
+                over = 0;
+                if (ans[index] >= '2') {
+                    over = 1;
+                    ans[index] -= 2;
+                }
+                --aIndex;
+                --index;
+            } else if (bIndex >= 0) {
+                ans[index] = b[bIndex] + over;
+                over = 0;
+                if (ans[index] >= '2') {
+                    ans[index] -= 2;
+                    over = 1;
+                }
+                --bIndex;
+                --index;
+            }
+        }
+        if (over == 1) {
+            ans[0] += 1;
+        }
+        if (ans[0] == '0') {
+            return ans + 1;
+        }
+        return ans;
     }
 };
 // @lc code=end
