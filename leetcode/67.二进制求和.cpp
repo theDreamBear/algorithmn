@@ -38,68 +38,70 @@ public:
     /**
      * 
      *  '0-9' 和数字0-9 之间的转换要小心
-     * 
+     *   redo
      * **/
-    string addBinary(string a, string b) {
-        //cout << a << " " << b << endl;
-        int sz = max(a.size(), b.size()) + 2;
-        char ah[sz];
-        memset(ah, '\0', sz);
-        //int index = 0;
-        int as = a.size() - 1;
-        int bs = b.size() - 1;
+    void init(char* arr, int n) {
+        memset(arr, '0', n);
+        arr[n - 1] = '\0';
+    }
+
+    void padding(char* arr, string& source, int n) {
+        //cout << arr << endl;
+        int startIndex = n - 1 - source.size();
+        for (int i = 0; i <= source.size() - 1; ++i, ++startIndex) {
+            arr[startIndex] = source[i];
+        }
+        //cout << arr << endl;
+    }
+
+    void add(char* des, const char* source, int n) {
+        int index = n - 2;
         int over = 0;
-        sz -= 2;
-        for (; sz >= 0; --sz) {
-            if (as >= 0 && bs >= 0) {
-                ah[sz] = a[as] - '0' + b[bs] + over;
+        for (; index >= 0; --index) {
+            des[index] += (source[index] - '0' + over);
+            if (des[index] >= '2') {
+                over = 1;
+                des[index] -= 2;
+            } else {
                 over = 0;
-                if (ah[sz] >= '2') {
-                    over = 1;
-                    ah[sz] -= 2;
-                }
-                --as;
-                --bs;
-                cout << ah[sz] << " ";
-                cout << over << endl;
-            } else if (as >= 0) {
-                //cout <<sz << endl;
-                ah[sz] = a[as] + over;
-                over = 0;
-                //cout << ah[sz] << endl;
-                --as;
-                if (ah[sz] == '2') {
-                    ah[sz] = '0';
-                    over = 1;
-                    //cout << over << " " << ah[sz] << endl;
-                }
-            } else if (bs >= 0) {
-                ah[sz] = b[bs] + over;
-                cout << ah[sz] << " " << endl;
-                over = 0;
-                --bs;
-                if (ah[sz] == '2') {
-                    ah[sz] = '0';
-                    over = 1;
-                } 
-            } else if (over == 1) {
-                ah[0] = '1';
-                break;
             }
-            //cout << ah[sz] << " ";
+            cout << index << " " << over << des[index] << endl;
         }
-        if (over == 1) {
-            ah[0] = '1';
+    }
+
+    string judge(const char* source) {
+        if (source[0] == '0') {
+            return source + 1; 
         }
-        if (ah[0] == 0) {
-            return ah + 1;
-        }
-        return ah;
+        return source;
+    }
+    string addBinary1(string a, string b) {
+        // 预处理, 先对齐
+        int ansSize = max(a.size(), b.size()) + 1 + 1;
+        //cout << ansSize << endl;
+        char aChar[ansSize], bChar[ansSize];
+        
+        init(aChar, ansSize);
+        init(bChar, ansSize);
+
+        padding(aChar, a, ansSize);
+        padding(bChar, b, ansSize);
+
+        add(aChar, bChar, ansSize);
+        
+        return judge(aChar);
+    }
+
+    string addBinary(string a, string b) {
+
     }
 };
 // @lc code=end
 
 int main() {
     Solution s;
-    cout << s.addBinary("100", "110010") << "***";
+    string a("100");
+    string b("110010");
+    cout << a.size() << " " << b.size() << endl;
+    cout << s.addBinary(a, b) << endl;
 }
