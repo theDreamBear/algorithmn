@@ -3,6 +3,9 @@
         "unordered_map": "cpp",
         "algorithm": "cpp",
         "vector": "cpp",
-        "iosfwd": "cpp"
-    }
+        "iosfwd": "cpp",
+        "iterator": "cpp",
+        "iostream": "cpp"
+    },
+    "C_Cpp.default.cppStandard": "c++14"
 }
