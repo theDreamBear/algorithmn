@@ -114,6 +114,7 @@ vector<int> preorderTraversalLeftCut(TreeNode* root) {
         return ans;
 }
 
+
 int main() {
     TreeNode* root;
     makeTree(root);

@@ -69,6 +69,8 @@ public:
         int globalMax = nums[0];
         int localMax = nums[0];
         for (int i = 1; i < nums.size(); ++i) {
+            // 和 XXX 比较我们可以发现, 当 localMax >= 0时若 localMax + nums[i] <= 0的时候, nums[i] 不可能是最大值
+            // 故没必要让 sum = nums[i], 故可以直接 localMax += nums[i];
             if (localMax < 0 || localMax + nums[i] <= 0) {
                 localMax = nums[i];
             } else {
@@ -97,6 +99,20 @@ public:
         }
         return globalMax;
         #endif // DEBUG
+
+        #ifdef XXX
+        int ans = nums[0];
+        int sum = 0;
+        for(int i = 0; i < nums.size(); ++i) {
+            if (sum > 0) {
+                sum += nums[i];
+            } else {
+                sum = nums[i];
+            }
+            ans = max(ans, sum);
+        }
+        return ans;
+        #endif
     }
 };
 // @lc code=end
