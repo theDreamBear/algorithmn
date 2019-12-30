@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "vector": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "istream": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++14",
     "C_Cpp.default.cStandard": "c99"

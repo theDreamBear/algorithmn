@@ -1,6 +1,8 @@
 #include<iostream>
 #include<vector>
 #include <stack>
+#include<sstream>
+#include<queue>
 using namespace std;
 
 //#define NULL 0
@@ -114,9 +116,6 @@ vector<int> preorderTraversalLeftCut(TreeNode* root) {
         return ans;
 }
 
-
 int main() {
-    TreeNode* root;
-    makeTree(root);
-    preorderTraversal(root);
+
 }
