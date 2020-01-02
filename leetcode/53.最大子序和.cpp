@@ -60,11 +60,11 @@ public:
      * 
      * 
      * ***/
-    int maxSubArray(vector<int>& nums) {
+    int maxSubArray1(vector<int>& nums) {
         if (nums.size() == 1) {
             return nums[0];
         }
-        #define MY
+        #define XXX
         #ifdef MY
         int globalMax = nums[0];
         int localMax = nums[0];
@@ -113,6 +113,45 @@ public:
         }
         return ans;
         #endif
+    }
+
+    // 归并
+    int maxSubArrayHelper(vector<int>& nums, int low, int high) {
+        if (low > high) {
+            return -0x7fffffff;
+        }
+        if (low == high) {
+            return nums[low];
+        }
+        int mid = low + (high - low) / 2;
+        int maxValue = nums[mid];
+        int localLeft = 0;
+        int maxLeft = 0;
+        // 左边
+        for(int i = mid - 1; i >= low; --i) {
+            localLeft += nums[i];
+            if (localLeft > maxLeft) {
+                maxLeft = localLeft;
+            }
+        }
+        int localRight = 0;
+        int maxRight = 0;
+        // 右边
+        maxRight = 0;
+        for (int i = mid + 1; i <= high; ++i) {
+            localRight += nums[i];
+            if (localRight > maxRight) {
+                maxRight = localRight;
+            }
+        }
+        maxValue += (maxLeft + maxRight);
+        maxValue = max(maxValue, maxSubArrayHelper(nums, low, mid - 1));
+        maxValue = max(maxValue, maxSubArrayHelper(nums, mid + 1, high));
+        return maxValue;
+    }
+
+    int maxSubArray(vector<int>& nums) {
+        return maxSubArrayHelper(nums, 0, nums.size() - 1);
     }
 };
 // @lc code=end

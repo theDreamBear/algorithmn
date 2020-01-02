@@ -42,10 +42,39 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// struct TreeNode {
+//     int val;
+//     TreeNode *left;
+//     TreeNode *right;
+//     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+// };
+
 class Solution {
 public:
+    TreeNode* sortedArrayToBSTHelper(vector<int>& nums, int low, int high) {
+        if (low > high) {
+            return NULL;
+        }
+        if (low == high) {
+            return new TreeNode(nums[low]);
+        }
+        int mid = low + (high - low) / 2;
+        if ((high - low + 1) % 1 != 0) {
+            ++mid;
+        }
+        TreeNode* root = new TreeNode(nums[mid]);
+        root->left = sortedArrayToBSTHelper(nums, low, mid - 1);
+        root->right = sortedArrayToBSTHelper(nums, mid + 1, high);
+        return root;
+    }
+    
     TreeNode* sortedArrayToBST(vector<int>& nums) {
-        
+        return sortedArrayToBSTHelper(nums, 0, nums.size() - 1);
     }
 };
 // @lc code=end
