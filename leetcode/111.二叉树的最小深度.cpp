@@ -45,8 +45,31 @@
  */
 class Solution {
 public:
+    int minDepthHelper(TreeNode* root) {
+        if (root == NULL) {
+            return 0x7fffffff;
+        }
+        if (root->left == NULL && root->right == NULL) {
+            return 1;
+        }
+        int left = minDepthHelper(root->left);
+        int right = minDepthHelper(root->right);
+        return 1 + min(left, right);
+    }
     int minDepth(TreeNode* root) {
-        
+        if (root == NULL) {
+            return 0;
+        }
+        if (root->left != NULL && root->right != NULL) {
+            return minDepthHelper(root);
+        }
+        if (root->left != NULL) {
+            return 1 + minDepthHelper(root->left);
+        }
+        if (root->right != NULL) {
+            return 1 + minDepthHelper(root->right);
+        }
+        return 1;
     }
 };
 // @lc code=end

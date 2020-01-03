@@ -64,12 +64,28 @@ public:
         return;
     }
 
+    void insertSortHelper(vector<int>& nums, int low, int high) {
+        if (low > high) {
+            return;
+        }
+        for (int i = low + 1; i <= high; ++i) {
+            int key = nums[i];
+            int j = i - 1;
+            for (; j >=0 && nums[j] > key; --j) {
+                nums[j+ 1] = nums[j];
+            }
+            nums[j + 1] = key;
+        }
+        return;
+    }
     // 快排排序
     int partition(vector<int>& nums, int low, int high) {
         if (low >= high) {
             return low;
         }
         int blockIndex = low - 1, i = low;
+        int randIndex = rand() % (high - low + 1) + low;
+        swap(nums[randIndex], nums[high]);
         int key = nums[high];
         for(; i < high; ++i) {
             if (nums[i] <= key) {
@@ -90,8 +106,23 @@ public:
             return;
         }
         int q = partition(nums, low, high);
-        quickSort(nums, low, q - 1);
-        quickSort(nums, q + 1, high);
+        int left = q - 1, right = q + 1;
+        while(left >= low && nums[q] == nums[left]) {
+            --left;
+        }
+        if (left - low + 1 <= 5) {
+            insertSortHelper(nums, low, left);
+        } else {
+            quickSort(nums, low, q - 1);
+        }
+        while(high >= right && nums[q] == nums[right]) {
+            ++right;
+        }
+        if (high - right + 1 <= 5 ) {
+            insertSortHelper(nums, right, high);
+        } else {
+            quickSort(nums, q + 1, high);
+        }
     }
 
     vector<int> sortArray(vector<int>& nums) {
