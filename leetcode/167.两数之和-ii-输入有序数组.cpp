@@ -31,12 +31,24 @@
  * 解释: 2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。
  * 
  */
+#include<vector>
+using namespace std;
 
 // @lc code=start
 class Solution {
 public:
     vector<int> twoSum(vector<int>& numbers, int target) {
-        
+        int left = 0, right = numbers.size() - 1;
+        while(left < right) {
+            if (numbers[left] + numbers[right] < target) {
+                ++left;
+            } else if (numbers[left] + numbers[right] > target) {
+                --right;
+            } else {
+                return {++left, ++right};
+            }
+        }
+        return {++left, ++right};
     }
 };
 // @lc code=end
