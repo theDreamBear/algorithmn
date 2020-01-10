@@ -36,6 +36,15 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    int bitSquare(int n) {
+        int ans = 0;
+        while(n != 0) {
+            int x = n % 10;
+            n /= 10;
+            ans += (x * x);
+        }
+        return ans;
+    }
     bool isHappy(int n) {
         // trick
         #ifdef DEBUG
@@ -58,6 +67,7 @@ public:
 
         // 什么时候回无线循环, 不快乐
         // 答 重复了
+        #ifdef DEBUG
         set<int> set;
         set.insert(n);
         while(true) {
@@ -75,6 +85,25 @@ public:
             }
             set.insert(ans);
             n = ans;
+        }
+        return false;
+        #endif // DEBUG
+        
+        // 快慢指针破循环
+        if (n == 1) {
+            return true;
+        }
+        int slow = bitSquare(n);
+        int fast = bitSquare(bitSquare(n));
+        if (fast == 1) {
+            return true;
+        }
+        while(slow != fast) {
+            slow = bitSquare(slow);
+            fast = bitSquare(bitSquare(fast));
+            if (slow == 1 || fast == 1) {
+                return true;
+            }
         }
         return false;
     }
