@@ -48,7 +48,7 @@ public:
     bool isHappy(int n) {
         // trick
         #ifdef DEBUG
-        int maxtimes = 10000;
+        int maxtimes = 100;
         while(maxtimes > 0) {
             int ans = 0;
             while(n != 0) {
