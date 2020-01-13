@@ -29,8 +29,48 @@ class Solution {
 public:
     int countPrimes(int n) {
         // 暴力算出所有
+        #ifdef VIALIATE
+        if (n < 2) {
+            return 0;
+        }
+        int ct = 0;
+        for(int i  = 2; i < n; ++i) {
+            bool yes = true;
+            for(int j = 2; j * j <= i; ++j) {
+                if (i % j == 0) {
+                    yes = false;
+                    break;
+                }
+            }
+            if (yes) {
+                //cout << i << endl;
+                ++ct;
+            }
+
+        }
+        return ct;
+        #endif // VIALIATE
         
-        // 埃氏筛学法
+        // 埃氏筛选法
+        if (n <= 2) {
+            return 0;
+        }
+        int ah[n];
+        memset(ah, 0, sizeof(int) * n);
+        ah[2] = 1;
+        int ct = n - 2;
+        for (int m = 2; m * m < n; ++m) {
+            if (ah[ m * m ] != 0) {
+                continue;
+            }
+            for(int i = m * m; i < n ; i += m) {
+                if (ah[i] == 0) {
+                    --ct;
+                    ah[i] = 1;
+                }
+            }
+        }
+        return ct;
     }
 };
 // @lc code=end
