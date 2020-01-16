@@ -59,11 +59,17 @@ public:
         memset(ah, 0, sizeof(int) * n);
         ah[2] = 1;
         int ct = n - 2;
-        for (int m = 2; m * m < n; ++m) {
-            if (ah[ m * m ] != 0) {
+
+        int up = sqrt(n);
+        if (up * up == n) {
+            --up;
+        }
+        for (int m = 2; m <= up; ++m) {
+            int i = m * m;
+            if (ah[i] != 0) {
                 continue;
             }
-            for(int i = m * m; i < n ; i += m) {
+            for(; i < n ; i += m) {
                 if (ah[i] == 0) {
                     --ct;
                     ah[i] = 1;
