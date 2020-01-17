@@ -40,9 +40,9 @@ using namespace std;
 
 // @lc code=start
 class Solution {
-public:
+ public:
 
-    void insertSortHelper(vector<int>& nums, int low, int high, bool& over) {
+    void insertSortHelper(vector<int >& nums, int low, int high, bool& over) {
         if (over ||low >= high) {
             return;
         }
@@ -63,7 +63,7 @@ public:
         int left = low - 1;
         int key = nums[high];
         int i = low;
-        for(; i < high; ++i) {
+        for (; i < high; ++i) {
             if (key > nums[i]) {
                 ++left;
                 if (left != i) {
@@ -75,7 +75,7 @@ public:
             swap(nums[left], nums[i]);
         }
         return left;
-    }    
+    }
     void quickSort(vector<int>& nums, int low, int high, bool& over) {
         if (over || low >= high) {
             return;
@@ -100,7 +100,7 @@ public:
     }
 
     bool containsDuplicate(vector<int>& nums) {
-        #ifdef DEBUG1 // 超时 哎
+        #ifdef DEBUG1  //  sudo pip install cpplint 超时 哎
         // 1 排序
         if (nums.size() == 0) {
             return false;
@@ -110,38 +110,38 @@ public:
         if (over) {
             return true;
         }
-        for(int i = 0; i < nums.size() - 1; ++i) {
+        for (int i = 0; i < nums.size() - 1; ++i) {
             if (nums[i] == nums[i + 1]) {
                 return true;
             }
         }
         return false;
-        #endif // DEBUG1
+        #endif  //  DEBUG1
         // 1.1 遍历一次
 
-        //#ifdef dd
+        //  #ifdef dd
         // 2 hashmap
         unordered_set<int> hashset;
-        for(int i = 0; i < nums.size(); ++i) {
+        for (int i = 0; i < nums.size(); ++i) {
             if (hashset.find(nums[i]) != hashset.end()) {
                 return true;
             }
             hashset.insert(nums[i]);
         }
         return false;
-        //#endif // !dd
+        //  #endif //!dd
 
         #ifdef DEBUG  // 超时
         // 3 暴力
         for (int i = 0; i < nums.size(); ++i) {
-            for(int j = i + 1; j < nums.size(); ++j) {
+            for (int j = i + 1; j < nums.size(); ++j) {
                 if (nums[i] == nums[j]) {
                     return true;
                 }
             }
         }
         return false;
-        #endif // DEBUG
+        #endif  // DEBUG
     }
 };
 // @lc code=end
