@@ -58,6 +58,16 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+#include <iostream>
+using namespace std;
+
+// struct TreeNode {
+//     int val;
+//     TreeNode *left;
+//     TreeNode *right;
+//     explicit TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+// };
+
 class Solution {
 public:
     void preorderVisit(TreeNode* node, TreeNode* p,  TreeNode* q, bool& flag) {
@@ -76,7 +86,7 @@ public:
      *  2. 二叉搜索树
      * 
      * **/
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    TreeNode* lowestCommonAncestor1(TreeNode* root, TreeNode* p, TreeNode* q) {
         if (root == NULL || root == p || root == q) {
             return root;
         }
@@ -90,6 +100,43 @@ public:
             return lowestCommonAncestor(root->left, p, q);
         }
         return lowestCommonAncestor(root->right, p, q);
+    }
+
+    /**
+     *  1. 后序遍历
+     * 
+     * 
+     * ***/
+    TreeNode* ans;
+    bool flag;
+    int postOrderVisit(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (root == NULL || flag) {
+            return 0;
+        }
+        int left = postOrderVisit(root->left, p, q);
+        int right = postOrderVisit(root->right, p, q);
+        if (left == 1 && right == 1) {
+            ans = root;
+            flag = true;
+            return 0;
+        }
+        if (root == p || root == q) {
+            if (left || right) {
+                ans = root;
+                flag = true;
+                return 0;
+            }
+            return 1;
+        }
+        return left + right;
+    }
+
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        ans = NULL;
+        int ct = 0;
+        postOrderVisit(root, p, q);
+        return ans;
     }
 };
 // @lc code=end
