@@ -132,11 +132,30 @@ public:
     }
 
 
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    TreeNode* lowestCommonAncestor2(TreeNode* root, TreeNode* p, TreeNode* q) {
         ans = NULL;
         int ct = 0;
         postOrderVisit(root, p, q);
         return ans;
+    }
+    /**
+     *  1.利用二叉搜索树的特性
+     * 
+     * 
+     * 
+     * **/
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        TreeNode* cur = root;
+        while (true) {
+            if (cur ->val > p->val && cur->val > q->val) {
+                cur = cur->left;
+            } else if (cur->val < p->val && cur->val < q->val) {
+                cur = cur->right;
+            } else {
+                return cur;
+            }
+        }
     }
 };
 // @lc code=end
