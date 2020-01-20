@@ -32,7 +32,8 @@
         "unordered_set": "cpp",
         "utility": "cpp",
         "*.tcc": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "numeric": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++14"
 }
