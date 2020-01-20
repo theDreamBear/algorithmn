@@ -40,7 +40,20 @@ bool isBadVersion(int version);
 class Solution {
 public:
     int firstBadVersion(int n) {
-        
+        // 二分查找
+        int low = 1, high = n;
+        while (low + 1 < high) {
+            int mid = low + (high - low) / 2;
+            if (isBadVersion(mid)) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+        if (isBadVersion(low)) {
+            return low;
+        }
+        return high;
     }
 };
 // @lc code=end
