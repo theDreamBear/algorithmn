@@ -37,7 +37,7 @@
 // @lc code=start
 class Solution {
 public:
-    bool isPowerOfTwo(int n) {
+    bool isPowerOfTwo1(int n) {
         if (n == 0) {
             return false;
         }
@@ -47,6 +47,21 @@ public:
             return true;
         }
         return false;
+    }
+
+    /**
+     * 
+     *  2 的所有幂都可以被 int32 的最小 2的幂 整除
+     * 
+     * 
+     * **/
+    bool isPowerOfTwo(int n) {
+        if (n <= 0) {
+            return false;
+        }
+        // int 范围 x - 1 可能超出来
+        int x = -2147483648;
+        return x % n == 0;
     }
 };
 // @lc code=end
