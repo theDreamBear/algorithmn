@@ -143,10 +143,12 @@ public:
         if (n == 1) {
             return true;
         }
-        double x = log(n) / log(3);
+        // 判断是否是整数
+        double x = log10(n) / log10(3);
         int ifloor = floor(x);
         int iceil = ceil(x);
-        double p = pow(10, -10);
+        // 有问题
+        double p = pow(10, -15);
         if (x - ifloor < p || iceil - x < p) {
             return true;
         }
