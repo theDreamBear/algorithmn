@@ -46,13 +46,13 @@
 #include<vector>
 using namespace std;
 
-#define NULL 0
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
+// #define NULL 0
+// struct TreeNode {
+//     int val;
+//     TreeNode *left;
+//     TreeNode *right;
+//     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+// };
 
 class Solution {
 public:
@@ -94,7 +94,7 @@ public:
     }
 
 // 注意循环的退出条件以及问题的结束条件
-    vector<int> preorderTraversal(TreeNode* root) {
+    vector<int> preorderTraversal4(TreeNode* root) {
         vector<int> ans;
         if (root == NULL) {
             return ans;
@@ -131,6 +131,109 @@ public:
         return ans;
     }
 
+
+    vector<int> preorderTraversal3(TreeNode * root) {
+    vector<int> ans;
+    if (root == NULL) {
+        return ans;
+    }
+    stack<TreeNode*> nodeStack;
+    nodeStack.push(root);
+    while (!nodeStack.empty()) {
+        TreeNode* cur = nodeStack.top(); nodeStack.pop();
+        ans.push_back(cur->val);
+        if (cur->right) {
+            nodeStack.push(cur->right);
+        }
+        if (cur->left) {
+            nodeStack.push(cur->left);
+        }
+    }
+    return ans;
+}
+
+    /*
+    1. 入栈前访问
+    2. 出栈. 直接出
+    */
+    vector<int> preorderTraversal1(TreeNode* root) {
+        vector<int> ans;
+        if (root == NULL) {
+            return ans;
+        }
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while(cur || !st.empty()) {
+            while (cur) {
+                ans.push_back(cur->val);
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            cur = cur->right;
+        }
+        return ans;
+    }
+
+    vector<int> preorderTraversal2(TreeNode* root) {
+    vector<int> ans;
+    if (root == NULL) {
+        return ans;
+    }
+    stack<TreeNode*> st;
+    TreeNode* cur = root;
+    ans.push_back(cur->val);
+    st.push(root);
+    while (!st.empty()) {
+        if (cur) {
+            cur = cur->left;
+            if (cur) {
+                ans.push_back(cur->val);
+                st.push(cur);
+            }
+        } else {
+            cur = st.top();
+            st.pop();
+            cur = cur->right;
+            if (cur) {
+                ans.push_back(cur->val);
+                st.push(cur);
+            }
+        }
+    }
+    return ans;
+}
+
+    vector<int> preorderTraversal(TreeNode* root) {
+    vector<int> ans;
+    if (NULL == root) {
+        return ans;
+    }
+    stack<TreeNode*> st;
+    TreeNode* cur = root;
+    ans.push_back(cur->val);
+    st.push(root);
+    while (!st.empty()) {
+        while(cur && cur->left) {
+            cur = cur->left;
+            st.push(cur);
+            ans.push_back(cur->val);
+        }
+        // cur 为最左以访问节点  或者 其他
+        // cur 为最左
+        if (!cur) {
+            cur = st.top();
+        }
+        st.pop();
+        cur = cur->right; // 会让 cur = null
+        if (cur) {
+            st.push(cur);
+            ans.push_back(cur->val);
+        }
+    }
+    return ans;
+}
 };
 // @lc code=end
 

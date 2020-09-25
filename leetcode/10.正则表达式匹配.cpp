@@ -72,10 +72,27 @@
  * 输出: false
  * 
  */
+#include <string>
+using namespace std;
+
+
+
+
+
 
 // @lc code=start
 class Solution {
 public:
+    bool isMatchHelper(const string& s, const string& p, int sIndex, int pIndex) {
+        if (sIndex == s.size()) {
+            return true;
+        }
+        for (int i = pIndex; i < p.size(); ++i) {
+
+        }
+        return false;
+    }
+
     bool isMatch(string s, string p) {
         
     }
