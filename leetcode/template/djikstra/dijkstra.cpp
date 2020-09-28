@@ -1,6 +1,8 @@
 #include<iostream>
 
 #include<vector>
+#include<algorithm>
+
 using namespace std;
 
 static constexpr int INTMAX = 0x7ffffff;
@@ -53,5 +55,5 @@ int dijkstra(vector<vector<int>> costs, int start, int end) {
 
 
 int main() {
-
+    vector<int> res;
 }

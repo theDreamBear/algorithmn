@@ -57,10 +57,26 @@ public:  // NOLINT
         }
     }
 
-    vector<vector<int>> subsets(vector<int>& nums) {  // NOLINT
+
+
+    vector<vector<int>> subsets_1(vector<int>& nums) {  // NOLINT
         vector<vector<int>> ans;
         vector<int> temp;
         subsetsHelper(ans, temp, nums, 0);
+        return ans;
+    }
+
+    vector<vector<int>> subsets(vector<int>& nums) {  // NOLINT
+        vector<vector<int>> ans;
+        ans.push_back({});
+        for (int i = 0; i < nums.size(); ++i) {
+            int sz = ans.size();
+            for (int j = 0; j < sz; ++j) {
+                auto x = ans[j];
+                x.push_back(nums[i]);
+                ans.push_back(x);
+            }
+        }
         return ans;
     }
 };
