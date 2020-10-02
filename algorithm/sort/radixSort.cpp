@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include "randomInput.h"
 
 using namespace std;
 
@@ -97,6 +98,6 @@ class radixSorter {
 };
 
 int main() {
-    vector<int> res{33, 21, 2, 1, 3, 2, 5, 4, 6, 3, 12, 12, 1023};
+    vector<int> res = randomInput(100);
     radixSorter(10).sort(res);
 }
