@@ -42,6 +42,23 @@ AVLTreeNode* search(AVLTreeNode* root, int val) {
     return NULL;
 }
 
+AVLTreeNode* find(AVLTreeNode* root, int val) {
+    if (NULL == root) {
+        return NULL;
+    }
+    AVLTreeNode* r = root;
+    while (NULL != r) {
+        if (r->val < val) {
+            r = r->right;
+        } else if (r->val > val) {
+            r = r->left;
+        } else {
+            return r;
+        }
+    }
+    return NULL;
+}
+
 AVLTreeNode* minmum(AVLTreeNode* root) {
     AVLTreeNode* r = root;
     while (r->left) {
@@ -101,7 +118,7 @@ AVLTreeNode* predecessor(AVLTreeNode* root) {
 void insert(AVLTree* tree, AVLTreeNode* z) {
     if (NULL == tree->root) {
         tree->root = z;
-        //cout << "dddd" << endl;
+        // cout << "dddd" << endl;
         return;
     }
     AVLTreeNode* x = tree->root;
@@ -120,7 +137,7 @@ void insert(AVLTree* tree, AVLTreeNode* z) {
     } else {
         y->right = z;
     }
-    //cout << "y: " << y->val << " " << y->h << endl;
+    // cout << "y: " << y->val << " " << y->h << endl;
     z->h = y->h + 1;
     return;
 }
@@ -145,6 +162,7 @@ void transPlant(AVLTree* tree, AVLTreeNode* u, AVLTreeNode* v) {
     }
     if (NULL != v) {
         v->p = p;
+        v->h = p->h + 1;
     }
 }
 
@@ -169,7 +187,7 @@ void deleteNode(AVLTree* tree, AVLTreeNode* z) {
     // 左右均不为空
     AVLTreeNode* su = minmum(z->right);
     if (su != z->right) {
-        transPlant(tree, z, z->right);
+        transPlant(tree, su, su->right);
         su->right = z->right;
         su->right->p = su;
     }
@@ -187,12 +205,15 @@ void makeTree(AVLTree* tree, vector<int> nums) {
 }
 
 int main() {
-    vector<int> ans = randomInput(10, 100);
-    for(auto  x : ans) {
+    vector<int> ans = {86, 93, 9, 48, 19, 7};  // randomInput(5, 100);
+    for (auto x : ans) {
         cout << x << " ";
     }
     cout << endl;
     AVLTree* tree = new AVLTree;
     makeTree(tree, ans);
+    // traverse(tree->root);
+    AVLTreeNode* z = find(tree->root, 9);
+    deleteNode(tree, z);
     traverse(tree->root);
 }
