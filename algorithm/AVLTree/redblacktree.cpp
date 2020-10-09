@@ -487,7 +487,7 @@ void removeFixUp(redBlackTree* tree, redBlackNode* z) {
                     w->left->c = BLACK;
                     w->c = RED;
                     rightRotate(tree, w);
-                    w = w->p;
+                    w = z->p->right;
                 }
                 w->c = z->p->c;
                 z->p->c = BLACK;
@@ -511,7 +511,7 @@ void removeFixUp(redBlackTree* tree, redBlackNode* z) {
                     w->c = RED;
                     w->right->c = BLACK;
                     leftRotate(tree, w);
-                    w = w->p;
+                    w = z->p->left;
                 }
                 w->c = z->p->c;
                 z->p->c = BLACK;
@@ -539,12 +539,13 @@ void remove(redBlackTree* tree, redBlackNode* z) {
     } else {
         redBlackNode* y = successor(z);
         c = y->c;
-        redBlackNode* x = y->right;
+        x = y->right;
         if (y->p == z) {
             x->p = y;
         } else {
             transplant(tree, y, y->right);
-            y->right->p = y;
+            y->right = z->right;
+            y->right->p - y;
         }
         transplant(tree, z, y);
         y->left = z->left;
