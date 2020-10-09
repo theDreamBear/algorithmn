@@ -466,45 +466,136 @@ void deleteNode(redBlackTree* tree, redBlackNode* z) {
     }
 }
 
-void makeTree(redBlackTree* tree, vector<int> nums) {
-    for (int i = 0; i < nums.size(); ++i) {
-        redBlackNode* z = new redBlackNode(nums[i]);
-        insert(tree, z);
-        // cout << i << " " << nil->c << endl;
-    }
-}
-
-redBlackNode* find(redBlackTree* tree, int val) {
+void removeFixUp(redBlackTree* tree, redBlackNode* z) {
     if (NULL == tree || isNULL(tree->root)) {
-        return nil;
+        return;
     }
-    redBlackNode* cur = tree->root;
-    while (!isNULL(cur)) {
-        if (cur->val > val) {
-            cur = cur->left;
-        } else if (cur->val < val) {
-            cur = cur->right;
+    while (BLACK == z->c && z != tree->root) {
+        if (z == z->p->left) {
+            redBlackNode* w = z->p->right;
+            if (RED == w->c) {
+                z->p->c = RED;
+                w->c = BLACK;
+                leftRotate(tree, z->p);
+                w = z->p->right;
+            }
+            if (BLACK == w->left->c && BLACK == w->right->c) {
+                w->c = RED;
+                z = z->p;
+            } else {
+                if (RED == w->left->c) {
+                    w->left->c = BLACK;
+                    w->c = RED;
+                    rightRotate(tree, w);
+                    w = w->p;
+                }
+                w->c = z->p->c;
+                z->p->c = BLACK;
+                w->right->c = BLACK;
+                leftRotate(tree, z->p);
+                z = tree->root;
+            }
         } else {
-            return cur;
+            redBlackNode* w = z->p->left;
+            if (RED == w->c) {
+                w->c = BLACK;
+                z->p->c = RED;
+                rightRotate(tree, z->p);
+                w = z->p->left;
+            }
+            if (BLACK == w->left->c && BLACK == w->right->c) {
+                w->c = RED;
+                z = z->p;
+            } else {
+                if (RED == w->right->c) {
+                    w->c = RED;
+                    w->right->c = BLACK;
+                    leftRotate(tree, w);
+                    w = w->p;
+                }
+                w->c = z->p->c;
+                z->p->c = BLACK;
+                w->left->c = BLACK;
+                rightRotate(tree, z->p);
+                z = tree->root;
+            }
         }
     }
-    return nil;
+    z->c = BLACK;
 }
 
-int main() {
-    // cout << "nil c: " << nil->c << endl;
-    vector<int> nums = {9, 31, 8, 71, 71, 5, 19 ,4 ,8 ,14 ,79 ,97, 77, 24, 35, 41, 58, 66, 77 ,9 };randomInput(20, 100);
-    for (auto y : nums) {
-        cout << y << " ";
+void remove(redBlackTree* tree, redBlackNode* z) {
+    if (NULL == tree || isNULL(tree->root) || isNULL(z)) {
+        return;
     }
-    cout << endl << endl;
-    redBlackTree* tree = new redBlackTree;
-    makeTree(tree, nums);
-     prettyPrintTree(tree->root);
-    // cout << "root: " << tree->root->val << " " << endl;
-    redBlackNode* d = find(tree, 5);
-    if (!isNULL(d)) {
-        deleteNode(tree, d);
+    Color c = z->c;
+    redBlackNode* x = nil;
+    if (isNULL(z->left)) {
+        x = z->right;
+        transplant(tree, z, z->right);
+    } else if (isNULL(z->right)) {
+        x = z->left;
+        transplant(tree, z, z->left);
+    } else {
+        redBlackNode* y = successor(z);
+        c = y->c;
+        redBlackNode* x = y->right;
+        if (y->p == z) {
+            x->p = y;
+        } else {
+            transplant(tree, y, y->right);
+            y->right->p = y;
+        }
+        transplant(tree, z, y);
+        y->left = z->left;
+        y->left->p = y;
+        y->c = z->c;
+        if (BLACK == c) {
+            removeFixUp(tree, x);
+        }
     }
-    prettyPrintTree(tree->root);
-}
+
+    void makeTree(redBlackTree * tree, vector<int> nums) {
+        for (int i = 0; i < nums.size(); ++i) {
+            redBlackNode* z = new redBlackNode(nums[i]);
+            insert(tree, z);
+            // cout << i << " " << nil->c << endl;
+        }
+    }
+
+    redBlackNode* find(redBlackTree * tree, int val) {
+        if (NULL == tree || isNULL(tree->root)) {
+            return nil;
+        }
+        redBlackNode* cur = tree->root;
+        while (!isNULL(cur)) {
+            if (cur->val > val) {
+                cur = cur->left;
+            } else if (cur->val < val) {
+                cur = cur->right;
+            } else {
+                return cur;
+            }
+        }
+        return nil;
+    }
+
+    int main() {
+        // cout << "nil c: " << nil->c << endl;
+        vector<int> nums = {9,  31, 8,  71, 71, 5,  19, 4,  8,  14,
+                            79, 97, 77, 24, 35, 41, 58, 66, 77, 9};
+        randomInput(20, 100);
+        for (auto y : nums) {
+            cout << y << " ";
+        }
+        cout << endl << endl;
+        redBlackTree* tree = new redBlackTree;
+        makeTree(tree, nums);
+        prettyPrintTree(tree->root);
+        // cout << "root: " << tree->root->val << " " << endl;
+        redBlackNode* d = find(tree, 5);
+        if (!isNULL(d)) {
+            deleteNode(tree, d);
+        }
+        prettyPrintTree(tree->root);
+    }
