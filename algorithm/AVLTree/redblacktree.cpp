@@ -174,7 +174,7 @@ void leftRotate(redBlackTree* tree, redBlackNode* x) {
 }
 
 void rightRotate(redBlackTree* tree, redBlackNode* x) {
-    if (isNULL(x) || isNULL(x->right) || NULL == tree || isNULL(tree->root)) {
+    if (isNULL(x) || isNULL(x->left) || NULL == tree || isNULL(tree->root)) {
         return;
     }
     redBlackNode* y = x->left;
@@ -466,7 +466,7 @@ void makeTree(redBlackTree* tree, vector<int> nums) {
     for (int i = 0; i < nums.size(); ++i) {
         redBlackNode* z = new redBlackNode(nums[i]);
         insert(tree, z);
-        cout << i << " " << nil->c << endl;
+        //cout << i << " " << nil->c << endl;
         prettyPrintTree(tree->root);
     }
 }
@@ -489,12 +489,12 @@ redBlackNode* find(redBlackTree* tree, int val) {
 }
 
 int main() {
-    cout << "nil c: " << nil->c << endl;
-    auto nums = {84, 19, 77, 59, 75};  // randomInput(10, 100);
+    //cout << "nil c: " << nil->c << endl;
+    auto nums = randomInput(100, 100);
     for (auto y : nums) {
         cout << y << " ";
     }
-    cout << endl;
+    cout << endl << endl;
     redBlackTree* tree = new redBlackTree;
     makeTree(tree, nums);
     traverse(tree->root);
