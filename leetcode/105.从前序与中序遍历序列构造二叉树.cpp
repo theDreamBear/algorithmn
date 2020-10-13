@@ -3,15 +3,15 @@
  *
  * [105] 从前序与中序遍历序列构造二叉树
  */
-#include<iostream>
+#include <iostream>
 #include <vector>
 using namespace std;
 
- struct TreeNode {
-      int val;
-      TreeNode *left;
-      TreeNode *right;
-      TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
 // @lc code=start
@@ -25,8 +25,9 @@ using namespace std;
  * };
  */
 class Solution {
-public:
-    TreeNode* buildHelper(vector<int>& preorder, vector<int>& inorder, int l1, int h1, int l2, int h2) {
+ public:
+    TreeNode* buildHelper(vector<int>& preorder, vector<int>& inorder, int l1,
+                          int h1, int l2, int h2) {
         if (l1 > h1 || l2 > h2) {
             return NULL;
         }
@@ -42,8 +43,10 @@ public:
             }
         }
         TreeNode* root = new TreeNode(l);
-        root->left = buildHelper(preorder, inorder, l1 + 1, l1 + off, l2, l2 + off);
-        root->right = buildHelper(preorder, inorder, l1 + off + 1, h1, l2 + off + 1, h2);
+        root->left =
+            buildHelper(preorder, inorder, l1 + 1, l1 + off, l2, l2 + off);
+        root->right =
+            buildHelper(preorder, inorder, l1 + off + 1, h1, l2 + off + 1, h2);
         return root;
     }
 
@@ -51,8 +54,8 @@ public:
         if (preorder.size() == 0) {
             return NULL;
         }
-        return buildHelper(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+        return buildHelper(preorder, inorder, 0, preorder.size() - 1, 0,
+                           inorder.size() - 1);
     }
 };
 // @lc code=end
-
