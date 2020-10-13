@@ -4,7 +4,14 @@
  * [98] 验证二叉搜索树
  */
 
-#include<stack>
+#include <stack>
+using namespace std;
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 // @lc code=start
 /**
  * Definition for a binary tree node.
@@ -16,7 +23,7 @@
  * };
  */
 class Solution {
-public:
+ public:
     bool isValidBST1(TreeNode* root) {
         if (NULL == root) {
             return true;
@@ -28,7 +35,7 @@ public:
         while (!st.empty()) {
             cur = st.top();
             if (cur) {
-            // 右
+                // 右
                 st.pop();
                 if (cur->right) {
                     st.push(cur->right);
@@ -38,7 +45,7 @@ public:
                 st.push(NULL);
                 //左
                 if (cur->left) {
-                st.push(cur->left);
+                    st.push(cur->left);
                 }
             } else {
                 st.pop();
@@ -53,6 +60,7 @@ public:
         return true;
     }
 
+    // 中序遍历
     bool isValidBST2(TreeNode* root) {
         if (NULL == root) {
             return true;
@@ -77,21 +85,17 @@ public:
     }
 
     TreeNode* pre = NULL;
+    // dfs
     bool isValidBSTHelper(TreeNode* root) {
         if (NULL == root) {
             return true;
         }
-        bool left = isValidBSTHelper(root->left);
-        if (!left || (pre &&  root->val <= pre->val)) {
+        if (!isValidBSTHelper(root->left) || (pre && root->val <= pre->val)) {
             return false;
         }
         pre = root;
         return isValidBSTHelper(root->right);
     }
-
-    bool isValidBST(TreeNode* root) {
-       return isValidBSTHelper(root);
-    }
+    bool isValidBST(TreeNode* root) { return isValidBSTHelper(root); }
 };
 // @lc code=end
-
