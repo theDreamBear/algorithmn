@@ -3,6 +3,8 @@
         "stack": "cpp",
         "iosfwd": "cpp",
         "vector": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "random": "cpp",
+        "iostream": "cpp"
     }
 }
