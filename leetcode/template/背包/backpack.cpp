@@ -1,4 +1,5 @@
 #include <vector>
+#include <iostream>
 using namespace std;
 
 /*
@@ -118,7 +119,32 @@ int backPackII(int m, vector<int> &A, vector<int> &V) {
     return res;
 }
 
+int backPackII_newHelper(int i, int w, int maxValue, int m, vector<int> &A, vector<int> &V) {
+    if (w >= m || i >= A.size()) {
+        return maxValue;
+    }
+    int pick = 0;
+    int nopick = 0;
+    if (w + A[i] <= m) {
+        pick = backPackII_newHelper(i + 1, w + A[i], maxValue + V[i], m, A, V);
+    }
+    nopick = backPackII_newHelper(i + 1, w, maxValue, m, A, V);
+    return max(pick, nopick);
+}
+
+int backPackII_new(int m, vector<int> &A, vector<int> &V) {
+    // write your code here
+    return backPackII_newHelper(0, 0, 0, m, A, V);
+}
+
 int backPackIV(vector<int> &nums, int target) {
     // write your code here
     return 0;
+}
+
+
+int main() {
+    vector<int> A{1, 2, 3};
+    vector<int> V{5, 2, 2};
+    cout << backPackII_new(5, A, V);
 }

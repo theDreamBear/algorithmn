@@ -141,7 +141,7 @@ class Solution {
                     while (idx <= last) {
                         r |= dfsNew(pc, idx, j, s, p);
                         if (r) {
-                            //cout << idx << " " << j << endl;
+                            // cout << idx << " " << j << endl;
                             return true;
                         }
                         ++idx;
@@ -181,11 +181,67 @@ class Solution {
             // }
             return i >= sSize && j >= pSize;
         }
-    };
 
+        /*
+      true  i >= s.size() && j >= p.size()
+      .*
+      a*
+
+  */
+        bool dfsNew2(int i, int j, const string& s, const string& p) {
+            while (i < s.size() && j < p.size()) {
+                if (j + 1 < p.size() && p[j + 1] == '*') {
+                    char pre = p[j];
+                    // j 的值改变了所以需要保存下来
+                    j += 2;
+                    if (isMinuscule(pre) && s[i] != pre) {
+                        continue;
+                    }
+                    bool r = false;
+                    int last = i;
+                    if (pre == '.') {
+                        last = s.size();
+                    } else {
+                        while (last < s.size() && s[last] == pre) {
+                            ++last;
+                        }
+                    }
+                    for (int idx = i; idx <= last; ++idx) {
+                        r |= dfsNew2(idx, j, s, p);
+                        if (r) {
+                            break;
+                        }
+                    }
+                    return r;
+                }
+                if (p[j] == '.' || s[i] == p[j]) {
+                    ++i;
+                    ++j;
+                } else {
+                    return false;
+                }
+            }
+            if (i >= s.size()) {
+                if (j >= p.size()) {
+                    return true;
+                }
+                while (j + 1 < p.size()) {
+                    if (p[j + 1] == '*') {
+                        j += 2;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return i >= s.size() && j >= p.size();
+        }
+    };
     bool isMatch(string s, string p) {
         regex r;
-        return r.dfsNew('\0', 0, 0, s, p);
+        // dfsNew
+        // return r.dfsNew('\0', 0, 0, s, p);
+
+        return r.dfsNew2(0, 0, s, p);
     }
 };
 // @lc code=end
@@ -196,24 +252,24 @@ struct tester {
     bool ret;
 };
 
-int main(int argc ,char* argv[]) {
+int main(int argc, char* argv[]) {
     Solution so;
     vector<tester> te = {
-        {"aa", "a", false},
-        {"aa", "a*", true},
-        {"ab", ".*", true},
-        {"aab", "c*a*b", true},
-        {"mississippi", "mis*is*p*.", false},
-        {"abbbb", ".*c", false},
-        {"aaa", "c*a", false},
-        {"aa", "a*", true},
+        // {"aa", "a", false},
+        // {"aa", "a*", true},
+        // {"ab", ".*", true},
+        // {"aab", "c*a*b", true},
+        // {"mississippi", "mis*is*p*.", false},
+        // {"abbbb", ".*c", false},
+        // {"aaa", "c*a", false},
+        // {"aa", "a*", true},
         {"a", "ab*", true},
-        {"a", "ab*a", false},
-        {"", ".", false},
+        // {"a", "ab*a", false},
+        // {"", ".", false},
         {"abcaaaaaaabaabcabac", ".*ab.a.*a*a*.*b*b*", true},
-        {"bb", ".baa", false},
-        {"", "c*c*", true},
-        {"abbbb", "a*.*b*.*a*aa*a*", false},
+        // {"bb", ".baa", false},
+        // {"", "c*c*", true},
+        // {"abbbb", "a*.*b*.*a*aa*a*", false},
     };
 
     for (int i = 0; i < te.size(); ++i) {
@@ -224,7 +280,7 @@ int main(int argc ,char* argv[]) {
     // while (true) {
     //     string s, p;
     //     cout << "please input s and p: ";
-    //     cin >> s >> p; 
+    //     cin >> s >> p;
     //     cout << Solution{}.isMatch(s, p) << endl;
     // }
 }
