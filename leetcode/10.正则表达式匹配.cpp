@@ -237,11 +237,38 @@ class Solution {
         }
     };
     bool isMatch(string s, string p) {
-        regex r;
+        //regex r;
         // dfsNew
         // return r.dfsNew('\0', 0, 0, s, p);
 
-        return r.dfsNew2(0, 0, s, p);
+        //return r.dfsNew2(0, 0, s, p);
+        if (s.size() == p.size() == 0) {
+            return true;
+        }
+        if (p.size() == 0) {
+            return false;
+        }
+        if (s.size() == 0) {
+            int k = 1;
+            while (k < p.size() && p[k] == '*') {
+                k += 2;
+            }
+            return k > p.size();
+        }
+        int row = s.size();
+        int col = p.size();
+        vector<vector<bool>> dp(row, vector<bool>(col, false));
+        if (p[col -1] >= 'a' && p[col - 1] <= 'z' && p[col - 1] != s[row]) {
+            return false;
+        }
+        dp[row - 1][col - 1] = true;
+
+        for (int i = row - 1; i >= 0; --i) {
+            for (int j = col - 1; j >= 0; --j) {
+                
+            }
+        }
+        return true;
     }
 };
 // @lc code=end
