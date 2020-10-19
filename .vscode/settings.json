@@ -5,6 +5,8 @@
         "vector": "cpp",
         "iterator": "cpp",
         "random": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "set": "cpp",
+        "algorithm": "cpp"
     }
 }
