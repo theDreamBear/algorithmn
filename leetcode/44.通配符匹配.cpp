@@ -4,11 +4,13 @@
  * [44] 通配符匹配
  */
 #include <string>
+#include <vector>
 using namespace std;
 // @lc code=start
 class Solution {
 public:
      struct regex {
+        vector<vector<int>> dp;
         regex() {}
 
         /*
@@ -23,6 +25,9 @@ public:
 
   */
         bool dfsNew2(int i, int j, const string& s, const string& p) {
+            if (dp[i][j] != -1) {
+                return dp[i][j];
+            }
             while (i < s.size() && j < p.size()) {
                 if (p[j] == '?' || s[i] == p[j]) {
                     ++i;
@@ -38,16 +43,17 @@ public:
                 bool r = false;
                 for (int idx = i; idx <= s.size(); ++idx) {
                     r |= dfsNew2(idx, j, s, p);
+                    dp[idx][j] = r;
                     if (r) {
                         break; 
                     }
                 }
-                return r;
+                return dp[i][j] = r;
             }
             while(j < p.size() && p[j] == '*') {
                 ++j;
             }
-            return i >= s.size() && j >= p.size();
+            return dp[i][j] = i >= s.size() && j >= p.size();
         }
     };
     /*
@@ -55,9 +61,7 @@ public:
     */
     bool isMatch(string s, string p) {
         regex r;
-        // dfsNew
-        // return r.dfsNew('\0', 0, 0, s, p);
-
+        r.dp = vector<vector<int>>(s.size() + 1, vector<int>(p.size() + 1, -1));
         return r.dfsNew2(0, 0, s, p);
     }
 };

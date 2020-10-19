@@ -16,6 +16,7 @@ class Solution {
         2. j j 的下标
     */
     struct regex {
+        vector<vector<int>> dp;
         regex() {}
 
         /*
@@ -188,7 +189,11 @@ class Solution {
       a*
 
   */
+
         bool dfsNew2(int i, int j, const string& s, const string& p) {
+            if (dp[i][j] != -1) {
+                return dp[i][j];
+            }
             while (i < s.size() && j < p.size()) {
                 if (j + 1 < p.size() && p[j + 1] == '*') {
                     char pre = p[j];
@@ -208,11 +213,12 @@ class Solution {
                     }
                     for (int idx = i; idx <= last; ++idx) {
                         r |= dfsNew2(idx, j, s, p);
+                        dp[idx][j] = r;
                         if (r) {
                             break;
                         }
                     }
-                    return r;
+                    return  dp[i][j] =  r;
                 }
                 if (p[j] == '.' || s[i] == p[j]) {
                     ++i;
@@ -233,42 +239,43 @@ class Solution {
                     }
                 }
             }
-            return i >= s.size() && j >= p.size();
+            return dp[i][j] = i >= s.size() && j >= p.size();
         }
     };
     bool isMatch(string s, string p) {
-        //regex r;
+        regex r;
         // dfsNew
-        // return r.dfsNew('\0', 0, 0, s, p);
+        r.dp = vector<vector<int>>(s.size() + 1, vector<int>(p.size() + 1, -1)); 
+        //return r.dfsNew2('\0', 0, 0, s, p);
 
-        //return r.dfsNew2(0, 0, s, p);
-        if (s.size() == p.size() == 0) {
-            return true;
-        }
-        if (p.size() == 0) {
-            return false;
-        }
-        if (s.size() == 0) {
-            int k = 1;
-            while (k < p.size() && p[k] == '*') {
-                k += 2;
-            }
-            return k > p.size();
-        }
-        int row = s.size();
-        int col = p.size();
-        vector<vector<bool>> dp(row, vector<bool>(col, false));
-        if (p[col -1] >= 'a' && p[col - 1] <= 'z' && p[col - 1] != s[row]) {
-            return false;
-        }
-        dp[row - 1][col - 1] = true;
+        return r.dfsNew2(0, 0, s, p);
+        // if (s.size() == p.size() == 0) {
+        //     return true;
+        // }
+        // if (p.size() == 0) {
+        //     return false;
+        // }
+        // if (s.size() == 0) {
+        //     int k = 1;
+        //     while (k < p.size() && p[k] == '*') {
+        //         k += 2;
+        //     }
+        //     return k > p.size();
+        // }
+        // int row = s.size();
+        // int col = p.size();
+        // vector<vector<bool>> dp(row, vector<bool>(col, false));
+        // if (p[col -1] >= 'a' && p[col - 1] <= 'z' && p[col - 1] != s[row]) {
+        //     return false;
+        // }
+        // dp[row - 1][col - 1] = true;
 
-        for (int i = row - 1; i >= 0; --i) {
-            for (int j = col - 1; j >= 0; --j) {
-                
-            }
-        }
-        return true;
+        // for (int i = row - 1; i >= 0; --i) {
+        //     for (int j = col - 1; j >= 0; --j) {
+
+        //     }
+        // }
+        // return true;
     }
 };
 // @lc code=end
