@@ -4,8 +4,8 @@
  * [11] 盛最多水的容器
  */
 #include <iostream>
-#include <stack>
 #include <map>
+#include <stack>
 #include <vector>
 using namespace std;
 
@@ -39,7 +39,7 @@ class Solution {
         sort(mp.begin(), mp.end(), less<pair<int, int>>());
         vector<bool> used(height.size(), 0);
         int mArea = 0;
-        int left = 0, right = height.size() -1;
+        int left = 0, right = height.size() - 1;
         for (auto kv = mp.begin(); left < right && kv != mp.end(); ++kv) {
             int area = (right - left) * kv->first;
             if (area > mArea) {
@@ -47,10 +47,12 @@ class Solution {
             }
             used[kv->second] = true;
             if (kv->second == left) {
-                while (left < right && used[++left]);
+                while (left < right && used[++left])
+                    ;
             }
             if (kv->second == right) {
-                while (left < right && used[--right]);
+                while (left < right && used[--right])
+                    ;
             }
         }
         return mArea;
@@ -66,9 +68,11 @@ class Solution {
                 mArea = area;
             }
             if (height[left] < height[right]) {
-                while (left < right && height[++left] < h);
+                while (left < right && height[++left] < h)
+                    ;
             } else {
-                while (left < right && height[--right] < h);
+                while (left < right && height[--right] < h)
+                    ;
             }
         }
         return mArea;
@@ -77,7 +81,7 @@ class Solution {
 // @lc code=end
 
 int main() {
-    vector<int> h = {1,0,0,0,0,0,0,2,2};
+    vector<int> h = {1, 0, 0, 0, 0, 0, 0, 2, 2};
     Solution s;
     cout << s.maxArea(h);
 }
