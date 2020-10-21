@@ -131,7 +131,7 @@ class Solution {
             return 0;
         }
         int mLen = 0;
-#define one
+#define four
 #ifdef one
         /*
             压缩数组 + 剪枝 5% + 5% 勉强通过
