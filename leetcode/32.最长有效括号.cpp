@@ -75,7 +75,55 @@ class Solution {
                 }
             }
         }
+
         return -1;
+    }
+
+    int validBracket2(const string& s) {
+        if (s.size() <= 1) {
+            return 0;
+        }
+        stack<int> st;
+        vector<pair<int, int>> saved;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '(') {
+                st.push(i);
+            } else {
+                if (!st.empty()) {
+                    int l = st.top();
+                    int r = i;
+                    saved.push_back({l, r});
+                    st.pop();
+                }
+            }
+        }
+        sort(saved.begin(), saved.end(), less<pair<int, int>>());
+        int len = 0;
+        int mLen = 0;
+        int left = -1, right = -2;
+        for (int i = 0; i < saved.size(); ++i) {
+            if (left == -1) {
+                left = saved[i].first;
+                right = saved[i].second;
+            } else {
+                if (right + 1 == saved[i].first) {
+                    right = saved[i].second;
+                } else if (right + 1 < saved[i].first) {
+                    len = right - left + 1;
+                    if (len > mLen) {
+                        mLen = len;
+                    }
+                    left = saved[i].first;
+                    right = saved[i].second;
+                    len = 0;
+                }
+            }
+        }
+        len = right - left + 1;
+        if (len > mLen) {
+            mLen = len;
+        }
+        return mLen;
     }
 
     int longestValidParentheses(string s) {
@@ -129,12 +177,30 @@ class Solution {
         /*
             某些 case不能通过
         */
+        int cl = 0, rl = 0;
+        int low = -1;
+        int high = -1;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '(') {
+                ++cl;
+                if (low == -1) {
+                    low = i;
+                }
+            } else {
+                ++rl;
+                high = i;
+            }
+        }
+        if (cl * rl == 0) {
+            return false;
+        }
+
         int len = 0;
-        for (int i = 0; i < s.size();) {
+        for (int i = low; i <= high;) {
             if (s[i] == '(') {
                 int pos = validBracket(s, i);
-                if (pos == -1) {
-                    ++i;
+                if (pos < 0) {
+                    i -= pos;
                     len = 0;
                 } else {
                     len += (pos - i);
@@ -149,6 +215,15 @@ class Solution {
             }
         }
 #endif  // three
+
+#ifdef four
+        return validBracket2(s);
+#endif  // four
         return mLen;
     }
 };
+// @lc code=end
+int main() {
+    string s = ")(((((()())()()))()(()))(";
+    cout << Solution{}.longestValidParentheses(s);
+}
