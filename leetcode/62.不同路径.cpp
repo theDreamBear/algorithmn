@@ -38,7 +38,7 @@ class Solution {
 
     int uniquePaths(int m, int n) {
         int N = m + n - 2;
-#define DEBUG
+#define MATHMATICS
 #ifdef DEBUG
         // wrong
         long long l, r;
