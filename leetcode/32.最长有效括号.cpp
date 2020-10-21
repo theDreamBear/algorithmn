@@ -60,30 +60,33 @@ class Solution {
         }
         int mLen = 0;
         set<string> sSet;
+#define one
+#ifdef one
         for (int i = 0; i < s.size(); ++i) {
             for (int j = 0; j <= i; ++j) {
-#ifdef one
                 if (isValidBracket(s, j, i) && i - j + 1 > mLen) {
                     cout << j << " " << i << endl;
                     mLen = i - j + 1;
+                    ++j;
                 }
+            }
+        }
 #endif  // one
 
-                if (s[j] == '(') {
-                    sSet.insert(s.substr(j, i - j + 1));
-                }
+#ifdef two
+    for (int i = 0; i < s.size(); ++i) {
+        for (int j = 0; j <= i; ++j) {
+            if (s[j] == '(') {
+                sSet.insert(s.substr(j, i - j + 1));
             }
         }
-        for (const string& str : sSet) {
-            if (isValidBracketString(str) && mLen < str.size()) {
-                mLen = str.size();
-            }
+    }
+    for (const string& str : sSet) {
+        if (isValidBracketString(str) && mLen < str.size()) {
+            mLen = str.size();
         }
-        return mLen;
+    }
+#endif  // two
+    return mLen;
     }
 };
-// @lc code=end
-int main() {
-    Solution s;
-    cout << s.longestValidParentheses("(())()");
-}
