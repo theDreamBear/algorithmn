@@ -9,6 +9,9 @@
         "set": "cpp",
         "algorithm": "cpp",
         "functional": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "__tuple": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp"
     }
 }
