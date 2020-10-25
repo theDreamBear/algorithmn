@@ -98,6 +98,7 @@ class radixSorter {
 };
 
 int main() {
+    function<void(int)>
     vector<int> res = randomInput(100);
     radixSorter(10).sort(res);
 }
