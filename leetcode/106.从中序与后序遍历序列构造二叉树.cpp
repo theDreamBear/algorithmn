@@ -24,7 +24,7 @@ struct TreeNode {
  */
 class Solution {
 public:
-    TreeNode* dfs(int low1, int high1, int low2, int high2,const vector<int>& inorder, const vector<int>& postorder) {
+    TreeNode* divideAndConquer(int low1, int high1, int low2, int high2,const vector<int>& inorder, const vector<int>& postorder) {
         if (low1 > high1) {
             return NULL;
         }
@@ -42,13 +42,13 @@ public:
         }
         TreeNode* root = new TreeNode(rootVal);
         int rightLen = high1 - rootIdx;
-        root->left = dfs(low1, rootIdx - 1, low2, high2 - rightLen - 1, inorder, postorder);
-        root->right = dfs(rootIdx + 1, high1,  high2 - rightLen - 1, high2 - 1, inorder, postorder);
+        root->left = divideAndConquer(low1, rootIdx - 1, low2, high2 - rightLen - 1, inorder, postorder);
+        root->right = divideAndConquer(rootIdx + 1, high1,  high2 - rightLen - 1, high2 - 1, inorder, postorder);
         return root;
     }
 
     TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-        return dfs(0, inorder.size() - 1, 0, inorder.size() - 1, inorder, postorder);
+        return divideAndConquer(0, inorder.size() - 1, 0, inorder.size() - 1, inorder, postorder);
     }
 };
 // @lc code=end
