@@ -194,7 +194,7 @@ inputReader& operator>>(inputReader& inReader, T& t) {
 
 using InputType =  vector<vector<int>>;
 using ResultType = int;
-using Item = tester2<ResultType, InputType>;
+using Item = tester2<ResultType, ResultType, ResultType>;
 
 // 输入函数
 // template<typename T>
@@ -210,7 +210,7 @@ void solve(inputReader& in) {
         in >> res;
 
         // 存储
-        total_test.emplace_back(res, nums);
+        total_test.emplace_back(res, 1, 2);
     }
     for (int i = 0; i < total_test.size(); ++i) {
         if (total_test[i].r != total_test[i].checkResultCommon(add)) {
