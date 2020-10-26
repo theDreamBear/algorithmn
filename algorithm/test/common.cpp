@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <tuple>
 #include <vector>
 using namespace std;
 
@@ -116,7 +117,7 @@ struct tester {
 template <typename Result, typename... Input>
 struct tester2 {
     Result r;
-    tuple<decay_t<Input>...> input;
+    tuple<Input...> input;
     tester2(Result r, Input... input) : r(r), input(input...) {}
 
     template <typename Obj, typename F>
@@ -145,6 +146,44 @@ struct inputReader {
     }
 
     ~inputReader() { in.close(); }
+
+    template <typename T>
+    vector<T> getVec(int n) {
+        vector<T> res(n);
+        for (int i = 0; i < n; ++i) {
+            in >> res[i];
+        }
+        return res;
+    }
+
+    vector<int> getVec(int n) {
+        vector<int> res(n);
+        for (int i = 0; i < n; ++i) {
+            in >> res[i];
+        }
+        return res;
+    }
+
+    template <typename T>
+    vector<vector<T>> getVec(int n, int m) {
+        vector<vector<T>> res(n, vector<T>(m));
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                in >> res[i][j];
+            }
+        }
+        return res;
+    }
+
+    vector<vector<int>> getVec(int n, int m) {
+        vector<vector<int>> res(n, vector<int>(m));
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                in >> res[i][j];
+            }
+        }
+        return res;
+    }
 };
 
 template <typename T>
@@ -153,47 +192,40 @@ inputReader& operator>>(inputReader& inReader, T& t) {
     return inReader;
 }
 
-constexpr static char* NUMBERSTART = "[number]";
-constexpr static char* INSTART = "[in]";
-constexpr static char* OUTSTART = "[out]";
+using InputType =  vector<vector<int>>;
+using ResultType = int;
+using Item = tester2<ResultType, InputType>;
 
 // 输入函数
 // template<typename T>
-void input(inputReader& in) {
-    string number_start;
+void solve(inputReader& in) {
+    vector<Item> total_test;
     while (!in.in.eof()) {
-        in >> number_start;
-        if (number_start == string(NUMBERSTART)) {
-            break;
+        // 输入
+        int m;
+        in >> m;
+        auto nums = move(in.getVec(m));
+        // 预期
+        int res;
+        in >> res;
+
+        // 存储
+        total_test.emplace_back(res, nums);
+    }
+    for (int i = 0; i < total_test.size(); ++i) {
+        if (total_test[i].r != total_test[i].checkResultCommon(add)) {
+            cout << i  << "error" << endl;
         }
     }
-    // 
-    //return move(temp);
 }
 
 void solve(vector<vector<int>>& num) {}
 
 void solve() {
     inputReader inReader;
-    while (!inReader.in.eof()) {
-        //auto vec = input(inReader);
-        //solve(vec);
-    }
+    solve(inReader);
 }
 
 int main() {
-    int (Solution::*pf)(string s, int a) = &Solution::reslove;  //修改函数名
-    Solution s;
-    // vector<tester<int, int, int> > ve = {
-    //     {3, 1, 2},
-    //     {4, 2, 2},
-    //     {5, 3, 2},
-    //     {6, 4, 2},
-    // };
-    // for (int i = 0; i < ve.size(); ++i) {
-    //     int v = ve[i].checkResultCommon(add);
-    //     if (!v) {
-    //         cout << i << " " << v << endl;
-    //     }
-    // }
+    solve();
 }
