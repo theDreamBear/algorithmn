@@ -121,6 +121,8 @@ class Solution {
             }
             if (cur->next == NULL) {
                 TreeNode* node = new TreeNode(cur->val);
+                nodes.push(NULL);
+                nodes.push(NULL);
                 nodes.push(node);
                 continue;
             }
