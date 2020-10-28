@@ -3,6 +3,7 @@
  *
  * [109] 有序链表转换二叉搜索树
  */
+#include <iostream>
 #include <stack>
 #include <vector>
 using namespace std;
@@ -108,99 +109,40 @@ class Solution {
         return root;
     }
 
-    TreeNode* buildTree(ListNode* head) {
-        stack<ListNode*> st;
-        stack<TreeNode*> nodes;
-        st.push(head);
-        while (!st.empty()) {
-            ListNode* cur = st.top();
-            st.pop();
-            if (cur == NULL) {
-                nodes.push(NULL);
-                continue;
-            }
-            if (cur->next == NULL) {
-                TreeNode* node = new TreeNode(cur->val);
-                nodes.push(NULL);
-                nodes.push(NULL);
-                nodes.push(node);
-                continue;
-            }
+    int listNodeLen(ListNode* head) {
+        int len = 0;
+        ListNode* cur = head;
+        for (; cur != nullptr; cur = cur->next, ++len)
+            ;
+        return len;
+    }
 
-            ListNode* c = findmid(cur);
-            ListNode* next = c->next;
-            if (next == NULL) {
-                st.push(NULL);
-                continue;
-            }
-            int val = next->val;
-            TreeNode* root = new TreeNode(val);
-            nodes.push(root);
-            next = next->next;
-            c->next = NULL;
-
-            st.push(cur);
-            st.push(next);
+    TreeNode* dfs_new(ListNode*& head, int i, int n) {
+        if (i > n) {
+            return NULL;
         }
-        TreeNode dummy;
-        TreeNode* pleft = &dummy;
-        TreeNode* pright = &dummy;
-        TreeNode* pp = &dummy;
-
-        TreeNode* left = &dummy;
-        TreeNode* right = &dummy;
-        TreeNode* p = &dummy;
-        while (!nodes.empty()) {
-            TreeNode* cur = nodes.top();
-            nodes.pop();
-            if (pleft != &dummy && pright != &dummy) {
-                pp = cur;
-                pp->left = pleft;
-                pp->right = pright;
-                pleft = pp;
-
-                pp = &dummy;
-                pright = &dummy;
-                continue;
-            } else {
-                if (left == &dummy) {
-                    left = cur;
-                } else if (right == &dummy) {
-                    right = cur;
-                } else if (p == &dummy) {
-                    p = cur;
-                    p->left = left;
-                    p->right = right;
-                    if (pleft == &dummy) {
-                        pleft = p;
-                    } else {
-                        pright = p;
-                    }
-                    p = &dummy;
-                    left = &dummy;
-                    right = &dummy;
-                }
-            }
+        TreeNode* root = new TreeNode;
+        root->left = dfs_new(head, 2 * i, n);
+        if (head == NULL) {
+            return NULL;
         }
-        if (right != &dummy) {
-            pp = right;
-            pp->left = pleft;
-            pp->right= left; 
-            pleft = pp;
-        } else if (left != &dummy) {
-            pleft = left;
-        }
-        return pleft;
+        root->val = head->val;
+        //cout << head->val << endl;
+        head = head->next;
+        root->right = dfs_new(head, 2 * i + 1, n);
+        return root;
     }
 
     /*
         build
     */
-    TreeNode* sortedListToBST(ListNode* head) { 
+    TreeNode* sortedListToBST(ListNode* head) {
         if (head == NULL) {
             return NULL;
         }
-        return buildTree(head); 
+        int len = listNodeLen(head);
+        cout << len << endl;
+        return dfs_new(head, 1, len);
     }
 };
 // @lc code=end
@@ -216,8 +158,18 @@ ListNode* makeList(vector<int>& vec) {
     return dummy.next;
 }
 
+void preorderTraversal(TreeNode* root) {
+    if (NULL == root) {
+        return;
+    }
+    preorderTraversal(root->left);
+     cout << root->val << endl;
+    preorderTraversal(root->right);
+}
+
 int main() {
-    vector<int> vec{0,1,2,3,4,5,6,7};
+    vector<int> vec{0, 1, 2, 3, 4, 5, 6, 7};
     auto list = makeList(vec);
-    Solution{}.sortedListToBST(list);
+    TreeNode* root =  Solution{}.sortedListToBST(list);
+    preorderTraversal(root);
 }
