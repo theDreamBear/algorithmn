@@ -3,7 +3,9 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${default}",
+                "/Users/nichao/Code/algorithmn/include/**"
             ],
             "defines": [],
             "macFrameworkPath": [
