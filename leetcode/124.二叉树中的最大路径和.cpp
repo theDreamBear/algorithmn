@@ -1,9 +1,17 @@
+// @before-stub-for-debug-begin
+#include <vector>
+#include <string>
+#include "commoncppproblem124.h"
+
+using namespace std;
+// @before-stub-for-debug-end
+
 /*
  * @lc app=leetcode.cn id=124 lang=cpp
  *
  * [124] 二叉树中的最大路径和
  */
-
+#include <climits>
  struct TreeNode {
      int val;
     TreeNode *left;
@@ -27,25 +35,37 @@
  */
 class Solution {
 public:
-    int maxPathSumHelper(TreeNode* root, int& maxValue, int current) {
+    /*
+        后序遍历
+    */
+    int maxPathSumHelper(TreeNode* root, int& maxValue) {
         if (NULL == root) {
             return 0;
         }
-        int left = maxPathSumHelper(root->left, maxValue, current);
-        int right = maxPathSumHelper(root->right, maxValue, current);
+        int left = maxPathSumHelper(root->left, maxValue);
+        int right = maxPathSumHelper(root->right, maxValue);
+        
+        int now = root->val;
         if (left > 0) {
-            current += left;
+            now += left;
         }
         if (right > 0) {
-            current += right;
+            now += right;
         }
-        if (current > maxValue) {
-            maxValue = current;
+        if (now > maxValue) {
+            maxValue = now;
         }
+        int sub = min(left, right);
+        if (sub > 0) {
+            now -= sub;
+        }
+        return now;
     }
 
     int maxPathSum(TreeNode* root) {
-
+        int maxValue = INT_MIN;
+        maxPathSumHelper(root, maxValue, 0);
+        return maxValue;
     }
 };
 // @lc code=end
