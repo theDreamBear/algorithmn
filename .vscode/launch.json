@@ -6,7 +6,7 @@
             "name": "(lldb) 启动",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/Users/nichao/Code/algorithmn/algorithm/function/a.out",
+            "program": "/Users/nichao/Code/algorithmn/algorithm/function/lazy/a.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/leetcode",
