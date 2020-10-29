@@ -3,6 +3,7 @@
 #include <numeric>
 #include <unordered_map>
 #include <vector>
+#include <mydef.h>
 #include <iostream>
 
 using namespace std;
@@ -95,20 +96,6 @@ int main() {
     for (auto& [idx, v] : rangeVec(good)) {
         cout << idx << " " << v.s << endl;
     }
-
-    // auto fib = [pre = 0, last = 1, idx = 0]() mutable {
-    //     ++idx;
-    //     if (idx == 1) {
-    //         return pre;
-    //     }
-    //     if (idx == 2) {
-    //         return last;
-    //     }
-    //     int temp = last;
-    //     last += pre;
-    //     pre = temp;
-    //     return last;
-    // };
 
     auto fib = [a = 0, b = 1]() mutable {
     	a = exchange(b, a + b);
