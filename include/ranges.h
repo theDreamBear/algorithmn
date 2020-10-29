@@ -64,7 +64,7 @@ struct rangeVecIterator {
 
     const pair<int, T> operator* () const{
         int index = getIndex();
-        return {index, _values[index]};
+        return {index, ref(_values[index])};
     }
 
     const rangeVecIterator& operator++() {

@@ -71,10 +71,50 @@ void myRotate(vector<int>& nums, int k) {
     }
 }
 
+struct Goods {
+    Goods(string s) {
+        cout << "GOODS" << endl;
+        this->s = s;
+    }
+    string s;
+};
+
 int main() {
-    vector<int> nums = {1, 2, 4, 5};
-    myRotate(nums, 2);
-    for (auto& x : nums) {
-        cout << x << endl;
+    // vector<int> nums = {1, 2, 4, 5};
+
+    // for (auto x : range(10)) {
+    //     cout << x << endl;
+    // }
+
+    // for (auto [idx, v] : rangeVec(nums)) {
+    //     cout << idx << " " << v << endl;
+    // }
+
+    vector<Goods> good = {Goods("hello"), Goods("world")};
+    for (auto& [idx, v] : rangeVec(good)) {
+        cout << idx << " " << v.s << endl;
+    }
+
+    // auto fib = [pre = 0, last = 1, idx = 0]() mutable {
+    //     ++idx;
+    //     if (idx == 1) {
+    //         return pre;
+    //     }
+    //     if (idx == 2) {
+    //         return last;
+    //     }
+    //     int temp = last;
+    //     last += pre;
+    //     pre = temp;
+    //     return last;
+    // };
+
+    auto fib = [a = 0, b = 1]() mutable {
+    	a = exchange(b, a + b);
+    	return a;
+    };
+
+    for (auto idx : range(10)) {
+        cout << fib() << endl;
     }
 }
