@@ -1,9 +1,10 @@
-#include <mydef.h>
 
 #include <algorithm>
 #include <numeric>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
+
 using namespace std;
 // @lc code=start
 class Solution {
