@@ -52,15 +52,28 @@ class Solution {
 };
 // @lc code=end
 
-int main() {
-    Solution s;
-    vector<int> nums = {1, 2, 4, 5};
-    auto x = s.twoSum(nums, 7);
-    if (x.size() > 0) {
-        cout << x[0] << " " << x[1] << endl;
+void myRotate(vector<int>& nums, int k) {
+    int first = 0, last = nums.size();
+    k = k % last;
+    int mid = k;
+    while (mid < last) {
+        swap(nums[first], nums[mid]);
+        ++first;
+        ++mid;
     }
-    int v;
-    rotate(nums.begin(), nums.begin() + 2, nums.end());
+    if (first < k) {
+        mid = k;
+        while (mid < last) {
+            swap(nums[first], nums[mid]);
+            ++first;
+            ++mid;
+        }
+    }
+}
+
+int main() {
+    vector<int> nums = {1, 2, 4, 5};
+    myRotate(nums, 2);
     for (auto& x : nums) {
         cout << x << endl;
     }
