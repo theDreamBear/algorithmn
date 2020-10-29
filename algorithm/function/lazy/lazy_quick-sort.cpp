@@ -77,9 +77,6 @@ vector<int> randomInput(int sz, int val = 1000000) {
 }
 
 
-st
-
-
 int main() {
     vector<int> num = randomInput(30, 100);
     lazyQuickSorter lq(num, 10);
