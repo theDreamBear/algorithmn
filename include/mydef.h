@@ -4,6 +4,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <utility>
 #include <map>
 #include <set>
 #include <stack>
@@ -13,4 +14,6 @@
 #include <algorithm>
 
 #include <ranges.h>
+
+using namespace std;
 #endif // !__MY_DEF_H__

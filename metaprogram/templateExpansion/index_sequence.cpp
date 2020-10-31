@@ -10,6 +10,7 @@ struct  make_index_sequence_helper : make_index_sequence_helper<N - 1, N - 1, S.
 
 };
 
+// 递归终止
 template<size_t ...S>
 struct make_index_sequence_helper<0, S...> {
     typedef my_index_sequence<S...> type;
