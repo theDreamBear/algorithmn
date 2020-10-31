@@ -26,14 +26,14 @@ class Solution {
 
     void letterCombinationsHelper(vector<string>& temp, const string& digits) {
         int i = 0;
-        if (i < digits.size() && temp.empty()) {
-            string now = num_alpha[digits[i] - '0'];
-            for (auto& c : now) {
-                string s = string(1, c);
-                temp.push_back(s);
-            }
-            ++i;
-        }
+        // if (i < digits.size() && temp.empty()) {
+        //     string now = num_alpha[digits[i] - '0'];
+        //     for (auto& c : now) {
+        //         string s = string(1, c);
+        //         temp.push_back(s);
+        //     }
+        //     ++i;
+        // }
         while (i < digits.size()) {
             string now = num_alpha[digits[i] - '0'];
             int sz = temp.size();
@@ -60,7 +60,46 @@ class Solution {
         num_alpha[9] = "wxyz";
 
         vector<string> result;
+         if (digits.empty()) {
+            return result;
+        }
+        // 优化vector为空的情况
+        result.push_back("");
         letterCombinationsHelper(result, digits);
+        return result;
+    }
+
+    void letterCombinationsHelperDFS(vector<string>& temp, const string& digits,
+                                     int index, string current) {
+        if (index >= digits.size()) {
+            if (!current.empty()) {
+                temp.push_back(current);
+            }
+            return;
+        }
+        const string& s = num_alpha[digits[index] - '0'];
+        for (auto& c : s) {
+            current.push_back(c);
+            letterCombinationsHelperDFS(temp, digits, index + 1, current);
+            current.pop_back();
+        }
+        return;
+    }
+
+    vector<string> letterCombinations_DFS(string digits) {
+        num_alpha[2] = "abc";
+        num_alpha[3] = "def";
+        num_alpha[4] = "ghi";
+        num_alpha[5] = "jkl";
+        num_alpha[6] = "mno";
+        num_alpha[7] = "pqrs";
+        num_alpha[8] = "tuv";
+        num_alpha[9] = "wxyz";
+        vector<string> result;
+        if (digits.empty()) {
+            return result;
+        }
+        letterCombinationsHelperDFS(result, digits, 0, "");
         return result;
     }
 };
