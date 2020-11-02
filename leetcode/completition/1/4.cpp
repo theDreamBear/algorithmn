@@ -50,28 +50,25 @@ public:
                 auto nd = change.front(); change.pop();
                 int x = nd[0];
                 int y = nd[1];
-                
+
                 int v = matrix[x][y];
                 ans[x][y] = cur;
                 rowVec[x].pop();
                 colVec[y].pop();
-                
-                if ((!rowVec[x].empty() && get<0>(rowVec[x].top()) == v) || !colVec[y].empty() && get<0>(colVec[y].top()) == v) {
-                    for (int i = 0; i < matrix.size(); ++i) {
-                        auto [v1, x1, y1] = rowVec[i].top();
-                        if (v1 == v) {
-                            change.push({x1, y1});
-                        }
-                    } 
-                    for (int j = 0; j < matrix[0].size(); ++j) {
-                        auto [v1, x1, y1] = colVec[j].top();
-                        if (v1 == v) {
-                            change.push({x1, y1});
-                        }
-                    } 
+
+                while ((!rowVec[x].empty() && get<0>(rowVec[x].top()) == v)) {
+                    auto [nx, ny, nv] = rowVec[x].top();
+                    rowVec[x].pop();
+                    change.push({nx, ny});
+                }
+
+                 while ((!colVec[y].empty() && get<0>(colVec[y].top()) == v)) {
+                    auto [nx, ny, nv] = colVec[y].top();
+                    colVec[y].pop();
+                    change.push({nx, ny});
                 }
             }
-           
+
             ++cur;
         }
         return ans;
