@@ -74,9 +74,6 @@ int dijkstra_c(vector<vector<int>> costs, int start, int end) {
 }
 
 
-
-
-
 // 使用优先级队列优化
 int dijkstra(vector<vector<int>> costs, int start, int end) {
     int vCount = costs.size();
@@ -89,10 +86,10 @@ int dijkstra(vector<vector<int>> costs, int start, int end) {
         // 最小点
         auto [c, v] = minHeap.top();
         minHeap.pop();
-        if (visited[v]) {
+        // 不能更新
+        if (distance[v] < c) {
             continue;
         }
-        visited[v] = true;
         for (int i = 0; i < costs[v].size(); ++i) {
             if (costs[v][i] != INT_MAX && distance[i] > distance[v] + costs[v][i]) {
                 distance[i] = distance[v] + costs[v][i];
