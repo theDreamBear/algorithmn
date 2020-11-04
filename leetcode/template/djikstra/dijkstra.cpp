@@ -104,19 +104,19 @@ int dijkstra(vector<vector<int>> costs, int start, int end) {
 }
 
 
-void floyd(vector<vector<int>> costs) {
+void floyd_warshal(vector<vector<int>> costs) {
       for (auto& x : costs) {
         for (auto& y: x) {
             cout << y << " ";
         }
         cout << endl;
     }
-    vector<vector<int>> arcs(costs.size(), vector<int>(costs[0].size(), INT_MAX));
-    for (int k = 0; k < costs.size(); ++k) {
-        for (int i = 0; i < costs.size(); ++i) {
-            for (int j = 0; j < costs.size(); ++j) {
-                if (costs[i][k] != INT_MAX && costs[k][j] != INT_MAX && arcs[i][j] > costs[i][k] + costs[k][j]) {
-                    arcs[i][j] = costs[i][k] + costs[k][j];
+    vector<vector<int>> arcs = costs;
+    for (int k = 0; k < arcs.size(); ++k) {
+        for (int i = 0; i < arcs.size(); ++i) {
+            for (int j = 0; j < arcs.size(); ++j) {
+                if (arcs[i][k] != INT_MAX && arcs[k][j] != INT_MAX && arcs[i][j] > arcs[i][k] + arcs[k][j]) {
+                    arcs[i][j] = arcs[i][k] + arcs[k][j];
                 }
             }
         }
@@ -134,9 +134,9 @@ int main() {
     vector<vector<int>> costs = {
         {0, 3, 1, 2 , INT_MAX},
         {3, 0, 1, INT_MAX, INT_MAX},
-        {1, 1, 3, 10},
+        {1, 1, 0, 3,10},
         {2, INT_MAX, 3, 0, 2},
         {INT_MAX, INT_MAX, 10, 2 , 0},
     };
-    floyd(costs);
+    floyd_warshal(costs);
 }
