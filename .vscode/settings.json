@@ -16,6 +16,7 @@
         "queue": "cpp",
         "unordered_map": "cpp",
         "numeric": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "type_traits": "cpp"
     }
 }
