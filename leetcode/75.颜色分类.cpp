@@ -55,7 +55,10 @@ public:
     }
 
     /*
-        
+    p0 0第一个交换位置
+    p1 1 第一个交换位置
+    
+    【0， p0) 是0的区间
 
     */
     void sortColors(vector<int>& nums) {
@@ -65,22 +68,17 @@ public:
         int p0 = 0;
         int p1 = 0;
         int i = 0;
-        while (i < nums.size()) {
-            if (nums[i] == 0) {
-                swap(nums[p0], nums[i]);
-                ++p0;
-                ++i;
-            } else if(nums[i] == 1) {
-                if (p0 > p1) {
-                    swap(nums[p0], nums[i]);
-                    p1 = p0 + 1;
-                } else {
+        for (; i < nums.size(); ++i) {
+            if (nums[i] == 1) {
+                swap(nums[i], nums[p1]);
+                ++p1;
+            } else if (nums[i] == 0) {
+                swap(nums[i], nums[p0]);
+                if (p0 < p1) {
                     swap(nums[i], nums[p1]);
-                    ++p1;
-                    ++i;
                 }
-            } else {
-                ++i;
+                ++p0;
+                ++p1;
             }
         }
     }
