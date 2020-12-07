@@ -33,3 +33,15 @@ vector<int> prime_screening(int upperLimit) {
     }
     return res;
 }
+
+int main() {
+    int up;
+    while (true) {
+        cin >> up;
+        auto arr = prime_screening(up);
+        for (auto& x : arr) {
+            cout << x << " ";
+        }
+        cout << endl;
+    }
+}
