@@ -30,7 +30,9 @@ public:
     /*
         [0, p1)  0
         [p1, i)  1
+        [i, p2] 未定区域
         (p2, len - 1]  2
+
 
     */
     void sortColors1(vector<int>& nums) {
@@ -55,32 +57,68 @@ public:
     }
 
     /*
-    p0 0第一个交换位置
-    p1 1 第一个交换位置
-    
-    【0， p0) 是0的区间
 
     */
     void sortColors(vector<int>& nums) {
         if (nums.size() <= 1) {
             return;
         }
-        int p0 = 0;
-        int p1 = 0;
-        int i = 0;
-        for (; i < nums.size(); ++i) {
-            if (nums[i] == 1) {
-                swap(nums[i], nums[p1]);
-                ++p1;
-            } else if (nums[i] == 0) {
-                swap(nums[i], nums[p0]);
-                if (p0 < p1) {
-                    swap(nums[i], nums[p1]);
+        multi_partition(nums);
+    }
+
+    /*
+        [low, p) < temp
+        [p, i) >= temp;
+        [i, high) 未处理
+        故p 就是最左位置
+    */
+
+   int _partition(vector<int>& nums, int low, int high, int temp) {
+        int i = low, p = low;
+        for (; i <= high; ++i) {
+            // 处理0的部分 这部分和 partition一致
+            if (nums[i] < temp) {
+                if (i > p) {
+                    swap(nums[i], nums[p]);
                 }
-                ++p0;
-                ++p1;
+                ++p;
             }
         }
+        return p;
+   }
+
+    /*
+        循环不变式
+
+        [0, p) 0
+        [p, i)  1
+        [i, p1) 未处理区域
+        [p1, high) 2
+    */
+    void partition_once(vector<int>& nums) {
+        int temp = 1;
+        int i = 0, p = 0, p1 = nums.size() - 1;
+        for (; i <= p1;) {
+            // 处理0的部分 这部分和 partition一致
+            if (nums[i] < temp) {
+                if (i > p) {
+                    swap(nums[i], nums[p]);
+                }
+                ++p;
+                ++i;
+            } else if (nums[i] > temp) {
+                swap(nums[i], nums[p1]);
+                --p1;
+            } else {
+                ++i;
+            }
+        }
+    }
+
+    void multi_partition(vector<int>& nums) {
+       int p = 0, i = 0;
+       p = _partition(nums, 0, nums.size() - 1, 1);
+       _partition(nums, p, nums.size() - 1, 2);
     }
 };
 // @lc code=end

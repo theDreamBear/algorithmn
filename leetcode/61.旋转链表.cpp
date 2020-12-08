@@ -55,7 +55,7 @@ public:
     void rotate(vector<ListNode*>& vec_nodes, int k) {
         int sz = vec_nodes.size();
         k = sz - k;
-        
+
         auto r = [&vec_nodes](int left, int right) {
             for (int i = left, j = right; i < j; ++i, --j) {
                 swap(vec_nodes[i], vec_nodes[j]);
