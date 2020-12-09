@@ -128,7 +128,7 @@ class Solution {
     // [0, j) 区间的数是有效的
     // [j, i) 待覆盖区间
 
-    int removeDuplicates(vector<int>& nums) {
+    int removeDuplicates_4(vector<int>& nums) {
         int j = 0, count = 0;
         for (int i = 0; i < nums.size(); ++i) {
             if (count == 0) {
@@ -148,7 +148,7 @@ class Solution {
         return j;
     }
 
-    int removeDuplicates_4(std::vector<int>& nums) {
+    int removeDuplicates(std::vector<int>& nums) {
         if (nums.empty()) return 0;
         int L = 0;
         for (int R = 0; R < nums.size(); ++R) {
