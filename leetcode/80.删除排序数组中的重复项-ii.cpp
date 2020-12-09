@@ -33,7 +33,7 @@ public:
         }
     }
 
-    int removeDuplicates(vector<int>& nums) {
+    int removeDuplicates_1(vector<int>& nums) {
         int left = -1, right = -1;
         int ans = nums.size();
         for (int i = 0; i < ans;) {
@@ -45,10 +45,6 @@ public:
                 if (nums[left] == nums[i]) {
                     right = i;
                     ++i;
-                    if (i == ans) {
-                        int k = right - left - 1;
-                        ans -= k;
-                    }
                     continue;
                 }
                 if (right > left) {
@@ -57,7 +53,7 @@ public:
                     if (k > 0) {
                         leftRotate(nums,left, nums.size() - 1, k);
                     }
-                    left = i - k; 
+                    left = i - k;
                     right = -1;
                     i -= k;
                     ++i;
@@ -66,10 +62,67 @@ public:
                     right = -1;
                     ++i;
                 }
-                
+
+            }
+        }
+        if (right - left > 1) {
+            int k = right - left - 1;
+            ans -= k;
+        }
+        return ans;
+    }
+
+    int removeDuplicates_2(vector<int>& nums) {
+        int left = 0, right = left;
+        int ans = nums.size();
+        for (int i = 0; i < ans;) {
+            if (nums[i] == nums[left]) {
+                if (i > left) {
+                    ++right;
+                }
+                ++i;
+            } else {
+                if (right - left > 1) {
+                    int k = right - left - 1;
+                    if (k > 0) {
+                        leftRotate(nums, left, nums.size() - 1, k);
+                        ans -= k;
+                        i -= k;
+                    }
+                }
+                left = i;
+                right = left;
+            }
+        }
+        if (right - left > 1) {
+            int k = right - left - 1;
+            if (k > 0) {
+                leftRotate(nums, left, nums.size() - 1, k);
+                ans -= k;
             }
         }
         return ans;
+    }
+
+    // [0, j] 已处理区间
+    // (i, len) 待处理区间
+
+    int removeDuplicates(vector<int>& nums) {
+        if (nums.size() <= 1) {
+            return nums.size();
+        }
+        int j = 1, count = 1;
+        for (int i = 1; i < nums.size();++i) {
+            if (nums[i] == nums[i - 1]) {
+                ++count;
+            } else {
+                count = 1;
+            }
+            if (count <= 2) {
+                nums[j++] = nums[i];
+            }
+        }
+        return j;
     }
 };
 // @lc code=end
