@@ -55,7 +55,7 @@ class Solution {
         return 0;
     }
 
-    int findDuplicate(vector<int>& nums) {
+    int findDuplicate_binary_search(vector<int>& nums) {
         int n = nums.size();
         int l = 1, r = n - 1, ans = -1;
         while (l <= r) {
@@ -69,6 +69,41 @@ class Solution {
             } else {
                 r = mid - 1;
                 ans = mid;
+            }
+        }
+        return ans;
+    }
+
+    int findDuplicate_slow_fast(vector<int>& nums) {
+        int slow = 0, fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return fast;
+    }
+
+    /*
+     比特位比较
+    */
+    int findDuplicate(vector<int>& nums) {
+        int ans = 0;
+        for (int bit = 0; bit < 31; ++bit) {
+            int expected = 0;
+            int actual = 0;
+            for (auto x : nums) {
+                actual += ((x >> bit) & 0x1);
+            }
+            for (int i = 1; i < nums.size(); ++i) {
+                expected += ((i >> bit) & 0x1);
+            }
+            if (actual > expected) {
+                ans += ((1 << bit));
             }
         }
         return ans;
