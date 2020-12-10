@@ -64,7 +64,7 @@ public:
     }
 
     /*
-        
+
     */
     vector<int> nextLargerNodes(ListNode* head) {
         vector<int> ans;
@@ -82,7 +82,24 @@ public:
         ans = vector<int>(source.size(), 0);
         stack<int> decrease;
         for (int i = 0 ; i < source.size(); ++i) {
-            
+            // 注意是不严格递减栈
+            if (decrease.empty() || source[decrease.top()] >= source[i]) {
+                decrease.push(i);
+            } else {
+                while (!decrease.empty() && source[decrease.top()] < source[i]) {
+                    int pos = decrease.top();
+                    decrease.pop();
+                    ans[pos] = source[i];
+                }
+                if (decrease.empty() || source[decrease.top()] >= source[i]) {
+                    decrease.push(i);
+                }
+            }
+        }
+        while (!decrease.empty()) {
+            int pos = decrease.top();
+            decrease.pop();
+            ans[pos] = 0;
         }
         return ans;
     }
