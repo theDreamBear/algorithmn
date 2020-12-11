@@ -22,7 +22,7 @@ using namespace std;
 class Solution {
  public:
     /*
-     *   
+     *
      * */
     int bSearch(vector<int> &arr, const vector<int> &nums, int index) {
         int low = 0, high = arr.size() - 1;
@@ -40,15 +40,15 @@ class Solution {
         } else if (nums[arr[low]] < nums[index]) {
              ans = low;
         }
-        if (ans + 1 < arr.size()) {
-            arr[ans + 1] = index;
-        }  else {
-            arr.push_back(index);
-        }
-        if (ans != -1) {
-            return arr[ans];
-        }
-        return -1;
+        // if (ans + 1 < arr.size()) {
+        //     arr[ans + 1] = index;
+        // }  else {
+        //     arr.push_back(index);
+        // }
+        // if (ans != -1) {
+        //     return arr[ans];
+        // }
+        return ans;
     }
 
     /*
@@ -69,9 +69,9 @@ class Solution {
             return nums.size();
         }
         vector<int> dp(nums.size(), 1);
-        vector<int> slowest;
+        vector<int> longestAnswer;
         int ans = 1;
-        slowest.push_back(0);
+        longestAnswer.push_back(0);
         for (int i = 1; i < nums.size(); ++i) {
 #ifdef VIOLATE
             for (int j = i - 1; j >= 0; --j) {
@@ -83,15 +83,27 @@ class Solution {
                 }
             }
 #else
-            int v = bSearch(slowest, nums, i);
+            int v = bSearch(longestAnswer, nums, i);
             if (v != -1) {
-                dp[i] = dp[v] + 1;
+                dp[i] = dp[longestAnswer[v]] + 1;
                 if (dp[i] > ans) {
                     ans = dp[i];
                 }
+                // update
+                if (v == longestAnswer.size() - 1) {
+                    longestAnswer.push_back(i);
+                } else {
+                    longestAnswer[v + 1] = i;
+                }
+                continue;
             }
+            longestAnswer[v + 1] = i;
 #endif
         }
+        for (auto& x : longestAnswer) {
+            cout << nums[x] << " ";
+        }
+        cout << endl;
         return ans;
     }
 };
