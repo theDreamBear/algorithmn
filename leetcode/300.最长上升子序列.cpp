@@ -21,7 +21,10 @@ using namespace std;
 // @lc code=start
 class Solution {
  public:
-    int bsearch(const vector<int>& arr, const vector<int>& nums, int index) {
+    /*
+     *   
+     * */
+    int bSearch(vector<int> &arr, const vector<int> &nums, int index) {
         int low = 0, high = arr.size() - 1;
         while (low + 1 < high) {
             int mid = (low + high) / 2;
@@ -31,11 +34,19 @@ class Solution {
                 low = mid;
             }
         }
+        int ans = -1;
         if (nums[arr[high]] < nums[index]) {
-            return arr[high];
+            ans = high;
+        } else if (nums[arr[low]] < nums[index]) {
+             ans = low;
         }
-        if (nums[arr[low]] < nums[index]) {
-            return arr[low];
+        if (ans + 1 < arr.size()) {
+            arr[ans + 1] = index;
+        }  else {
+            arr.push_back(index);
+        }
+        if (ans != -1) {
+            return arr[ans];
         }
         return -1;
     }
@@ -52,8 +63,8 @@ class Solution {
         性能瓶颈在以第二层循环的遍历太慢,
 
     */
-    #define VIOLATE
-    int lengthOfLIS(vector<int>& nums) {
+    //#define VIOLATE
+    int lengthOfLIS(vector<int> &nums) {
         if (nums.size() <= 1) {
             return nums.size();
         }
@@ -72,9 +83,14 @@ class Solution {
                 }
             }
 #else
-
+            int v = bSearch(slowest, nums, i);
+            if (v != -1) {
+                dp[i] = dp[v] + 1;
+                if (dp[i] > ans) {
+                    ans = dp[i];
+                }
+            }
 #endif
-
         }
         return ans;
     }
@@ -82,6 +98,6 @@ class Solution {
 // @lc code=end
 
 int main() {
-    vector<int> arr = {10,9,2,5,3,7,101,18};
+    vector<int> arr = {10, 9, 2, 5, 3, 7, 101, 18};
     cout << Solution{}.lengthOfLIS(arr);
 }
