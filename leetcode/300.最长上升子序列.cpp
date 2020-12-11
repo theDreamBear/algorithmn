@@ -40,14 +40,6 @@ class Solution {
         } else if (nums[arr[low]] < nums[index]) {
              ans = low;
         }
-        // if (ans + 1 < arr.size()) {
-        //     arr[ans + 1] = index;
-        // }  else {
-        //     arr.push_back(index);
-        // }
-        // if (ans != -1) {
-        //     return arr[ans];
-        // }
         return ans;
     }
 
