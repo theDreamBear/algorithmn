@@ -3,18 +3,19 @@
  *
  * [300] 最长上升子序列
  */
-#include <iostream>
-#include <utility>
-#include <string>
 #include <string.h>
-#include <vector>
+
+#include <algorithm>
+#include <iostream>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
-#include <queue>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
@@ -38,16 +39,15 @@ class Solution {
         if (nums[arr[high]] < nums[index]) {
             ans = high;
         } else if (nums[arr[low]] < nums[index]) {
-             ans = low;
+            ans = low;
         }
         return ans;
     }
 
     /*
         定义: dp[i]是以nums[i] 结尾的最大长度
-        转态方程: if nums[i] > nums[j] dp[i] = max(dp[i], dp[j - 1] + 1), j 的范围 [i - 1, 0, -1]
-        初始化 dp[i] = 1;
-        结果: max(dp[i]);
+        转态方程: if nums[i] > nums[j] dp[i] = max(dp[i], dp[j - 1] + 1), j
+       的范围 [i - 1, 0, -1] 初始化 dp[i] = 1; 结果: max(dp[i]);
 
         复杂度分析:
             时间复杂度 O(n^2)
@@ -92,7 +92,7 @@ class Solution {
             longestAnswer[v + 1] = i;
 #endif
         }
-        for (auto& x : longestAnswer) {
+        for (auto &x : longestAnswer) {
             cout << nums[x] << " ";
         }
         cout << endl;
