@@ -3,24 +3,25 @@
  *
  * [424] 替换后的最长重复字符
  */
-#include <iostream>
-#include <utility>
-#include <string>
 #include <string.h>
-#include <vector>
+
+#include <algorithm>
+#include <iostream>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
-#include <queue>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
 // @lc code=start
 class Solution {
-public:
+ public:
     /*
         1. 看数据量, 可以推测, 时间复杂度必须在 nlgn 或者 n 才行, 可能 n^2也行
 
@@ -105,11 +106,43 @@ public:
         return maxLen;
     }
 
+    // [i, j) 区间为选择区间
+    int characterReplacement_slidingWindows(string s, int k, char c) {
+        int maxLen = 1;
+        int left = k;
+        int i = 0, j = 0;
+        while (i <= j && j < s.size() && left > 0) {
+            if (s[j] != c) {
+                --left;
+            }
+            ++j;
+            if (left == 0) {
+                int len = j - i;
+                if (maxLen < len) {
+                    maxLen = len;
+                }
+                while (left == 0 && s[i] == c) {
+                    ++i;
+                }
+                ++left;
+            }
+        }
+        return maxLen;
+    }
+
     int characterReplacement(string s, int k) {
         if (s.size() <= 1) {
             return s.size();
         }
-        
+        int maxLen = 0;
+        for (int i = 0; i < 26; ++i) {
+            char c = 'A' + i;
+            int len = characterReplacement_slidingWindows(s, k, c);
+            if (len > maxLen) {
+                maxLen = len;
+            }
+        }
+        return maxLen;
     }
 };
 // @lc code=end
