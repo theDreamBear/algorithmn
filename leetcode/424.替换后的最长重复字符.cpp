@@ -112,7 +112,38 @@ class Solution {
         int maxLen = 0;
         int left = k;
         int i = 0, j = 0;
-
+        while (j < s.size()) {
+            // 不等于
+            if (left > 0) {
+                if (s[j] != c) {
+                    --left;
+                }
+                ++j;
+            }
+            while (j < s.size() && s[j] == c) {
+                ++j;
+            }
+            if (left == 0) {
+                int len = j - i;
+                if (len > maxLen) {
+                    maxLen = len;
+                }
+                if (i < j) {
+                    if (s[i] != c) {
+                        ++left;
+                    }
+                    ++i;
+                } else {
+                    ++i;
+                    ++j;
+                }
+            }
+        }
+        // 尾处理
+        int len = j - i;
+        if (len > maxLen) {
+            maxLen = len;
+        }
         return maxLen;
     }
 
@@ -135,6 +166,6 @@ class Solution {
 
 int main() {
     string s = "AAAA";
-    int k = 0;
+    int k = 2;
     cout << Solution{}.characterReplacement(s, k);
 }
