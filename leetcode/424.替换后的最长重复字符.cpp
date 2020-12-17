@@ -128,14 +128,15 @@ class Solution {
                 if (len > maxLen) {
                     maxLen = len;
                 }
-                if (i < j) {
-                    if (s[i] != c) {
-                        ++left;
+                if (k > 0) {
+                    while (i < j && s[i] == c) {
+                        ++i;
                     }
                     ++i;
+                    ++left;
                 } else {
-                    ++i;
                     ++j;
+                    i = j;
                 }
             }
         }
