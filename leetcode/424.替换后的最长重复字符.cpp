@@ -107,26 +107,12 @@ class Solution {
     }
 
     // [i, j) 区间为选择区间
+    // [j, end) 未定区间
     int characterReplacement_slidingWindows(string s, int k, char c) {
-        int maxLen = 1;
+        int maxLen = 0;
         int left = k;
         int i = 0, j = 0;
-        while (i <= j && j < s.size() && left > 0) {
-            if (s[j] != c) {
-                --left;
-            }
-            ++j;
-            if (left == 0) {
-                int len = j - i;
-                if (maxLen < len) {
-                    maxLen = len;
-                }
-                while (left == 0 && s[i] == c) {
-                    ++i;
-                }
-                ++left;
-            }
-        }
+
         return maxLen;
     }
 
@@ -148,7 +134,7 @@ class Solution {
 // @lc code=end
 
 int main() {
-    string s = "ABABBBA";
-    int k = 1;
+    string s = "AAAA";
+    int k = 0;
     cout << Solution{}.characterReplacement(s, k);
 }
