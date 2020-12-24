@@ -157,9 +157,9 @@ class hashHeap {
     }
 
     void print() {
-        while (size() > 0) {
-            cout << getValue(top()) << " ";
-            pop();
+        for (int i = 0; i < _data.size(); ++i) {
+            cout << getValue(top());
+            deletePos(i);
         }
         cout << endl;
     }
