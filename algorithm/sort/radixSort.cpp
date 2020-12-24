@@ -97,8 +97,77 @@ class radixSorter {
     }
 };
 
+
 int main() {
     function<void(int)>
     vector<int> res = randomInput(100);
     radixSorter(10).sort(res);
 }
+
+
+/*
+ 比如int32 是32进制的, 我们可以提供 32个桶
+ 也可以提供32约数个桶
+ * */
+class radixSorter2 {
+ private:
+    int _bucket_num;
+    int _base_val;
+    int _max_bit_width;
+
+    /*
+     *  times 从 0 开始
+     * */
+    int _get_bucket_index(int val, int times) {
+        int offset = _bucket_num * times;
+        return (val >> offset) & _base_val;
+    }
+
+    void _sort_help(vector<int>& nums, int times) {
+        vector<vector<int>> temp_buckets(_base_val + 1, vector<int>{});
+        for (auto val : nums) {
+            int index = _get_bucket_index(val, times);
+            temp_buckets[index].push_back(val);
+        }
+        for (auto& vec : temp_buckets) {
+            if (vec.size() > 0) {
+                ::sort(vec.begin(), vec.end());
+            }
+        }
+        int i = 0;
+        for (auto& vec : temp_buckets) {
+            if (vec.size() > 0) {
+                for (auto x : vec) {
+                    nums[i++] = x;
+                }
+            }
+        }
+    }
+    int _get_max_bit_width(int val) {
+        for (int i = 31; i >= 0; --i) {
+            if ((val >> i) &0x1 == 1) {
+                return i + 1;
+            }
+        }
+        return 32;
+    }
+
+    void _sort(vector<int>& nums) {
+        int times = _max_bit_width / _bucket_num;
+        if (_max_bit_width % _bucket_num != 0) {
+            ++times;
+        }
+        for (int i = 0; i < times; ++i) {
+            _sort_help(nums, i);
+        }
+    }
+ public:
+    explicit radixSorter2(int bucketNum, int max_value): _bucket_num(bucketNum) {
+        _base_val = (1 << bucketNum) - 1;
+        _max_bit_width = _get_max_bit_width(max_value);
+    }
+
+    void sort(vector<int>& nums) {
+        _sort(nums);
+    }
+};
