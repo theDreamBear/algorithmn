@@ -17,6 +17,7 @@
         "unordered_map": "cpp",
         "numeric": "cpp",
         "map": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "ios": "cpp"
     }
 }
