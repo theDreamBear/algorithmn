@@ -23,24 +23,21 @@ class Solution {
 public:
 
     int thirdMax(vector<int>& nums) {
-        int s = INT_MIN;
-        int m = s, b = s;
-        bool ok = false;
+        long long s = INT64_MIN;
+        long long m = s, b = s;
         for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == INT_MIN) {
-                ok = true;
+            long long temp = nums[i];
+            if (temp > b) {
+                swap(b, temp);
             }
-            if (nums[i] > b) {
-                swap(b, nums[i]);
+            if (temp != b && temp > m) {
+                swap(m, temp);
             }
-            if (nums[i] != b && nums[i] > m) {
-                swap(m, nums[i]);
-            }
-            if (nums[i] != b && nums[i] != m && nums[i] > s) {
-                swap(nums[i], s);
+            if (temp != b && temp != m && temp > s) {
+                swap(temp, s);
             }
         }
-        if (s == INT_MIN) {
+        if (s == INT64_MIN) {
             return b;
         }
         return s;
