@@ -26,20 +26,9 @@ public:
             return 0;
         }
         int k = 0;
-        int i = 1;
-        int mm = nums[0];
-        long long sum = nums[0];
-        while (i < nums.size() && nums[i] == nums[i - 1]) {
-            sum += nums[i];
-            if (nums[i] < mm) {
-                mm = nums[i];
-            }
-            ++i;
-        }
-        if (i == nums.size()) {
-            return k;
-        }
-        for (; i < nums.size(); ++i) {
+        long long sum = 0;
+        int mm = INT_MAX;
+        for (int i = 0; i < nums.size(); ++i) {
             sum += nums[i];
             if (nums[i] < mm) {
                 mm = nums[i];
