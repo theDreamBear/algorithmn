@@ -25,7 +25,7 @@ public:
         if (n <= 1) {
             return n;
         }
-        long long low = 1, high = sqrt(INT64_MAX);
+        long long low = 1, high = n;
         while (low  + 1 < high) {
             long long mid = (low + high) / 2;
             if ((mid * mid + mid) / 2 < n) {
