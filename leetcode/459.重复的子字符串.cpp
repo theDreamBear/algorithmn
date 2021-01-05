@@ -62,9 +62,12 @@ public:
     */
     vector<int> getAll(int n) {
         vector<int> ans;
-        for (int i = 1; i <= n / 2; ++i) {
+        for (int i = 1; i * i <= n; ++i) {
             if (n % i == 0) {
                 ans.push_back(i);
+                if (i != n / i &&  i != 1) {
+                    ans.push_back(n / i);
+                }
             }
         }
         return ans;
@@ -74,6 +77,9 @@ public:
     取公约数, 枚举公约数长度
     */
     bool repeatedSubstringPattern(string s) {
+        if (s.size() == 1) {
+            return false;
+        }
         vector<int> divisors = getAll(s.size());
         for (auto x : divisors) {
             if (rotate(s, x) == s) {
@@ -86,7 +92,7 @@ public:
 // @lc code=end
 
 int main() {
-    string s = "babbabbabbabbab";
+    string s = "aba";
     cout << Solution{}.repeatedSubstringPattern(s) << endl;
 }
 
