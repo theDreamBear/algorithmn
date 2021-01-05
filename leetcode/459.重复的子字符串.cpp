@@ -29,14 +29,54 @@ public:
         s[0] = temp;
     }
 
+    string rotate(string& s, int step) {
+        string temp = s;
+        for (int i = 0, j = step - 1; i < j; ++i, --j) {
+            swap(temp[i], temp[j]);
+        }
+        for (int i = step, j = s.size() - 1; i < j; ++i, --j) {
+            swap(temp[i], temp[j]);
+        }
+        for (int i = 0, j = s.size() - 1; i < j; ++i, --j) {
+            swap(temp[i], temp[j]);
+        }
+        return temp;
+    }
+
     /*
         超时
     */
-    bool repeatedSubstringPattern(string s) {
+    bool repeatedSubstringPattern_timeout(string s) {
         string source = s;
         for (int i = 1; i < s.size(); ++i) {
             rotate(s);
             if (s == source) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+        取所有的公约数
+    */
+    vector<int> getAll(int n) {
+        vector<int> ans;
+        for (int i = 1; i <= n / 2; ++i) {
+            if (n % i == 0) {
+                ans.push_back(i);
+            }
+        }
+        return ans;
+    }
+
+    /*
+    取公约数, 枚举公约数长度
+    */
+    bool repeatedSubstringPattern(string s) {
+        vector<int> divisors = getAll(s.size());
+        for (auto x : divisors) {
+            if (rotate(s, x) == s) {
                 return true;
             }
         }
