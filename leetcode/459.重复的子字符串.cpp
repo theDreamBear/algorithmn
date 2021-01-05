@@ -60,7 +60,7 @@ public:
     /*
         取所有的公约数
     */
-    vector<int> getAll(int n) {
+    vector<int> getDivisors(int n) {
         vector<int> ans;
         for (int i = 1; i * i <= n; ++i) {
             if (n % i == 0) {
@@ -76,17 +76,30 @@ public:
     /*
     取公约数, 枚举公约数长度
     */
-    bool repeatedSubstringPattern(string s) {
+    bool repeatedSubstringPattern_enum(string s) {
         if (s.size() == 1) {
             return false;
         }
-        vector<int> divisors = getAll(s.size());
+        vector<int> divisors = getDivisors(s.size());
         for (auto x : divisors) {
             if (rotate(s, x) == s) {
                 return true;
             }
         }
         return false;
+    }
+
+    /*
+        双字符串
+    */
+
+    bool repeatedSubstringPattern(string s) {
+        if (s.size() == 1) {
+            return false;
+        }
+        string temp = s;
+        s = temp + temp;
+        return s.find(temp, 1) != temp.size();
     }
 };
 // @lc code=end
