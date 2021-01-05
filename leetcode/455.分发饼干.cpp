@@ -29,11 +29,9 @@ public:
         while (i < g.size() && j < s.size()) {
             if (s[j] >= g[i]) {
                 ++i;
-                ++j;
                 ++ans;
-            } else {
-                ++j;
             }
+            ++j;
         }
         return ans;
     }
