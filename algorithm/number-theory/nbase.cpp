@@ -49,7 +49,9 @@ class NBase {
     }
 };
 
+string NBase::str="";
+
 int main() {
-    int num = 123456789;
+    long long num = 1234533789123456789;
     cout << NBase::toNBase(num) << endl;
 }
