@@ -58,12 +58,15 @@ class Solution {
     constexpr static int dy[4] = {1, 0, -1, 0};
 
     int dfs(vector<vector<int>>& grid, int i, int j) {
+        // 一般情况
         if (i < 0 || i >= grid.size() || j < 0 || j >= grid[i].size() || grid[i][j] == 0) {
             return 1;
         }
+        // 已访问过
         if (grid[i][j] == 2) {
             return 0;
         }
+        // 标记
         grid[i][j] = 2;
         int res = 0;
         for (int k = 0; k < 4; ++k) {
