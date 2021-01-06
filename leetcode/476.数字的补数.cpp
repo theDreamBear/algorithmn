@@ -44,7 +44,7 @@ public:
         while (temp & (temp -1)) {
             temp &= (temp - 1);
         }
-        return (temp << 1) - num - 1;
+        return ((temp << 1) - 1) ^ num;
     }
 };
 // @lc code=end
