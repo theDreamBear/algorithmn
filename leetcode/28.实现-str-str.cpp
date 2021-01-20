@@ -190,9 +190,10 @@ class Solution {
                 if (j == nSize) {
                     return i;
                 }
-            }  else {
-                // i + nSize 下标越界判断, 这步可以不用,但是这是利用了字符串最后有一个'\0'的原因
-                if (i + nSize== hSize) {
+            } else {
+                // i + nSize 下标越界判断,
+                // 这步可以不用,但是这是利用了字符串最后有一个'\0'的原因
+                if (i + nSize == hSize) {
                     break;
                 }
                 int n = sun.next(i + nSize);
@@ -204,61 +205,80 @@ class Solution {
     }
 
     void makeNext(const char* target, int* next) {
-    int tn = strlen(target);
-    next[0] = -1;
-    fill(next + 1, next + tn, 0);
-    for (int i = 0; i < tn; ++i) {
-        for (int j = i - 1; j >= 0; --j) {
-            string left = (string(target, j +1));
-            string right = string(target + i - j, j + 1);
-            if (left == right) {
-                next[i + 1] = j + 1;
-                break;
+        int tn = strlen(target);
+        next[0] = -1;
+        fill(next + 1, next + tn, 0);
+        for (int i = 0; i < tn; ++i) {
+            for (int j = i - 1; j >= 0; --j) {
+                string left = (string(target, j + 1));
+                string right = string(target + i - j, j + 1);
+                if (left == right) {
+                    next[i + 1] = j + 1;
+                    break;
+                }
             }
         }
+        for (int i = 0; i < tn; ++i) {
+            cout << next[i] << " " << endl;
+        }
+        return;
     }
-    for (int i = 0; i < tn; ++i) {
-        cout << next[i] << " " << endl;
-    }
-    return;
-}
 
-/*
- *  找目标字符串在 source中匹配的位置
- *
- * */
-int strStrKMP(const char* source, const char* target, int* next) {
-    int i = 0, j = 0;
-    int sn = strlen(source);
-    int tn = strlen(target);
-    for (; i <= sn;) {
-        if (source[i] == target[j]) {
-            ++i;
-            ++j;
-            if (j == tn) {
-                return i - tn;
+    void makeNext2(const char* target, int* next) {
+        int tn = strlen(target);
+        next[0] = -1;
+        fill(next + 1, next + tn, 0);
+        int k = 0;
+        for (int i = 1; i < tn; ++i) {
+            while (k > 0 && target[k] != target[i]) {
+                k = next[k];
             }
-        } else {
-            i -= next[j];
-            j = 0;
-        };
+            if (target[k] == target[i]) {
+                ++k;
+            }
+            next[i] = k;
+        }
+        for (int i = 0; i < tn; ++i) {
+            cout << next[i] << " " << endl;
+        }
+        return;
     }
-    return -1;
-}
 
-// 暴力 kmp
-int strStr_4(string haystack, string needle) {
-     if (needle.size() > haystack.size()) {
+    /*
+     *  找目标字符串在 source中匹配的位置
+     *
+     * */
+    int strStrKMP(const char* source, const char* target, int* next) {
+        int i = 0, j = 0;
+        int sn = strlen(source);
+        int tn = strlen(target);
+        for (; i <= sn;) {
+            if (source[i] == target[j]) {
+                ++i;
+                ++j;
+                if (j == tn) {
+                    return i - tn;
+                }
+            } else {
+                i -= next[j];
+                j = 0;
+            };
+        }
+        return -1;
+    }
+
+    // 暴力 kmp
+    int strStr_4(string haystack, string needle) {
+        if (needle.size() > haystack.size()) {
             return -1;
         }
         if (needle.size() == 0) {
             return 0;
         }
-    int nNext[needle.size() + 1];
-    makeNext(needle.c_str(), nNext);
-    return strStrKMP(haystack.c_str(), needle.c_str(), nNext);
-}
-
+        int nNext[needle.size() + 1];
+        makeNext(needle.c_str(), nNext);
+        return strStrKMP(haystack.c_str(), needle.c_str(), nNext);
+    }
 };
 // @lc code=end
 
