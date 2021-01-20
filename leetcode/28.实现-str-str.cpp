@@ -43,6 +43,23 @@
 #include <iostream>
 #include <string>
 using namespace std;
+
+#include <string.h>
+
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
+using namespace std;
+
 // @lc code=start
 class Solution {
  public:
@@ -165,7 +182,7 @@ class Solution {
         int next(int i) { return mp[hayStack[i]]; }
     };
 
-    int strStr(string haystack, string needle) {
+    int strStr4(string haystack, string needle) {
         if (needle.size() > haystack.size()) {
             return -1;
         }
@@ -224,60 +241,54 @@ class Solution {
         return;
     }
 
-    void makeNext2(const char* target, int* next) {
-        int tn = strlen(target);
-        next[0] = -1;
-        fill(next + 1, next + tn, 0);
+    void makeNext2(const string& target, vector<int>& next) {
+        next = vector<int>(target.size(), 0);
         int k = 0;
-        for (int i = 1; i < tn; ++i) {
+        for (int i = 1; i < target.size(); ++i) {
             while (k > 0 && target[k] != target[i]) {
-                k = next[k];
+                k = next[k - 1];
             }
             if (target[k] == target[i]) {
                 ++k;
             }
             next[i] = k;
         }
-        for (int i = 0; i < tn; ++i) {
-            cout << next[i] << " " << endl;
-        }
-        return;
     }
 
     /*
      *  找目标字符串在 source中匹配的位置
      *
      * */
-    int strStrKMP(const char* source, const char* target, int* next) {
-        int i = 0, j = 0;
-        int sn = strlen(source);
-        int tn = strlen(target);
-        for (; i <= sn;) {
+    int strStrK(const string& source, const string& target, vector<int> next) {
+        int j = 0;
+        for (int i = 0; i < source.size();) {
+            while (j > 0 && source[i] != target[j]) {
+                j = next[j - 1];
+            }
             if (source[i] == target[j]) {
-                ++i;
                 ++j;
-                if (j == tn) {
-                    return i - tn;
+                ++i;
+                if (j == target.size()) {
+                    return i - target.size();
                 }
             } else {
-                i -= next[j];
-                j = 0;
-            };
+                ++i;
+            }
         }
         return -1;
     }
 
     // 暴力 kmp
-    int strStr_4(string haystack, string needle) {
+    int strStr(string haystack, string needle) {
         if (needle.size() > haystack.size()) {
             return -1;
         }
         if (needle.size() == 0) {
             return 0;
         }
-        int nNext[needle.size() + 1];
-        makeNext(needle.c_str(), nNext);
-        return strStrKMP(haystack.c_str(), needle.c_str(), nNext);
+        vector<int> nNext;
+        makeNext2(needle, nNext);
+        return strStrK(haystack, needle, nNext);
     }
 };
 // @lc code=end
