@@ -63,10 +63,15 @@ public:
         if (s == NULL || t == NULL) {
             return false;
         }
-        if(isSubTreeHelper(s, t) || isSubTreeHelper(s->left, t) || isSubTreeHelper(s->right, t)) {
+        // 先序遍历
+        if(isSubTreeHelper(s, t)) {
             return true;
         }
-        return 
+        bool left = isSubtree(s->left, t);
+        if (left) {
+            return true;
+        }
+        return isSubtree(s->right, t);
     }
 };
 // @lc code=end
