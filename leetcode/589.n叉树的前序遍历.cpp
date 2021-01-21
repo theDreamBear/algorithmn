@@ -66,15 +66,58 @@ class Solution {
         }
     }
 
+    struct VisitNode {
+        Node* node;
+        int visitIndex;
+
+        VisitNode(Node* n) {
+            node = n;
+            visitIndex = 0;
+        }
+
+        VisitNode() {
+            node = NULL;
+        }
+
+        VisitNode nextChild() {
+            if (node == NULL) {
+                return VisitNode();
+            }
+            if (visitIndex < node->children.size()) {
+                Node* n = node->children[visitIndex];
+                ++visitIndex;
+                return VisitNode(n);
+            }
+            return VisitNode();
+        }
+    };
+
     void preorderTraversalHelper_loop(Node* root, vector<int>& result) {
         if (root == NULL) {
             return;
+        }
+        stack<VisitNode> st;
+        VisitNode cur(root);
+        while (cur.node || !st.empty()) {
+            // 一遍到底
+            while (cur.node) {
+                result.push_back(cur.node->val);
+                VisitNode cu = cur.nextChild();
+                st.push(cur);
+                cur = cu;
+            }
+            cur = st.top();
+            VisitNode cu = cur.nextChild();
+            cur = cu;
+            if (cur.node == NULL) {
+                st.pop();
+            }
         }
     }
 
     vector<int> preorder(Node* root) {
         vector<int> result;
-        preorderTraversalHelper_recursion(root, result);
+        preorderTraversalHelper_loop(root, result);
         return result;
     }
 };
