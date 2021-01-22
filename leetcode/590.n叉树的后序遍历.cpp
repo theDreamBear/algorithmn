@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=589 lang=cpp
+ * @lc app=leetcode.cn id=590 lang=cpp
  *
- * [589] N叉树的前序遍历
+ * [590] N叉树的后序遍历
  */
 #include <string.h>
 
@@ -33,6 +33,7 @@ class Node {
         children = _children;
     }
 };
+
 // @lc code=start
 /*
 // Definition for a Node.
@@ -56,15 +57,36 @@ public:
 
 class Solution {
  public:
-    void preorderTraversalHelper_recursion(Node* root, vector<int>& result) {
-        if (root == NULL) {
+    void postTraversal(Node* node, vector<int>& result) {
+        if (node == NULL) {
             return;
         }
-        result.push_back(root->val);
-        for (auto& child : root->children) {
-            preorderTraversalHelper_recursion(child, result);
+        for (auto& child : node->children) {
+            postTraversal(child, result);
         }
+        result.push_back(node->val);
     }
+
+    /*
+        中 右 左 访问顺序, 逆序就变成了 后续遍历
+    */
+    void postTraversal_loop(Node* node, vector<int>& result) {
+        if (node == NULL) {
+            return;
+        }
+        stack<Node*> st;
+        st.push(node);
+        while (!st.empty()) {
+            Node* cur = st.top();
+            result.push_back(cur->val);
+            st.pop();
+            for (auto& child : cur->children) {
+                st.push(child);
+            }
+        }
+        reverse(result.begin(), result.end());
+    }
+
 
     struct VisitNode {
         Node* node;
@@ -90,30 +112,28 @@ class Solution {
         }
     };
 
-    void preorderTraversalHelper_loop(Node* root, vector<int>& result) {
-        if (root == NULL) {
+    void postTraversal_loop2(Node* node, vector<int>& result) {
+        if (node == NULL) {
             return;
         }
         stack<VisitNode> st;
-        VisitNode cur(root);
+        VisitNode cur(node);
         while (cur.node || !st.empty()) {
-            // 一遍到底
             while (cur.node) {
-                result.push_back(cur.node->val);
-                VisitNode cu = cur.nextChild();
                 st.push(cur);
-                cur = cu;
+                cur = cur.nextChild();
             }
             cur = st.top().nextChild();
             if (cur.node == NULL) {
+                result.push_back(st.top().node->val);
                 st.pop();
             }
         }
     }
 
-    vector<int> preorder(Node* root) {
+    vector<int> postorder(Node* root) {
         vector<int> result;
-        preorderTraversalHelper_loop(root, result);
+        postTraversal_loop(root, result);
         return result;
     }
 };
