@@ -26,6 +26,7 @@ public:
         前缀和
     */
     double findMaxAverage(vector<int>& nums, int k) {
+        // 多一个元素, 简化逻辑
         vector<int> sums(nums.size() + 1, 0);
         for (int i = 0; i < nums.size(); ++i) {
             sums[i + 1] = (sums[i] + nums[i]);
