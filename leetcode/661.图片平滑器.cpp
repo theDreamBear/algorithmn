@@ -72,13 +72,36 @@ class Solution {
         }
     }
 
+    /*
+        使用前缀和加速
+    */
     vector<vector<int>> imageSmoother(vector<vector<int>>& M) {
         vector<vector<int>> ans = M;
         vector<vector<int>> sum(M.size(), vector<int>(M[0].size()));
         preprocessing(M, sum);
         int rows = M.size();
         int cols = M[0].size();
-        // 下标越界问题
+        // 边界用老方法处理
+        for (int i = 0; i < rows; ++i) {
+            ans[i][0] = smoothAvg(M, i, 0);
+            if (cols - 1 >= 0) {
+                ans[i][cols - 1] = smoothAvg(M, i, cols - 1);
+            }
+        }
+        for (int i = 0; i < cols; ++i) {
+            ans[0][i] = smoothAvg(M, 0, i);
+            if (rows - 1 >= 0) {
+                ans[rows - 1][i] = smoothAvg(M, rows - 1, i);
+            }
+        }
+        for (int i = 1; i < rows - 1; ++i) {
+            for (int j = 1; j < cols - 1; ++j) {
+                int left = (j - 2 >= 0) ? sum[i + 1][j - 2]: 0;
+                int up = (i - 2 >= 0) ? sum[i - 2][j + 1] : 0;
+                int lu = (i - 2 >= 0 && j - 2 >= 0) ? sum[i - 2][j - 2]: 0;
+                ans[i][j] = (sum[i + 1][j + 1] - left - up + lu) / 9;
+            }
+        }
         return ans;
     }
 };
