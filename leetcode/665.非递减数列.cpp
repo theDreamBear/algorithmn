@@ -3,31 +3,40 @@
  *
  * [665] 非递减数列
  */
-#include <iostream>
-#include <utility>
-#include <string>
 #include <string.h>
-#include <vector>
+
+#include <algorithm>
+#include <iostream>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
-#include <queue>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
 // @lc code=start
 class Solution {
-public:
+ public:
     bool checkPossibility(vector<int>& nums) {
         int bt = 0;
-        for (int i = 1; i< nums.size() - 1; ++i) {
+        for (int i = 0; i < nums.size() - 1; ++i) {
             // 递减
             if (nums[i] > nums[i + 1]) {
                 ++bt;
-                
+                if (i == 0) {
+                    nums[i] = nums[i + 1];
+                } else {
+                    if (nums[i + 1] >= nums[i - 1]) {
+                        nums[i] = nums[i + 1];
+                    } else {
+                        nums[i + 1] = nums[i];
+                    }
+                }
                 if (bt > 1) {
                     return false;
                 }
@@ -38,7 +47,4 @@ public:
 };
 // @lc code=end
 
-int main() {
-    vector<int> nums = {4, 2, 1};
-
-}
+int main() { vector<int> nums = {4, 2, 1}; }
