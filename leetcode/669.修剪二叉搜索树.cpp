@@ -3,30 +3,31 @@
  *
  * [669] 修剪二叉搜索树
  */
-#include <iostream>
-#include <utility>
-#include <string>
 #include <string.h>
-#include <vector>
+
+#include <algorithm>
+#include <iostream>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
-#include <queue>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
- struct TreeNode {
-     int val;
-     TreeNode *left;
-     TreeNode *right;
-     TreeNode() : val(0), left(nullptr), right(nullptr) {}
-     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- };
-
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right)
+        : val(x), left(left), right(right) {}
+};
 
 // @lc code=start
 /**
@@ -37,76 +38,58 @@ using namespace std;
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
+ * right(right) {}
  * };
  */
 class Solution {
-public:
-    TreeNode* l = NULL, *r = NULL;
-    void leftLimit(TreeNode* node, int low, bool& ok) {
-        if (ok || node == NULL) {
+ public:
+    void trimBSTHelper(TreeNode* node, int low, int high) {
+        if (node == NULL) {
             return;
         }
-        leftLimit(node->left, low, ok);
-        if (node->val >= low) {
-            node->left = NULL;
-            if (l) {
-                r = node;
-                r->left = l;
-                l = NULL;
-                r = NULL;
-                ok = true;
-                return;
-            }
-            l = node;
-        }
-        leftLimit(node->right, low, ok);
-    }
-
-    void rightLimit(TreeNode* node, int high, bool& ok) {
-        if (ok || node == NULL) {
-            return;
-        }
-        rightLimit(node->left, high, ok);
-        if (node->val <= high) {
-            if (l) {
-                r = l;
-                l = node;
+        // left
+        TreeNode* cur = node;
+        while (cur && cur->left) {
+            if (cur->left->val >= low) {
+                cur = cur->left;
             } else {
-                l = node;
+                cur->left = cur->left->right;
             }
-        } else {
-            r->right = l;
-            l = NULL;
-            r = NULL;
-            ok = true;
         }
-        rightLimit(node->right, high, ok);
+        // right
+        cur = node;
+        while (cur && cur->right) {
+            if (cur->right->val <= high) {
+                cur = cur->right;
+            } else {
+                cur->right = cur->right->left;
+            }
+        }
     }
 
+    /*
+        不要看到二叉搜索树就中序遍历
+    */
     TreeNode* trimBST(TreeNode* root, int low, int high) {
         // 如果根 在low ,high 之间 则 在左右分别找
         // 若根 < low , 则在右边找
         // 若根 > high, 则在左边找
-        // 左子树第一个大于等于 low 的作为作为左节点
-        // 右子树最后一个小于 high 的节点作为右或者根
         if (root == NULL) {
             return NULL;
         }
+        // 1. 找到头结点
         if (root->val < low) {
             return trimBST(root->right, low, high);
         }
         if (root->val > high) {
             return trimBST(root->left, low, high);
         }
-        // 左边界
-        bool bl = false;
-        leftLimit(root, low, bl);
-        // 右边界
-        //bool br = false;
-        //rightLimit(root, high, br);
+        // 2. 剪枝
+        //trimBSTHelper(root, low, high);
+        root->left = trimBST(root->left, low, high);
+        root->right = trimBST(root->right, low, high);
         return root;
     }
 };
 // @lc code=end
-
