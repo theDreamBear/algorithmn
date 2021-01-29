@@ -63,18 +63,62 @@ public:
         return temp[1];
     }
 
+    /*
+        找到除 small 以外最小的, 还是可能返回 small
+    */
+    int findSecondMinimumValueFinder(TreeNode* node, int small) {
+        if (node->left == NULL) {
+            return node->val;
+        }
+        int left = findSecondMinimumValueFinder(node->left, small);
+        int right = findSecondMinimumValueFinder(node->right, small);
+        if (left == small) {
+            return right;
+        }
+        if (right == small) {
+            return left;
+        }
+        return min(left, right);
+    }
+
+    /*
+        递归方法需要引入第二参数 small, 或者设置全局变量
+    */
+    int findSecondMinimumValue2(TreeNode* root) {
+        if (root == NULL) {
+            return -1;
+        }
+        int val = findSecondMinimumValueFinder(root, root->val);
+        return (val == root->val) ? -1 : val;
+    }
+
+    /*
+        前序遍历找除根节点最小值
+    */
     int findSecondMinimumValue(TreeNode* root) {
         if (root == NULL) {
             return -1;
         }
-        int left = findSecondMinimumValue(root->left);
-        int right = findSecondMinimumValue(root->right);
-        if (left == -1 && right == -1) {
-            return -1;
+        int sm = root->val;
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        while (cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                cur = cur->left;
+            }
+            cur = st.top();
+            st.pop();
+            if (cur->val != root->val) {
+                if (sm == root->val) {
+                    sm = cur->val;
+                } else {
+                    sm = min(sm, cur->val);
+                }
+            }
+            cur = cur->right;
         }
-        if (left == -1) {
-            return
-        }
+        return (sm == root->val) ? -1 : sm;
     }
 };
 // @lc code=end
