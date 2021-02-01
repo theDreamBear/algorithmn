@@ -24,6 +24,7 @@
         "optional": "cpp",
         "memory": "cpp",
         "unordered_set": "cpp",
-        "__hash_table": "cpp"
+        "__hash_table": "cpp",
+        "__tree": "cpp"
     }
 }
