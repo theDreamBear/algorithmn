@@ -26,11 +26,15 @@ bool matrixValid(int i, int j, const vector<vector<int>>& matrix) {
 
 bool matrixDfs(int i, int j, vector<vector<int>>& matrix,
                vector<vector<bool>> visited) {
+    // 边界
     if (visited[i][j] || !matrixValid(i, j, matrix)) {
         return false;
     }
+    // 修改
     visited[i][j] = true;
     bool ok = false;
+
+    // 递归
     for (int k = 0; k < 4; ++k) {
         int xx = i + dx[k];
         int yy = j + dy[k];
@@ -47,6 +51,4 @@ bool matrixDfs(int i, int j, vector<vector<int>>& matrix,
     return false;
 }
 
-int main() {
-
-}
+int main() {}
