@@ -3,24 +3,24 @@
  *
  * [133] 克隆图
  */
-#include <iostream>
-#include <utility>
-#include <string>
 #include <string.h>
-#include <vector>
+
+#include <algorithm>
+#include <iostream>
 #include <map>
+#include <queue>
 #include <set>
 #include <stack>
-#include <queue>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
+#include <utility>
+#include <vector>
 
 using namespace std;
 
-
 class Node {
-public:
+ public:
     int val;
     vector<Node*> neighbors;
     Node() {
@@ -60,84 +60,71 @@ public:
 */
 
 class Solution {
-public:
-    Node* dfs1(Node* node, unordered_map<int, Node*>& hash) {
-        if (node == NULL || hash.count(node->val) > 0) {
-            return NULL;
-        }
-        Node* root = new Node(node->val);
-        hash[root->val] = root;
-        // dfs
-        for (auto& nei : node->neighbors) {
-            if (hash.count(nei->val) == 0) {
-                Node* temp = new Node(nei->val);
-                hash[temp->val] = temp;
-                root->neighbors.push_back(hash[nei->val]);
-                dfs1(nei, hash);
-            } else {
-                root->neighbors.push_back(hash[nei->val]);
-            }
-        }
-        return root;
-    }
-
-    Node* newNode(Node* node, unordered_map<int, Node*>& existed) {
-        Node* newNode = new Node(node->val);
-        existed[newNode->val] = newNode;
-        return newNode;
-    }
-
-    bool compare(Node* node, Node* newNode) {
-        if (node->val != newNode->val || node == newNode || node->neighbors.size() != newNode->neighbors.size()) {
-           // cout << "no" << endl;
-           // cout << node->val << "  " << newNode->val << endl;
-           // cout << node << "   " << newNode << endl;
-           // cout << node->neighbors.size() << "    " << newNode->neighbors.size() << endl;
-            return false;
-        }
-        for (int i = 0; i < node->neighbors.size(); ++i) {
-            if (!compare(node->neighbors[i], newNode->neighbors[i])) {
-                //cout << node->neighbors[i]->val << "   " << newNode->neighbors[i]->val << endl;
-                return false;
-            }
-        }
-        //cout << "yes" << endl;
-        return true;
-    }
-
+ public:
+    /*
+        dfs 定义返回 node 节点的深拷贝节点指针
+    */
     Node* dfs(Node* node, unordered_map<int, Node*>& existed) {
-        if (node == NULL || existed.count(node->val) > 0) {
-            cout << "ok" << endl;
+        // 边界判断 如果
+        if (node == NULL) {
             return NULL;
         }
-        Node* n = newNode(node, existed);
-        for (auto& nei : node->neighbors) {
-            cout << "push: " << nei->val << endl;
-            if (existed.count(nei->val) == 0) {
-                Node* temp = new Node(nei->val);
-                n->neighbors.push_back(temp);
-                dfs(nei, existed);
-            } else {
-                n->neighbors.push_back(existed[nei->val]);
-            }
+        // 若深拷贝节点指针存在
+        if (existed.count(node->val) > 0) {
+            return existed[node->val];
+        }
+        // 不存在则创建, 并深拷贝其邻居节点
+        // 具体逻辑地方
+        Node* n = new Node(node->val);
+        existed[n->val] = n;
+        //
 
+        // 迭代地方
+        for (auto& nei : node->neighbors) {
+            // 深拷贝邻居节点
+            n->neighbors.push_back(dfs(nei, existed));
         }
         return n;
     }
 
-
-    Node* cloneGraph(Node* node) {
-        if (node ==  NULL) {
+    Node* cloneGraph_dfs(Node* node) {
+        if (node == NULL) {
             return NULL;
         }
         unordered_map<int, Node*> hash;
-        Node* r =  dfs(node, hash);
-         if (compare(node, r)) {
-            cout << "yes" << endl;
+        return dfs(node, hash);
+    }
+
+    /*
+        bfs
+    */
+     Node* cloneGraph(Node* node) {
+        if (node == NULL) {
+            return NULL;
         }
-        cout <<"res1111  " <<  r << endl;
-        return r;
+        unordered_map<int, Node*> hash;
+        queue<Node*> q;
+
+        // 初始化
+        q.push(node);
+        Node* root = new Node(node->val);
+        hash[root->val] = root;
+
+        while (!q.empty()) {
+            Node* cur = q.front();
+            q.pop();
+            Node* n = hash[cur->val];
+            for (auto& nei : cur->neighbors) {
+                // 生成新的节点指针的位置
+                if (hash.count(nei->val) == 0) {
+                    q.push(nei);
+                    Node* temp = new Node(nei->val);
+                    hash[temp->val] = temp;
+                }
+                n->neighbors.push_back(hash[nei->val]);
+            }
+        }
+        return root;
     }
 };
 // @lc code=end
-
