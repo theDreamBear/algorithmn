@@ -96,7 +96,7 @@ class Solution {
     }
 
     /*
-        bfs
+        bfs , 初始化
     */
      Node* cloneGraph(Node* node) {
         if (node == NULL) {
