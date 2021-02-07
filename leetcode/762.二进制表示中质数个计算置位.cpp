@@ -35,12 +35,12 @@ class Solution {
     }
 
     void prime(unordered_set<int>& hashset) {
-        vector<int> h(10001, 1);
-        for (int i = 2; i <= 10000; ++i) {
+        vector<int> h(21, 1);
+        for (int i = 2; i < 21; ++i) {
             if (h[i]) {
                 hashset.insert(i);
                 int j = 2 * i;
-                while (j <= 10000) {
+                while (j < 21) {
                     h[j] = 0;
                     j += i;
                 }
@@ -48,12 +48,35 @@ class Solution {
         }
     }
 
-    int countPrimeSetBits(int L, int R) {
+    int countPrimeSetBits1(int L, int R) {
         unordered_set<int> hashset;
         prime(hashset);
         int ans = 0;
         for (int i = L; i <= R; ++i) {
             if (hashset.count(oneNumber(i)) > 0) {
+                ++ans;
+            }
+        }
+        return ans;
+    }
+
+    /*
+        直接枚举
+    */
+    char hashmap[20];
+    int countPrimeSetBits(int L, int R) {
+        fill(hashmap, hashmap + 20, 0);
+        hashmap[2] = 1;
+        hashmap[3] = 1;
+        hashmap[5] = 1;
+        hashmap[7] = 1;
+        hashmap[11] = 1;
+        hashmap[13] = 1;
+        hashmap[17] = 1;
+        hashmap[19] = 1;
+        int ans = 0;
+        for (int i = L; i <= R; ++i) {
+            if (hashmap[oneNumber(i)] == 1) {
                 ++ans;
             }
         }
