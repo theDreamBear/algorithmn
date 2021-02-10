@@ -1,6 +1,6 @@
 // @before-stub-for-debug-begin
-#include <vector>
 #include <string>
+#include <vector>
 
 using namespace std;
 // @before-stub-for-debug-end
@@ -29,12 +29,19 @@ using namespace std;
 // @lc code=start
 class Solution {
  public:
+    /*
+        dfs
+    */
     int min_removed = INT_MAX;
     unordered_set<string> hashset;
     vector<string> ans;
     void removeInvalidParenthesesHelper(string des, const string& source,
                                         int left, int right, int pos,
                                         int removed) {
+        if (removed > min_removed) {
+            // 剪枝
+            return;
+        }
         if (pos == source.size()) {
             if (left == right && hashset.count(des) == 0) {
                 if (removed < min_removed) {
@@ -82,14 +89,71 @@ class Solution {
         }
     }
 
+    bool valid(const string& s) {
+        int left = 0, right = 0;
+        for (auto& c : s) {
+            if (c == '(' || c == ')') {
+                if (c == '(') {
+                    ++left;
+                } else {
+                    ++right;
+                    if (left < right) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return left == right;
+    }
+
+    // bfs
+    void bfs(const string& s, vector<string>& ans) {
+        queue<string> q;
+        unordered_set<string> hashset;
+        q.push(s);
+        hashset.insert(s);
+        while (!q.empty()) {
+            int sz = q.size();
+            for (int i = 0; i < sz; ++i) {
+                string cur = q.front();
+                q.pop();
+                if (valid(cur)) {
+                    ans.push_back(cur);
+                    continue;
+                }
+                if (ans.empty()) {
+                    for (int k = 0; k < cur.size(); ++k) {
+                        if (cur[k] == '(' || cur[k] == ')') {
+                            string temp = cur;
+                            temp.erase(k + temp.begin());
+                            if (hashset.count(temp) == 0) {
+                                q.push(temp);
+                                hashset.insert(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            if (!ans.empty()) {
+                return;
+            }
+        }
+        return;
+    }
+
     vector<string> removeInvalidParentheses(string s) {
         removeInvalidParenthesesHelper("", s, 0, 0, 0, 0);
+        return ans;
+    }
+
+    vector<string> removeInvalidParentheses3(string s) {
+        bfs(s, ans);
         return ans;
     }
 };
 // @lc code=end
 
 int main() {
-    string  s = ")(";
+    string s = "";
     Solution{}.removeInvalidParentheses(s);
 }
