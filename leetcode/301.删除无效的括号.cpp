@@ -38,7 +38,7 @@ class Solution {
     void removeInvalidParenthesesHelper(string des, const string& source,
                                         int left, int right, int pos,
                                         int removed) {
-        if (removed > min_removed) {
+        if (removed > min_removed || left < right) {
             // 剪枝
             return;
         }
@@ -72,20 +72,13 @@ class Solution {
             removeInvalidParenthesesHelper(des, source, left, right, pos + 1,
                                            removed + 1);
         } else {
-            if (left >= right + 1) {
-                // 保留
-                des.push_back(source[pos]);
-                removeInvalidParenthesesHelper(des, source, left, right + 1,
-                                               pos + 1, removed);
-                // 忽略
-                des.pop_back();
-                removeInvalidParenthesesHelper(des, source, left, right,
-                                               pos + 1, removed + 1);
-            } else {
-                // 若右比左多则直接忽略忽略
-                removeInvalidParenthesesHelper(des, source, left, right,
-                                               pos + 1, removed + 1);
-            }
+            des.push_back(source[pos]);
+            removeInvalidParenthesesHelper(des, source, left, right + 1,
+                                           pos + 1, removed);
+            // 忽略
+            des.pop_back();
+            removeInvalidParenthesesHelper(des, source, left, right, pos + 1,
+                                           removed + 1);
         }
     }
 
@@ -141,12 +134,12 @@ class Solution {
         return;
     }
 
-    vector<string> removeInvalidParentheses(string s) {
+    vector<string> removeInvalidParentheses3(string s) {
         removeInvalidParenthesesHelper("", s, 0, 0, 0, 0);
         return ans;
     }
 
-    vector<string> removeInvalidParentheses3(string s) {
+    vector<string> removeInvalidParentheses(string s) {
         bfs(s, ans);
         return ans;
     }
