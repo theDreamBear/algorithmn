@@ -93,10 +93,10 @@ class Solution {
                 if (pr.second.size() > 1) {
                     ans.emplace_back(pr.second);
                 }
-                unordered_set<int> added;
+                bitset<300> added;
                 for (int pos = pr.first + 1; pos < nums.size(); ++ pos) {
-                    if (added.count(nums[pos]) == 0 && (pr.second.empty() || pr.second.back() <= nums[pos])) {
-                        added.insert(nums[pos]);
+                    if (added[nums[pos] + 100] == 0 && (pr.second.empty() || pr.second.back() <= nums[pos])) {
+                        added[nums[pos] + 100] = 1;
                         vector<int> temp = pr.second;
                         temp.emplace_back(nums[pos]);
                         q.push({pos, temp});
