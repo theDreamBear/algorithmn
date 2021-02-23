@@ -79,7 +79,7 @@ class Solution {
 
     /*
         bfs
-        0个元素 -> 1 个元素 -> 2 个元素 一层层扩充
+        0个元素 -> 1 个元素 -> 2 个元素 一层层扩充, 一层层保证最终序列只有一个
     */
     vector<vector<int>> findSubsequences(vector<int>& nums) {
         vector<vector<int>> ans;
