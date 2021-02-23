@@ -71,10 +71,39 @@ class Solution {
     }
 
 
-    vector<vector<int>> findSubsequences(vector<int>& nums) {
+    vector<vector<int>> findSubsequences1(vector<int>& nums) {
         set<vector<int>> ans;
         dfs_optimize(ans, {}, 0, nums);
         return vector<vector<int>>(ans.begin(), ans.end());
+    }
+
+    /*
+        bfs
+    */
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> ans;
+        queue<pair<int, vector<int>>> q;
+        q.push({-1, {}});
+        while (!q.empty()) {
+            int sz = q.size();
+            for (int i = 0; i < sz; ++i) {
+                auto pr = q.front();
+                q.pop();
+                if (pr.second.size() > 1) {
+                    ans.push_back(pr.second);
+                }
+                unordered_set<int> added;
+                for (int pos = pr.first + 1; pos < nums.size(); ++ pos) {
+                    if (added.count(nums[pos]) == 0 && (pr.second.empty() || pr.second.back() <= nums[pos])) {
+                        added.insert(nums[pos]);
+                        vector<int> temp = pr.second;
+                        temp.push_back(nums[pos]);
+                        q.push({pos, temp});
+                    }
+                }
+            }
+        }
+        return ans;
     }
 };
 // @lc code=end
