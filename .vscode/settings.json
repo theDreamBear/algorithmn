@@ -25,7 +25,8 @@
         "memory": "cpp",
         "unordered_set": "cpp",
         "__hash_table": "cpp",
-        "__tree": "cpp"
+        "__tree": "cpp",
+        "deque": "cpp"
     },
     "bracket-pair-colorizer-2.excludedLanguages": [
     

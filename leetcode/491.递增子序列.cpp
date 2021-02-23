@@ -59,10 +59,12 @@ class Solution {
        //     return;
        //}
        // dfs(ans, temp, pos + 1, nums);
+       unordered_set<int> visited;
         for (int k = pos; k < nums.size(); ++k) {
-            if (temp.empty() || temp.back() <= nums[k]) {
+            if (visited.count(nums[k]) == 0 && (temp.empty() || temp.back() <= nums[k])) {
+                visited.insert(nums[k]);
                 temp.push_back(nums[k]);
-                dfs(ans, temp, k + 1, nums);
+                dfs_optimize(ans, temp, k + 1, nums);
                 temp.pop_back();
             }
         }
@@ -71,7 +73,7 @@ class Solution {
 
     vector<vector<int>> findSubsequences(vector<int>& nums) {
         set<vector<int>> ans;
-        dfs(ans, {}, 0, nums);
+        dfs_optimize(ans, {}, 0, nums);
         return vector<vector<int>>(ans.begin(), ans.end());
     }
 };

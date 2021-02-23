@@ -19,13 +19,13 @@ public:
             ans.push_back(nums);
         }  while(next_permutation(nums.begin(), nums.end()));
         return ans;
-    }                                                      
-    /* 
+    }
+    /*
     q1. 什么时候是结果
     a1. cur 到了最后一个数字
-    
+
     q2. 什么时候存
-    a1. 
+    a1.
     */
     void permuteHelper(int cur, vector<int> nums, vector<vector<int>>& result) {
         if (cur >= nums.size() - 1) {
