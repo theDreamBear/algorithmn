@@ -110,6 +110,7 @@ class Solution {
 
 /*
  官方的 hash 算法
+ 这个 hash 去重可以好好学习下
 */
 class Solution1 {
 public:
