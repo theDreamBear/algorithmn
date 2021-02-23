@@ -26,7 +26,8 @@
         "unordered_set": "cpp",
         "__hash_table": "cpp",
         "__tree": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "*.tcc": "cpp"
     },
     "bracket-pair-colorizer-2.excludedLanguages": [
     

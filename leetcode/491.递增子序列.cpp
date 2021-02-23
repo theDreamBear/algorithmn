@@ -79,6 +79,7 @@ class Solution {
 
     /*
         bfs
+        0个元素 -> 1 个元素 -> 2 个元素 一层层扩充
     */
     vector<vector<int>> findSubsequences(vector<int>& nums) {
         vector<vector<int>> ans;
@@ -90,14 +91,14 @@ class Solution {
                 auto pr = q.front();
                 q.pop();
                 if (pr.second.size() > 1) {
-                    ans.push_back(pr.second);
+                    ans.emplace_back(pr.second);
                 }
                 unordered_set<int> added;
                 for (int pos = pr.first + 1; pos < nums.size(); ++ pos) {
                     if (added.count(nums[pos]) == 0 && (pr.second.empty() || pr.second.back() <= nums[pos])) {
                         added.insert(nums[pos]);
                         vector<int> temp = pr.second;
-                        temp.push_back(nums[pos]);
+                        temp.emplace_back(nums[pos]);
                         q.push({pos, temp});
                     }
                 }
