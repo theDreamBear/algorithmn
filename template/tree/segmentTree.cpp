@@ -104,10 +104,65 @@ class segmentTree {
     }
 };
 
+
+
+const int MAX_N = 1 << 17;
+int n, dat[2 * MAX_N - 1];
+
+void init(int _n) {
+    n = 1;
+    while (n < _n) {
+        n *= 2;
+    }
+    for (int i = 0; i < 2 * n - 1; i++) {
+        dat[i] = INT_MAX;
+    }
+}
+
+// 第k个值更新为a
+void update(int k, int a) {
+    if (k >= n) {
+        return;
+    }
+    k += n - 1;
+    dat[k] = a;
+    while (k > 0) {
+        k = (k - 1) / 2;
+        dat[k] = min(dat[2 * k + 1], dat[2 * k + 2]);
+    }
+}
+
+//  [a, b]
+int query(int a, int b, int node, int l , int r) {
+    if (a > r || b < l) {
+        return INT_MAX;
+    }
+    if (a <= l && b >= r) {
+        return dat[node];
+    } else {
+        int vl = query(a, b, 2 * node + 1, l, (l + r) / 2);
+        int br = query(a, b, 2 * node + 2, (l + r) / 2 + 1, r);
+        return min(vl, br);
+    }
+}
+
+
 int main() {
-    vector<int> nums{2, 4, 1, 5, 3, 7};
-    segmentTree s(nums);
-    cout << s.queryMin(3, 5) << endl;
-    s.update(4, -1);
-    cout << s.queryMin(0, 5) << endl;
+    vector<int> nums{12,3,4,6};
+    // segmentTree s(nums);
+    // cout << s.queryMin(3, 5) << endl;
+    // s.update(4, -1);
+    // cout << s.queryMin(0, 5) << endl;
+
+    init(nums.size());
+    for (int i = 0; i < nums.size(); ++i) {
+        update(i, nums[i]);
+    }
+    for (int i = 0; i < 2 * n - 1; ++i) {
+        cout << dat[i] << "\t";
+    }
+    cout << endl;
+    cout << query(3, 5, 0, 0, n - 1);
+    update(4, -1);
+    cout << query(0, 5, 0, 0, n - 1);
 }
