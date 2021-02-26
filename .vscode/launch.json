@@ -5,7 +5,7 @@
             "name": "(lldb) 启动",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/Users/nichao/Code/algorithmn/leetcode/a.out",
+            "program": "/Users/nichao/Code/algorithmn/template/tree/a.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/leetcode",
