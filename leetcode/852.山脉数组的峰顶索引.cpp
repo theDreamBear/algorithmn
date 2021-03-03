@@ -31,7 +31,19 @@ public:
     }
 
     int peakIndexInMountainArray(vector<int>& arr) {
-       
+        int low = 0, high = arr.size() - 1;
+        while (low + 1 < high) {
+            int mid = (low + high) / 2;
+            if (arr[mid] > arr[mid + 1]) {
+                high = mid;
+            } else {
+                low = mid;
+            }
+        }
+        if (arr[low] > arr[high]) {
+            return low;
+        }
+        return high;
     }
 };
 // @lc code=end
