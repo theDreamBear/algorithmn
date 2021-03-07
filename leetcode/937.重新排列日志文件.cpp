@@ -70,7 +70,7 @@ class Solution {
     }
 
     /*
-        stable_sort  cmp 待比较的数字在前面， 这就是为什么 less 会得到从大到小
+        stable_sort  cmp 待比较的数字在前面， 如果 true 就交换
     */
     vector<string> reorderLogFiles2(vector<string>& logs) {
         stable_partition(logs.begin(), logs.end(), [](string& str) {
