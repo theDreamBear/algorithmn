@@ -71,6 +71,10 @@ public:
         }
         return ans;
     }
+
+    // 桶排序
+
+    // 题解的几何法 挺有意思的
 };
 // @lc code=end
 
