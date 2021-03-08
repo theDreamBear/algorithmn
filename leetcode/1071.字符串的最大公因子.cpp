@@ -35,7 +35,7 @@ class Solution {
     //     return a;
     // }
 
-    string gcdOfStrings(string str1, string str2) {
+    string gcdOfStrings1(string str1, string str2) {
         int i = 0, j = 0;
         int gc = gcd(str1.size(), str2.size());
         while (i < str1.size() && j < str2.size()) {
@@ -52,6 +52,14 @@ class Solution {
             }
         }
         return "";
+    }
+
+    string gcdOfStrings(string str1, string str2) {
+        if (str1 + str2 != str2 + str1) {
+            return "";
+        }
+        int gc = gcd(str1.size(), str2.size());
+        return str2.substr(0, gc);
     }
 };
 // @lc code=end
