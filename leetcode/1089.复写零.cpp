@@ -75,16 +75,11 @@ public:
        }
        --i;
        --j;
-       if (arr[i] == 0 && j >= arr.size()) {
-           --j;
-           arr[j] = 0;
-          --j;
-          --i;
-       }
-       while (j >= 0 && i >= 0) {
+       while (j >= 0) {
+           if (j < arr.size()) {
              arr[j] = arr[i];
-           //}
-           if (j > 0 && arr[i] == 0) {
+           }
+           if (arr[i] == 0) {
                arr[--j] = 0;
            }
            --j;
