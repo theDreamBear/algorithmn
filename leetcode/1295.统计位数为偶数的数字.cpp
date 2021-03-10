@@ -22,7 +22,9 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int findNumbers(vector<int>& nums) {
+    // to_string 获得每一位这方法也不错
+
+    int findNumbers1(vector<int>& nums) {
         int ans = 0;
         vector<int> data = {0, 10, 100, 1000, 10000, 100000, 1000000};
         for (auto val : nums) {
@@ -32,6 +34,14 @@ public:
             }
         }
         return ans;
+    }
+
+     int findNumbers(vector<int>& nums) {
+        int res = 0;
+        for (int i : nums)
+            if ((i >= 10 && i < 100) || (i >= 1000 && i < 10000) || i == 100000)
+                res ++;
+        return res;
     }
 };
 // @lc code=end
