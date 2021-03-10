@@ -52,13 +52,33 @@ public:
         return true;
     }
 
-    vector<int> getNoZeroIntegers(int n) {
+    vector<int> getNoZeroIntegers2(int n) {
         for (int i = 1; i < n; ++i) {
             if (isNonZeroNumber2(i) && isNonZeroNumber2(n - i)) {
                 return {i, n - i};
             }
         }
         return {};
+    }
+
+    /*
+        若10 进制某一位不为 1 ,则随意1 , 若为 1 则取 2( 3其它也可以)
+    */
+    vector<int> getNoZeroIntegers(int n) {
+        int x = n;
+        int base = 1;
+        int a = (n < 10) ? 1 : 0;
+        while (x >= 0) {
+            if (x < 10) {
+                break;
+            }
+            int delta = (x % 10 == 1) ? 2 : 1;
+            a += base * delta;
+            x -= delta;
+            x /= 10;
+            base *= 10;
+        }
+        return {a, n - a};
     }
 };
 // @lc code=end
