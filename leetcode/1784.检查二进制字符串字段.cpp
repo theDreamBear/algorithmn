@@ -22,13 +22,17 @@ using namespace std;
 // @lc code=start
 class Solution {
  public:
-    bool checkOnesSegment(string s) {
+    bool checkOnesSegment1(string s) {
         for (int i = 1; i < s.size(); ++i) {
             if (s[i] == '1' && s[i - 1] != '1') {
                return false;
             }
         }
         return true;
+    }
+
+    bool checkOnesSegment(string s) {
+        return s.find("01") == string::npos;    
     }
 };
 // @lc code=end
