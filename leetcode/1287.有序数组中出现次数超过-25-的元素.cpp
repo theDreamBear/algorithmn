@@ -39,6 +39,16 @@ public:
         return 0;
     }
 
+    int findSpecialInteger2(vector<int>& arr) {
+        int target = arr.size() / 4;
+        for (int i = 0; i < arr.size(); ++i) {
+            if (arr[i] == arr[i + target]) {
+                return arr[i];
+            }
+        }
+        return 0;
+    }
+
     /*
         根据题目要求，满足条件的整数 x 至少在数组 arr 中出现了 span = arr.length / 4 + 1 次，那么我们可以断定：数组 arr 中的元素 arr[0], arr[span], arr[span * 2], ... 一定包含 x。
         这个结论有点意思
