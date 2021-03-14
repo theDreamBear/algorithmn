@@ -22,12 +22,12 @@ using namespace std;
 
 // @lc code=start
 class Solution {
- public:
+ public: 
     /*
         减法变加法
         * / 提前算出来， 最终运算栈只剩下+
     */
-    int calculate(string s) {
+    int calculate1(string s) {
         stack<char> op;
         stack<int> num;
         bool waitNext = false;
@@ -96,6 +96,79 @@ class Solution {
             num.push(ans);
         }
         return -1;
+    }
+
+    struct Node {
+        Node* left, *right;
+        string val;
+
+        Node(string& val) :val(val), left(nullptr), right(nullptr) {}
+    };
+
+    unordered_map<char, int> priority;
+
+    bool fatherPriority(char left, char right) {
+        if (priority[left] <= priority[right]) {
+            return true;
+        }
+        return false;
+    }
+
+    Node* makeTree(const vector<string>& s) {
+        int i = 0;
+        Node* root = NULL;
+        char pre = 0;
+        while (i < s.size()) {
+            if (isdigit(s[i][0])) {
+
+            } else {
+                
+            }
+        }
+    }
+
+    int calculate(string s) {
+        priority['+']= 2;
+        priority['-'] = 2;
+        priority['/'] = 1;
+        priority['*'] = 1;
+
+        vector<string> input;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == ' ') {
+                continue;
+            }
+            string temp;
+            if (!isdigit(s[i])) {
+                switch (s[i]) {
+                    case '-':
+                        temp.push_back('-');
+                        break;
+                    case '+': {
+                        temp.push_back('+');
+                        break;
+                    }
+                    case '*':
+                        temp.push_back('*');
+                        break;
+                    case '/': {
+                        temp.push_back('/');
+                        break;
+                    }
+                }
+            } else {
+                int val = s[i] - '0';
+                int j = i + 1;
+                while (j < s.size() && isdigit(s[j])) {
+                    val = 10 * val + (s[j] - '0');
+                    ++j;
+                }
+                temp = to_string(val);
+                i = j - 1;
+            }
+            input.push_back(temp);
+        }
+        return 0;
     }
 };
 // @lc code=end
