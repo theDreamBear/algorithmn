@@ -16,16 +16,18 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <functional>
 #include <vector>
 
 using namespace std;
 
 // @lc code=start
 class Solution {
- public: 
+ public:
     /*
         减法变加法
         * / 提前算出来， 最终运算栈只剩下+
+        *  所以栈op 栈其实是不需要的
     */
     int calculate1(string s) {
         stack<char> op;
@@ -34,7 +36,7 @@ class Solution {
         int left = 0;
         function<int(int, int)> func = nullptr;
         int sign = 1;
-        for (int i = 0; i < s.size(); ++i) {
+        for (int i = 0; i < int(s.size()); ++i) {
             if (s[i] == ' ') {
                 continue;
             }
@@ -63,7 +65,7 @@ class Solution {
             }
             int val = s[i] - '0';
             int j = i + 1;
-            while (j < s.size() && isdigit(s[j])) {
+            while (j < int(s.size()) && isdigit(s[j])) {
                 val = 10 * val + (s[j] - '0');
                 ++j;
             }
@@ -86,7 +88,6 @@ class Solution {
             num.pop();
             int left = num.top();
             num.pop();
-            char opt = op.top();
             op.pop();
             int ans = 0;
             ans = left + right;
@@ -99,32 +100,56 @@ class Solution {
     }
 
     struct Node {
-        Node* left, *right;
-        string val;
-
-        Node(string& val) :val(val), left(nullptr), right(nullptr) {}
+        Node *left, *right;
+        const string& val;
+        Node(const string& val) :left(nullptr), right(nullptr), val(val){}
     };
 
     unordered_map<char, int> priority;
 
-    bool fatherPriority(char left, char right) {
-        if (priority[left] <= priority[right]) {
-            return true;
-        }
-        return false;
+    int getPriority(int i, char c) {
+        return priority[c] * 1e7 + i;
     }
 
-    Node* makeTree(const vector<string>& s) {
-        int i = 0;
-        Node* root = NULL;
-        char pre = 0;
-        while (i < s.size()) {
-            if (isdigit(s[i][0])) {
-
-            } else {
-                
+    int getRootIndex(const vector<string>& s, int low, int high) {
+        int ans = -1;
+        for (int i = low; i <= high; ++i) {
+            char c = s[i][0];
+            if (!isdigit(c)) {
+                if (ans == -1 || getPriority(i, c) > getPriority(ans, s[ans][0])) {
+                    ans = i;
+                }
             }
         }
+        return ans;
+    }
+
+    Node* makeTree(const vector<string>& s, int low, int high) {
+        if (low > high) {
+            return NULL;
+        }
+        if (low == high) {
+            return new Node(s[low]);
+        }
+        int rootIndex = getRootIndex(s, low, high);
+        Node* root = new Node(s[rootIndex]);
+        if ((low + high) / 2  < rootIndex) {
+            root->left = makeTree(s, low, rootIndex - 1);
+            root->right = makeTree(s, rootIndex + 1, high);
+        } else {
+            root->right = makeTree(s, low, rootIndex - 1);
+            root->left = makeTree(s, rootIndex + 1, high);
+        }
+        return root;
+    }
+
+    void postTraversal(Node* root) {
+        if (!root) {
+            return;
+        }
+         postTraversal(root->left);
+        postTraversal(root->right);
+        cout << root->val << "\t";
     }
 
     int calculate(string s) {
@@ -134,7 +159,7 @@ class Solution {
         priority['*'] = 1;
 
         vector<string> input;
-        for (int i = 0; i < s.size(); ++i) {
+        for (int i = 0; i < int(s.size()); ++i) {
             if (s[i] == ' ') {
                 continue;
             }
@@ -159,7 +184,7 @@ class Solution {
             } else {
                 int val = s[i] - '0';
                 int j = i + 1;
-                while (j < s.size() && isdigit(s[j])) {
+                while (j < int(s.size()) && isdigit(s[j])) {
                     val = 10 * val + (s[j] - '0');
                     ++j;
                 }
@@ -168,12 +193,17 @@ class Solution {
             }
             input.push_back(temp);
         }
+        for (auto& str : input) {
+            cout << str << endl;
+        }
+        Node* root = makeTree(input, 0, input.size() - 1);
+        postTraversal(root);
         return 0;
     }
 };
 // @lc code=end
 
 int main() {
-    string s = "3+ 2 * 2";
+    string s = "1 + 1 - 1";
     cout << Solution{}.calculate(s);
 }
