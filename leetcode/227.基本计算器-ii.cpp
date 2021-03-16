@@ -29,7 +29,7 @@ class Solution {
         * / 提前算出来， 最终运算栈只剩下+
         *  所以栈op 栈其实是不需要的
     */
-    int calculate1(string s) {
+    int calculate(string s) {
         stack<char> op;
         stack<int> num;
         bool waitNext = false;
@@ -133,26 +133,39 @@ class Solution {
         }
         int rootIndex = getRootIndex(s, low, high);
         Node* root = new Node(s[rootIndex]);
-        if ((low + high) / 2  < rootIndex) {
-            root->left = makeTree(s, low, rootIndex - 1);
-            root->right = makeTree(s, rootIndex + 1, high);
-        } else {
-            root->right = makeTree(s, low, rootIndex - 1);
-            root->left = makeTree(s, rootIndex + 1, high);
-        }
+        root->left = makeTree(s, low, rootIndex - 1);
+        root->right = makeTree(s, rootIndex + 1, high);
         return root;
     }
 
-    void postTraversal(Node* root) {
+    int postTraversal(Node* root) {
         if (!root) {
-            return;
+            return 0;
         }
-         postTraversal(root->left);
-        postTraversal(root->right);
+        if (root->left == NULL && root->right == NULL) {
+            return stol(root->val);
+        }
+        int left = postTraversal(root->left);
+        int right = postTraversal(root->right);
         cout << root->val << "\t";
+        switch(root->val[0]) {
+            case '+' : {
+                return left + right;
+            }
+            case '-' : {
+                return left - right;
+            }
+            case '*' : {
+                return left * right;
+            }
+            case '/' : {
+                return left / right;
+            }
+        }
+        return 0;
     }
 
-    int calculate(string s) {
+    int calculate1(string s) {
         priority['+']= 2;
         priority['-'] = 2;
         priority['/'] = 1;
@@ -193,17 +206,16 @@ class Solution {
             }
             input.push_back(temp);
         }
-        for (auto& str : input) {
-            cout << str << endl;
-        }
+        // 构造逆波兰表达式数树🌲求解
         Node* root = makeTree(input, 0, input.size() - 1);
-        postTraversal(root);
-        return 0;
+        int ans = 0;
+        ans = postTraversal(root);
+        return ans;
     }
 };
 // @lc code=end
 
 int main() {
-    string s = "1 + 1 - 1";
+    string s = "1 * 2 + 4 / 4 - 5";
     cout << Solution{}.calculate(s);
 }
