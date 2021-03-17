@@ -45,7 +45,7 @@ public:  // NOLINT
      *  2. pos树的下标
      *
      * **/
-    void subsetsHelper(vector<vector<int>>& ans, vector<int> temp, const vector<int>& nums, int pos) {  // NOLINT
+    void subsetsHelper(vector<vector<int>>& ans, vector<int>& temp, const vector<int>& nums, int pos) {  // NOLINT
         // 先序添加
         ans.push_back(temp);
         if (pos >= nums.size()) {

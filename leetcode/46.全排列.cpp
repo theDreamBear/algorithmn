@@ -27,7 +27,7 @@ public:
     q2. 什么时候存
     a1.
     */
-    void permuteHelper(int cur, vector<int> nums, vector<vector<int>>& result) {
+    void permuteHelper(int cur, vector<int>& nums, vector<vector<int>>& result) {
         if (cur >= nums.size() - 1) {
             //
             result.push_back(nums);

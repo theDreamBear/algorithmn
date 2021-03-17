@@ -35,7 +35,7 @@ using namespace std;  // NOLINT
 // @lc code=start
 class Solution {
 public:
-    void combineHelper(vector<vector<int>>& result, vector<int> temp, const int n, const int k, int pos) {  // NOLINT
+    void combineHelper(vector<vector<int>>& result, vector<int>& temp, const int n, const int k, int pos) {  // NOLINT
         if (temp.size() == k) {
             result.push_back(temp);
             return;
