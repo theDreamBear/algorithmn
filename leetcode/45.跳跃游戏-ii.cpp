@@ -28,7 +28,7 @@ public:
         ans : dp.back();
                   
     */
-    int jump(vector<int>& nums) {
+    int jump1(vector<int>& nums) {
         vector<int> dp(nums.size(), INT_MAX);
         dp[0] = 0;
         for (int i = 0; i < nums.size(); ++i) {
@@ -40,6 +40,27 @@ public:
         }
         return dp.back();
     }
+
+    /*
+        贪心
+        每一步选择选择其就能到最远的点的点
+    */
+    int jump(vector<int>& nums) {
+        int max_far = 0, end = 0, step = 0;
+        for(int i = 0; i < nums.size(); ++i) { 
+            // 覆盖只有一个点的情况
+            if (end >= nums.size() - 1) {
+                break;
+            }
+            max_far = max(max_far, i + nums[i]);
+            if (i == end) {
+                end = max_far;
+                ++step;
+            }
+        }
+        return step;
+    }
+
 };
 // @lc code=end
 
