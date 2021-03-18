@@ -43,11 +43,40 @@ public:
         return;
     }
 
-    vector<vector<int>> permute(vector<int>& nums) {
+    /*
+        基于交换的方式
+    */
+    vector<vector<int>> permute1(vector<int>& nums) {
         vector<vector<int>> ans;
         permuteHelper(0, nums, ans);
         return ans;
     }
+    /*
+        基于选择的方式
+    */
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> temp;
+        vector<int> used(nums.size());
+        
+        function<void(int)> backtrack = [&](int pos) {
+            if (pos >= nums.size()) {
+                ans.push_back(temp);
+                return;
+            }
+            for (int i = 0; i < nums.size(); ++i) {
+                if (used[i]) {
+                    continue;
+                }
+                used[i] = 1;
+                temp.push_back(nums[i]);
+                backtrack(pos + 1);
+                temp.pop_back();
+                used[i] = 0;
+            }
+        };
+        backtrack(0);
+        return ans;
+    }
 };
 // @lc code=end
-
