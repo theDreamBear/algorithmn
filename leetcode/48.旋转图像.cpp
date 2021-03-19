@@ -42,7 +42,7 @@ class Solution {
     /*
         一圈一圈旋转
     */
-    void rotate(vector<vector<int>>& matrix) {
+    void rotate2(vector<vector<int>>& matrix) {
         int n = matrix.size();
         int x = n / 2 - 1;
         int y = n / 2 - 1;
@@ -81,6 +81,29 @@ class Solution {
             y = y - 1;
         }
         return;
+    }
+
+    /*
+        研究下方法一的变换
+        (j, i) -> (n - i - 1, j) -> (n - j - 1, n - i - 1) -> (i, n - j - 1) -> (j, i)
+        操作四次就回到原点, 故可以存其中一个值, 然后选择
+    */
+    void rotate(vector<vector<int>>& matrix) {
+        int n  = matrix.size();
+        int left = (n - 1) /2, right = (n - 1) / 2;
+        if (n % 2) {
+            left -= 1;
+            right;
+        }
+        for (int i = 0; i <= left; ++i) {
+            for (int j = 0; j <= right; ++j) {
+                int temp = matrix[j][i];
+                matrix[j][i] = matrix[n - i - 1][j];
+                matrix[n - i - 1][j] = matrix[n - j - 1][n - i - 1];
+                matrix[n - j - 1][n - i - 1]= matrix[i][n - j - 1];
+                matrix[i][n - j - 1] = temp;
+            }
+        }
     }
 };
 // @lc code=end
