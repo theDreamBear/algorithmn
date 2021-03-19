@@ -24,15 +24,7 @@ class Solution {
 public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
         vector<vector<int>> ans;
-        sort(intervals.begin(), intervals.end(), [&](vector<int>& r, vector<int>& l) {
-            if (r[0] < l[0]) {
-                return true;
-            }
-            if (r[0] == l[0] && r[1] < l[1]) {
-                return true;
-            }
-            return false;
-        });
+        sort(intervals.begin(), intervals.end());
         int left = -1, right = -1;
         for(auto& vec : intervals) {
             if (left == -1) {
