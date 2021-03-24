@@ -93,7 +93,6 @@ class Solution {
         int left = (n - 1) /2, right = (n - 1) / 2;
         if (n % 2) {
             left -= 1;
-            right;
         }
         for (int i = 0; i <= left; ++i) {
             for (int j = 0; j <= right; ++j) {
