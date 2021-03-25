@@ -7,6 +7,22 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <utility>
+#include <string>
+#include <string.h>
+#include <vector>
+#include <map>
+#include <set>
+#include <stack>
+#include <queue>
+#include <unordered_map>
+#include <unordered_set>
+#include <algorithm>
+#include <numeric>
+
+using namespace std;
+
 using namespace std;
 // @lc code=start
 class Solution {
@@ -242,10 +258,10 @@ class Solution {
             return dp[i][j] = i >= s.size() && j >= p.size();
         }
     };
-    bool isMatch(string s, string p) {
+    bool isMatch2(string s, string p) {
         regex r;
         // dfsNew
-        r.dp = vector<vector<int>>(s.size() + 1, vector<int>(p.size() + 1, -1)); 
+        r.dp = vector<vector<int>>(s.size() + 1, vector<int>(p.size() + 1, -1));
         //return r.dfsNew2('\0', 0, 0, s, p);
 
         return r.dfsNew2(0, 0, s, p);
@@ -277,6 +293,70 @@ class Solution {
         // }
         // return true;
     }
+
+    unordered_set<string> ok;
+
+    bool dfs(int i, int j, string& s, string& p) {
+        // string key = to_string(i) + "_" + to_string(j);
+        // if (ok.count(key) > 0) {
+        //     return false;
+        // }
+        if (i >= s.size() || j >= p.size()) {
+            while (j < p.size() - 1 && p[j + 1] == '*') {
+                j += 2;
+            }
+            if (j == p.size() && i == s.size()) {
+                return true;
+            }
+            //ok.insert(key);
+            return false;
+        }
+        if (p[j] == '*') {
+            //ok.insert(key);
+            return false;
+        }
+        if (j + 1 < p.size()) {
+            if (p[j] == s[i]) {
+                if (p[j + 1] != '*') {
+                    return dfs(i + 1, j + 1, s, p);
+                } else {
+                    for (int k = i; k <= s.size(); ++k) {
+                        if (dfs(k, j + 2, s, p)) {
+                            return true;
+                        }
+                        if (k < s.size() && s[k] != p[j]) {
+                            break;
+                        }
+                    }
+                }
+            }
+            if (p[j] != s[i]) {
+                if (p[j] == '.') {
+                    if (p[j + 1] != '*') {
+                        return dfs(i + 1, j + 1, s, p);
+                    }
+                    for (int k = i; k <= s.size(); ++k) {
+                        if (dfs(k, j + 2, s, p)) {
+                            return true;
+                        }
+                    }
+                } else if (p[j + 1] == '*') {
+                    return dfs(i, j + 2, s, p);
+                }
+                //ok.insert(key);
+                return false;
+            }
+        }
+        if (p[j] == s[i] || p[j] == '.') {
+            return dfs(i + 1, j + 1, s, p);
+        }
+        //ok.insert(key);
+        return false;
+    }
+
+    bool isMatch(string s, string p) {
+        return dfs(0, 0, s, p);
+    }
 };
 // @lc code=end
 
@@ -297,10 +377,10 @@ int main(int argc, char* argv[]) {
         // {"abbbb", ".*c", false},
         // {"aaa", "c*a", false},
         // {"aa", "a*", true},
-        {"a", "ab*", true},
+        {"aaa", "ab*a", true},
         // {"a", "ab*a", false},
         // {"", ".", false},
-        {"abcaaaaaaabaabcabac", ".*ab.a.*a*a*.*b*b*", true},
+        //{"abcaaaaaaabaabcabac", ".*ab.a.*a*a*.*b*b*", true},
         // {"bb", ".baa", false},
         // {"", "c*c*", true},
         // {"abbbb", "a*.*b*.*a*aa*a*", false},
