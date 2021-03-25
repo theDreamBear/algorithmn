@@ -3,8 +3,8 @@
     "configurations": [
         {
             "name": "(lldb) 启动",
-           // "type": "cppdbg",
-            "type": "lldb",
+            "type": "cppdbg",
+           // "type": "lldb",
             "request": "launch",
             "program": "/Users/nichao/Code/algorithmn/leetcode/a.out",
             "args": [],
