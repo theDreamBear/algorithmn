@@ -7,9 +7,10 @@
 // @lc code=start
 class Solution {
 public:
-     int upperlimit = 0;
+    int upperlimit = 0;
+    int sum = 0;
 
-    void test(int now, int left, int right, int& sum) {
+    void test(int now, int left, int right) {
         if (now == upperlimit) {
             ++sum;
             return;
@@ -18,7 +19,7 @@ public:
             int pos  = upperlimit &  ~ (now | left | right);
             while (pos) {
                 int  p = pos & -pos;
-                test(now ^ p, (left ^ p) << 1, (right ^ p) >> 1, sum);
+                test(now ^ p, (left ^ p) << 1, (right ^ p) >> 1);
                 pos -= p;
             }
         }
@@ -26,8 +27,8 @@ public:
 
     int totalNQueens(int n) {
         upperlimit = (1 << n) - 1;
-        int now = 0, left = 0, right = 0, sum = 0;
-        test(now, left, right, sum);
+        sum = 0;
+        test(0, 0, 0);
         return sum;
     }
 };
