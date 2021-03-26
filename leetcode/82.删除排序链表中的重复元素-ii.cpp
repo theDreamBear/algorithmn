@@ -70,6 +70,29 @@ class Solution {
         return dummy.next;
     }
 
+    /*
+        存储奇数进一步简化逻辑
+    */
+    ListNode* deleteDuplicates1_puls(ListNode* head) {
+        vector<ListNode*> vec;
+        ListNode* cur = head;
+        vector<int> count(201);
+        while (cur) {
+            ++count[cur->val + 100];
+            vec.push_back(cur);
+            cur = cur->next;
+        }
+        ListNode dummy, *tail = &dummy;
+        for (int i = 0; i < vec.size(); i++) {
+            if (count[vec[i]->val + 100] == 1) {
+                tail->next = vec[i];
+                tail = tail->next;
+                tail->next = NULL;
+            }
+        }
+        return dummy.next;
+    }
+
     ListNode* deleteDuplicates2(ListNode* head) {
         if (NULL == head || NULL == head->next) {
             return head;
@@ -96,7 +119,7 @@ class Solution {
         return dummy.next;
     }
 
-    ListNode* deleteDuplicates(ListNode* head) {
+    ListNode* deleteDuplicates3(ListNode* head) {
          if (!head) {
             return head;
         }
@@ -115,6 +138,75 @@ class Solution {
         }
 
         return dummy->next;
+    }
+
+    /*
+        递归
+    */
+    ListNode* deleteDuplicates4(ListNode* head) {
+        if (head == NULL || head->next == NULL) {
+            return head;
+        }
+        if (head->val == head->next->val) {
+            int x = head->val;
+            ListNode* cur = head->next;
+            while (cur && cur->val == x) {
+                cur = cur->next;
+            }
+            return deleteDuplicates4(cur);
+        } else {
+            head->next = deleteDuplicates4(head->next);
+            return head;
+        }
+    }
+
+    ListNode* deleteDuplicates5(ListNode* head) {
+        if (NULL == head || NULL == head->next) {
+            return head;
+        }
+        ListNode dummy, *tail = &dummy;
+        ListNode* pre = head;
+        while (pre && pre->next) {
+            ListNode* cur = pre->next;
+            if (cur->val != pre->val) {
+                tail->next = pre;
+                tail = tail->next;
+                tail->next = NULL;
+            } else {
+                while (cur && cur->val == pre->val) {
+                    cur = cur->next;
+                }
+            }
+            pre = cur;
+        }
+        if (pre) {
+            tail->next = pre;
+            tail = tail->next;
+            tail->next = NULL;
+        }
+        return dummy.next;
+    }
+
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (NULL == head || NULL == head->next) {
+            return head;
+        }
+        ListNode dummy, *tail = &dummy;
+        tail->next = head;
+        // tail 指向上一个合法节点
+        ListNode* cur = head;
+        while (cur) {
+            while (cur->next && cur->val == cur->next->val) {
+                cur = cur->next;
+            }
+            if (tail->next == cur) {
+                tail = cur;
+            } else {
+                tail->next = cur->next;
+            }
+            cur = cur->next;
+        }
+        return dummy.next;
     }
 };
 // @lc code=end
