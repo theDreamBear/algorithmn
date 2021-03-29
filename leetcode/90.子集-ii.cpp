@@ -31,6 +31,11 @@ public:
         temp.push_back(nums[pos]);
         subsetsWithDupHelper1(ans, temp, nums, pos + 1, nums[pos]);
         temp.pop_back();
+        /**
+         *      5 5
+         *      5 *  跳过这种情况
+         *      * 5
+        */
         if (last != nums[pos]) {
             subsetsWithDupHelper1(ans, temp, nums, pos + 1, last);
         }
@@ -46,16 +51,20 @@ public:
     }
 
     void subsetsWithDupHelper(vector<vector<int>>& ans, vector<int>& temp, vector<int>& nums, int pos) {
+        ans.emplace_back(temp);
         if (pos >= nums.size()) {
-            ans.emplace_back(temp);
             return;
         }
-        subsetsWithDupHelper(ans, temp, nums, pos + 1);
+        /**
+         *   忽略当前
+        */
+        //subsetsWithDupHelper(ans, temp, nums, pos + 1);
         for (int i = pos; i < nums.size(); ++i) {
-            if (i != pos && nums[i] == nums[pos]) {
+            if (i != pos && nums[i] == nums[i- 1]) {
                 continue;
             }
             temp.push_back(nums[i]);
+            // 选择
             subsetsWithDupHelper(ans, temp, nums, i + 1);
             temp.pop_back();
         }
