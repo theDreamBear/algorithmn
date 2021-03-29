@@ -58,6 +58,7 @@ public:
         /**
          *   忽略当前
         */
+        // 下面是错误的处理
         //subsetsWithDupHelper(ans, temp, nums, pos + 1);
         for (int i = pos; i < nums.size(); ++i) {
             if (i != pos && nums[i] == nums[i- 1]) {
