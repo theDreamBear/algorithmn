@@ -160,7 +160,7 @@ public:
         return recursion(data, pos - 1);
     }
 
-    vector<int> grayCode(int n) {
+    vector<int> grayCode1(int n) {
         if (n == 0) {
             return {0};
         }
@@ -169,6 +169,35 @@ public:
         }
         vector<int> temp{0, 0 ^ (0x1 << n - 1)};
         return recursion(temp, n - 2);
+    }
+
+    vector<int> grayCode2(int n) {
+        vector<int> ans(pow(2, n));
+        for (int i = 1; i < ans.size(); ++i) {
+            ans[i] = i ^ (i >> 1);
+        }
+        return ans;
+    }
+
+     vector<int> grayCode(int n) {
+        if (n == 0) {
+            return {0};
+        }
+        if (n == 1) {
+            return {0, 1};
+        }
+        vector<int> ans{0, 1};
+        int add = 2;
+        while (n > 1) {
+            vector<int> temp = ans;
+            for (int i = ans.size() - 1; i >= 0; --i) {
+                temp.push_back(ans[i] + add);
+            }
+            add <<= 1;
+            --n;
+            ans = temp;
+        }
+        return ans;
     }
 };
 // @lc code=end
