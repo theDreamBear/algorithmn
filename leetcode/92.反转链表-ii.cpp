@@ -39,6 +39,10 @@ struct ListNode {
 class Solution {
  public:
 
+    /*
+        看清楚题目再动手写代码
+        定义好每个变量的含义
+    */
     ListNode* reverseBetween(ListNode* head, int left, int right) {
         if (!head->next) {
             return head;
