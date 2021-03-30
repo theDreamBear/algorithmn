@@ -145,14 +145,30 @@ public:
         }
     }
 
-    vector<int> grayCode(int n) {
-        vector<int> ans(pow(2, n));
-        for (int i = 0; i < ans.size(); ++i) {
-            ans[i] = i;
+    vector<int> recursion(vector<int> temp, int pos) {
+        if (pos < 0) {
+            return temp;
         }
-        vector<vector<int>> result;
-        backtracking(result, ans, 0);
-        return result.back();
+        vector<int> data(temp.size() * 2);
+        int index = 0;
+        for (int i = 0; i < temp.size(); i += 2) {
+            data[index++] = temp[i];
+            data[index++] = temp[i]  ^ (0x1 << pos);
+            data[index++] = temp[i + 1] ^ (0x1 << pos);
+            data[index++] = temp[i + 1];
+        }
+        return recursion(data, pos - 1);
+    }
+
+    vector<int> grayCode(int n) {
+        if (n == 0) {
+            return {0};
+        }
+        if (n == 1) {
+            return {0, 1};
+        }
+        vector<int> temp{0, 0 ^ (0x1 << n - 1)};
+        return recursion(temp, n - 2);
     }
 };
 // @lc code=end
