@@ -55,10 +55,14 @@ class Solution {
                 --left;
                 backtracking(res, s, temp, i + 1, left);
                 ++left;
-                for (int k = 0; k <= i - pos + 1; ++k) {
-                    temp.pop_back();
-                }
+                // for (int k = 0; k <= i - pos + 1; ++k) {
+                //     temp.pop_back();
+                // }
+                temp.resize(temp.size() - r.size());
                 r.pop_back();
+            }
+            if (s[pos] == '0') {
+                break;
             }
         }
     }
