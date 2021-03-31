@@ -107,7 +107,7 @@ class Solution {
         return g_pos;
     }
 
-    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+    int canCompleteCircuit2_plus(vector<int>& gas, vector<int>& cost) {
         // 整体最大和
         int max_sum = INT_MIN;
         // 整体最大起点
@@ -155,6 +155,7 @@ class Solution {
                 }
                 range_sum = 0;
                 sum = 0;
+                break;
             } else if (sum > range_sum) {
                 range_sum = sum;
             }
@@ -167,6 +168,49 @@ class Solution {
             return -1;
         }
         return start;
+    }
+
+    int canCompleteCircuit3(vector<int>& gas, vector<int>& cost) {
+        int totalCost = 0, totalGas = 0, sum = 0, index;
+        for(int i = 0; i < cost.size(); ++i)
+        {
+            totalCost += cost[i];
+            totalGas += gas[i];
+            if(sum > 0) sum += gas[i] - cost[i]; 
+            else 
+            {
+                sum = gas[i] - cost[i];
+                index = i;
+            }
+        }
+        return totalCost>totalGas? -1 : index;
+    }
+
+    /*
+        最后一个sum > 0 的区间起点
+    */
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        // 当前区间起点
+        int pos = -1;
+        // 当前区间和
+        int sum = 0;
+        // 整体和
+        int total = 0;
+        for (int i = 0; i < gas.size(); ++i) {
+            if (sum == 0) {
+                pos = i;
+            }
+            int diff = gas[i] - cost[i];
+            total += diff;
+            sum += diff;
+            if (sum < 0) {
+                sum = 0;
+            }
+        }
+        if (total < 0) {
+            return -1;
+        }
+        return pos;
     }
 };
 // @lc code=end
