@@ -18,92 +18,131 @@
 
 using namespace std;
 
-
 // @lc code=start
 class Solution {
 public:
-     bool rowValid(int row, int col, const vector<vector<char>>& board) {
-        int index = 0;
-        while (index < board[row].size()) {
-            if (index != col && board[row][col] == board[row][index]) {
-                return false;
+    /*
+        这个函数不能写错
+    */
+    vector<int> candidateNums(vector<vector<char>> &board, int row, int col) {
+        vector<int> ans;
+        vector<int> used(10);
+        // 行
+        for (int i = 0; i < board[row].size(); ++i) {
+            if (board[row][i] == '.') {
+                continue;
             }
-            ++index;
+            ++used[board[row][i] - '0'];
         }
-        return true;
-    }
-
-    bool colValid(int row, int col, const vector<vector<char>>& board) {
-        int index = 0;
-        while (index < board.size()) {
-            if (index != row && board[row][col] == board[index][col]) {
-                return false;
+        // 列
+        for (int i = 0; i < board.size(); ++i) {
+            if (board[i][col] == '.') {
+                continue;
             }
-            ++index;
+            ++used[board[i][col] - '0'];
         }
-        return true;
-    }
-
-    bool rectangleValid(int row, int col, const vector<vector<char>>& board) {
+        // 矩形
         int px = row / 3 * 3;
         int py = col / 3 * 3;
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                int x = px + i;
-                int y = py + j;
-                if (x == row && y == col) {
+        for (int i = px; i < 3 + px; ++i) {
+            for (int j = py; j < 3 + py; ++j) {
+                if (board[i][j] == '.') {
                     continue;
                 }
-                if (board[row][col] == board[x][y]) {
-                    return false;
-                }
+                ++used[board[i][j] - '0'];
             }
         }
-        return true;
+        for (int i = 1; i <= 9; ++i) {
+            if (!used[i]) {
+                ans.push_back(i);
+            }
+        }
+        return ans;
     }
 
-    bool isValidSudoku(vector<vector<char>>& board) {
-        for (int i = 0; i < board.size(); ++i) {
-            for (int j = 0; j < board[i].size(); ++j) {
-                if (board[i][j] >= '0' && board[i][j] <= '9') {
-                    if (!rowValid(i, j, board) || !colValid(i, j, board) ||
-                        !rectangleValid(i, j, board)) {
-                        return false;
+    bool solveSudokuHelper(vector<vector<char>> &board, int x, int y, int &leftSpace) {
+        // 出口
+        if (leftSpace == 0) {
+            return true;
+        }
+        bool found = false;
+        // 找下一个位置
+        for (int i = y; i < board[x].size(); ++i) {
+            if (board[x][i] == '.') {
+                y = i;
+                found = true;
+                break;
+            }
+        }
+        for (int i = x + 1; i < board.size(); ++i) {
+            if (found) {
+                break;
+            }
+            if (!found) {
+                for (int j = 0; j < board[i].size(); ++j) {
+                    if (board[i][j] == '.') {
+                        x = i;
+                        y = j;
+                        found = true;
+                        break;
                     }
                 }
             }
         }
-        return true;
-    }
-
-    void solveSudokuHelper(vector<vector<char>> temp, vector<vector<vector<char>>> & ans, int x, int y) {
-
-        for (int i = x; i < temp.size(); ++i) {
-            for (int j = y; j < temp[i].size(); ++j) {
-                for (char c = '1'; c <= '9'; ++c) {
-                    if (temp[i][j] == '.') {
-                        temp[i][j] = c;
-                        solveSudokuHelper(temp, ans, i + 1, y);
-                        temp[i][j] = '.';
-                    }
-                }
-            }
+        if (!found) {
+            cout << "error";
+            return false;
         }
+        // 找后补数字
+        auto can = candidateNums(board, x, y);
+        // 填错了
+        if (can.size() == 0) {
+            return false;
+        }
+        // 尝试候补数字
+        for (int i = 0; i < can.size(); ++i) {
+            board[x][y] = can[i] + '0';
+            --leftSpace;
+            if (solveSudokuHelper(board, x, y, leftSpace)) {
+                return true;
+            }
+            board[x][y] = '.';
+            ++leftSpace;
+        }
+        return false;
     }
 
-
-    void solveSudoku(vector<vector<char>>& board) {
+    void solveSudoku(vector<vector<char>> &board) {
+        int leftSpace = 0;
         for (int i = 0; i < board.size(); ++i) {
             for (int j = 0; j < board[i].size(); ++j) {
                 if (board[i][j] == '.') {
-                    for (char k = '1'; k <= '9'; ++k) {
-                        board[i][j] = k;
-
-                    }
+                    ++leftSpace;
                 }
             }
         }
+        solveSudokuHelper(board, 0, 0, leftSpace);
     }
 };
 // @lc code=end
 
+int main() {
+    vector<vector<char>> board = {
+            {'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+            {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
+            {'.', '9', '8', '.', '.', '.', '.', '6', '.'},
+            {'8', '.', '.', '.', '6', '.', '.', '.', '3'},
+            {'4', '.', '.', '8', '.', '3', '.', '.', '1'},
+            {'7', '.', '.', '.', '2', '.', '.', '.', '6'},
+            {'.', '6', '.', '.', '.', '.', '2', '8', '.'},
+            {'.', '.', '.', '4', '1', '9', '.', '.', '5'},
+            {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
+    Solution{}.solveSudoku(board);
+
+    for (auto &vec : board) {
+        for (auto &v : vec) {
+            cout << v << "\t";
+        }
+        cout << endl;
+    }
+}
