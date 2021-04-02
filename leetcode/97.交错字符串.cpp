@@ -59,7 +59,10 @@ public:
         return false;
     }
 
-    bool isInterleave(string s1, string s2, string s3) {
+    /*
+        备忘录
+    */
+    bool isInterleave1(string s1, string s2, string s3) {
         // 边界
         // 长度必须相等
         if(s1.size() + s2.size() != s3.size()) {
@@ -68,6 +71,73 @@ public:
         dp.resize(s1.size() + 1, vector<int>(s2.size() + 1, INT_MAX));
 
         return dfs(s1, s2, s3, 0, 0, 0);
+    }
+
+    /*
+        循环记忆化搜索
+        dp[i][j] 前 i, j
+    */
+    bool isInterleave2(string s1, string s2, string s3) {
+        // 边界
+        // 长度必须相等
+        if(s1.size() + s2.size() != s3.size()) {
+            return false;
+        }
+        vector<vector<bool>> dp2(s1.size() + 1, vector<bool>(s2.size() + 1));
+        dp2[0][0] = 1;
+        for (int i = 1; i <= s1.size(); ++i) {
+            if (s1[i - 1] == s3[i - 1]) {
+                dp2[i][0] = true;
+            } else {
+                break;
+            }
+        }
+        // 前 i 项
+        for (int i = 1; i <= s2.size(); ++i) {
+            if (s2[i - 1] == s3[i - 1]) {
+                dp2[0][i] = true;
+            } else {
+                break;
+            }
+        }
+        // 前 i 项
+        for (int i = 1; i <= s1.size(); ++i) {
+            // 前 j 项
+            for (int j = 1; j <= s2.size(); ++j) {
+                dp2[i][j] = dp2[i - 1][j] && s1[i - 1] == s3[i + j - 1];
+                if (!dp2[i][j]) {
+                     dp2[i][j] = dp2[i][j - 1] && s2[j - 1] == s3[i + j - 1];
+                }
+            }
+        }
+        return dp2[s1.size()][s2.size()];
+    }
+
+    /*
+        滚动数组
+    */
+    bool isInterleave2(string s1, string s2, string s3) {
+        // 边界
+        // 长度必须相等
+        if(s1.size() + s2.size() != s3.size()) {
+            return false;
+        }
+        int m = s1.size();
+        int n = s2.size();
+        const string* left = &s1;
+        const string* right = &s2;
+        if (m > n) {
+            left = &s2;
+            right = &s1;
+        }
+        vector<bool> dp2(left->size() + 1);
+        dp2[0] = true;
+        for (int i = 1; i <= right->size(); ++i) {
+            dp2[0] = dp2[0] & ()
+            for (int j = 1; j <= left->size(); ++j) {
+
+            }
+        }
     }
 };
 // @lc code=end
