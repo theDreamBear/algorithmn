@@ -22,7 +22,6 @@ using namespace std;
 class Solution {
 public:
     int evalRPN(vector<string>& tokens) {
-        stack<char> op;
         vector<int> nums;
         for (auto& str : tokens) {
             if (isdigit(str[0]) || (str.size() > 1 && str[0] == '-')) {
