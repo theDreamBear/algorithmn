@@ -113,7 +113,7 @@ class Solution {
 
         记录状态, pos + node 完美通过
     */
-    bool wordBreak1(string s, vector<string>& wordDict) {
+    bool wordBreak(string s, vector<string>& wordDict) {
         vector<char> exist(26);
         for (auto& str : wordDict) {
             tree.add(str);
