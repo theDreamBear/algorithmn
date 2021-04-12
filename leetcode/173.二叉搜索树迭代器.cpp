@@ -80,10 +80,9 @@ public:
 class BSTIterator {
 private:
     vector<TreeNode*> nodes;
-    TreeNode* nextNode;
+    TreeNode* cur;
 
-    int inorderTraversal(TreeNode* node) {
-        TreeNode* cur = node;
+    int inorderTraversal() {
         while (cur || !nodes.empty()) {
             while (cur) {
                 nodes.push_back(cur);
@@ -92,30 +91,25 @@ private:
             cur = nodes.back();
             int nextVal = cur->val;
             nodes.pop_back();
-            if (cur->right) {
-                cur = cur->right;
-                nextNode = cur;
-            } else {
-                nextNode = nullptr;
-            }
+            cur = cur->right;
             return nextVal;
         }
         return -1;
     }
 public:
     BSTIterator(TreeNode* root) {
-        nextNode = root;
+        cur = root;
     }
 
     int next() {
         if (hasNext()) {
-            return inorderTraversal(nextNode);
+            return inorderTraversal();
         }
         return -1;
     }
 
     bool hasNext() {
-        return nextNode || !nodes.empty();
+        return cur || !nodes.empty();
     }
 };
 
