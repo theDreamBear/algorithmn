@@ -54,7 +54,10 @@ public:
         return {};
     }
 
-    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+    /*
+     *  bfs
+     * */
+    vector<int> findOrder2(int numCourses, vector<vector<int>>& prerequisites) {
         // 待选队列
         vector<set<int>> course_rely(numCourses);
         vector<set<int>> course_relyed(numCourses);
@@ -78,6 +81,42 @@ public:
                 if (course_rely[rely].empty()) {
                     candidate.push(rely);
                 }
+            }
+        }
+        if (ans.size() == numCourses) {
+            return ans;
+        }
+        return {};
+    }
+
+
+    void dfs(int curID, vector<int>& inCount, const vector<vector<int>>& matrix, vector<int>& ans, vector<bool>& visited) {
+        if (inCount[curID] > 0) {
+            return;
+        }
+        visited[curID] = true;
+        ans.push_back(curID);
+        for (auto nextId : matrix[curID]) {
+            if (--inCount[nextId] == 0) {
+                dfs(nextId, inCount, matrix, ans, visited);
+            }
+        }
+    }
+    /*
+     *  dfs
+     * */
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> inCount(numCourses);
+        vector<bool> visited(numCourses);
+        vector<vector<int>> matrix(numCourses);
+        vector<int> ans;
+        for (auto& vec : prerequisites) {
+            ++inCount[vec[0]];
+            matrix[vec[1]].push_back(vec[0]);
+        }
+        for (int i = 0; i < numCourses; ++i) {
+            if (!visited[i] && inCount[i] == 0) {
+                dfs(i, inCount, matrix, ans, visited);
             }
         }
         if (ans.size() == numCourses) {
