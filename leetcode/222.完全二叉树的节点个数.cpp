@@ -28,7 +28,7 @@ struct TreeNode {
     TreeNode() : val(0), left(nullptr), right(nullptr) {}
     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
     TreeNode(int x, TreeNode *left, TreeNode *right)
-        : val(x), left(left), right(right){}
+        : val(x), left(left), right(right) {}
 };
 
 // @lc code=start
@@ -58,7 +58,7 @@ class Solution {
         return left + right + 1;
     }
 
-    int treeDepth(TreeNode* root) {
+    int treeDepth(TreeNode *root) {
         int n = 0;
         while (root) {
             ++n;
@@ -67,7 +67,7 @@ class Solution {
         return n;
     }
 
-    int nHash(TreeNode* node, int cur, int n) {
+    int nHash(TreeNode *node, int cur, int n) {
         if (!node) {
             return 0;
         }
@@ -88,7 +88,7 @@ class Solution {
         return left + right;
     }
 
-    int countNodes(TreeNode *root) {
+    int countNodes2(TreeNode *root) {
         if (!root) {
             return 0;
         }
@@ -98,6 +98,62 @@ class Solution {
         int depth = treeDepth(root);
         int n = pow(2, depth - 1) - 1;
         return n + nHash(root, 1, depth - 1);
+    }
+
+    bool exist(TreeNode *root, int bitmask, int depth) {
+        TreeNode *node = root;
+        for (int i = depth - 2; i >= 0 && node; --i) {
+            int bit = (bitmask >> i) & 0x1;
+            if (bit) {
+                node = node->right;
+            } else {
+                node = node->left;
+            }
+        }
+        return node;
+    }
+
+    /*
+        官方解法
+    */
+    int countNodes3(TreeNode *root) {
+        if (!root) {
+            return 0;
+        }
+        if (!root->left && !root->right) {
+            return 1;
+        }
+        int depth = treeDepth(root);
+        int low = pow(2, depth - 1);
+        int high = pow(2, depth) - 1;
+        while (low + 1 < high) {
+            int mid = low + (high - low) / 2;
+            if (exist(root, mid, depth)) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        if (exist(root, high, depth)) {
+            return high;
+        }
+        return low;
+    }
+
+    int countNodes(TreeNode *root) {
+        if (!root) {
+            return 0;
+        }
+        if (!root->left && !root->right) {
+            return 1;
+        }
+        int left = treeDepth(root->left);
+        int right = treeDepth(root->right);
+        if (left == right) {
+            return  countNodes(root->right) + (1 << left);
+        } else {
+            return countNodes(root->left) + (1 << right);
+        }
     }
 };
 // @lc code=end
