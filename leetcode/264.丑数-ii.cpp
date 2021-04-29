@@ -22,7 +22,7 @@ using namespace std;
 
 // @lc code=start
 class Solution {
- public:
+public:
     /*
         想到了这种方法但是, 没想明白终止条件
     */
@@ -31,7 +31,7 @@ class Solution {
             return 1;
         }
         priority_queue<long long, vector<long long>, greater<long long>>
-            minHeap;
+                minHeap;
         unordered_set<long long> exist;
         minHeap.push(1);
         exist.insert(1);
@@ -65,11 +65,27 @@ class Solution {
             return 1;
         }
         vector<int> dp(n);
-        dp.push_back(1);
+        dp[0] = 1;
         int p2 = 0, p3 = 0, p5 = 0;
         int ct = 1;
         while (ct < n) {
-            dp[ct] = min({2 * dp[p2], 3 * dp[p3]})
+            dp[ct] = min({2 * dp[p2], 3 * dp[p3], 5 * dp[p5]});
+            if (dp[ct] == 2 * dp[p2]) {
+                ++p2;
+            }
+            if (dp[ct] == 3 * dp[p3]) {
+                ++p3;
+            }
+            if (dp[ct] == 5 * dp[p5]){
+                ++p5;
+            }
+            ++ct;
         }
-    };
-    // @lc code=end
+        return dp.back();
+    }
+};
+// @lc code=end
+
+int main() {
+    cout << Solution{}.nthUglyNumber(10) << endl;
+}
