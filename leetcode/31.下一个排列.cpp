@@ -73,8 +73,8 @@ public:
                 if (pos != vec.size()) {
                     swap(nums[i], nums[vec[pos]]);
                     reverse(nums.begin() + i + 1, nums.end());
-                    return;
                 }
+                return;
                 #endif
             } else {
                 vec.push_back(i);
