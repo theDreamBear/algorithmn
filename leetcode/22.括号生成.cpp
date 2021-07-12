@@ -22,7 +22,7 @@ using namespace std;
 // @lc code=start
 class Solution {
  public:
-    void inserRight(string& s, int pos, unordered_set<string>& exist,
+    void insertRight(string& s, int pos, unordered_set<string>& exist,
                     vector<string>& ans) {
         int left = 0;
         int right = 0;
@@ -66,7 +66,7 @@ class Solution {
                     for (int j = 0; j < s.size(); ++j) {
                         string news = s;
                         news.insert(news.begin() + j, '(');
-                        inserRight(news, j, exist, newCommer);
+                        insertRight(news, j, exist, newCommer);
                     }
                 }
                 ans = newCommer;
@@ -79,6 +79,56 @@ class Solution {
         return ans;
     }
 };
+
+// java 实现的思路
+
+// class Solution {
+//     static List<String> allList = new ArrayList();
+//     static HashSet hashSet = new HashSet();
+//     public static List<String> generateParenthesis(int n) {
+//         allList.clear();
+//         hashSet.clear();
+//         // 边界
+//         if (n == 0) {
+//             return allList;
+//         }
+//         if (n == 1) {
+//             allList.add("()");
+//             return allList;
+//         }
+//         backtrack(new StringBuilder(), n, 0, 0);
+//         return allList;
+//     }
+
+//     public static void backtrack(StringBuilder builder, int n, int left, int right) {
+//         hashSet.add(builder);
+//         if(builder.length() >= 2 * n && left == right)
+//         {
+//             String str = builder.toString();
+//             //if(!allList.contains(str)) {
+//                 allList.add(builder.toString());
+//             //}
+//             return;
+//         }
+//         // 插入左括号
+//         if (left >= right && left < n) {
+//             builder.append('(');
+//             if (!hashSet.contains(builder.toString())) {
+//                 backtrack(builder, n, left + 1, right);
+//             }
+//             builder.deleteCharAt(builder.length() - 1);
+//         }
+//         // 插入右括号
+//         if (left > right) {
+//             builder.append(')');
+//             if (!hashSet.contains(builder.toString())) {
+//                 backtrack(builder, n, left, right + 1);
+//             }
+//             builder.deleteCharAt(builder.length() - 1);
+//         }
+//     }
+// };
+
 // @lc code=end
 
 int main() {
