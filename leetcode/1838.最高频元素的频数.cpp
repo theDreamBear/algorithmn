@@ -57,12 +57,42 @@ class Solution {
         return ans;
     }
 
-    int maxFrequency(vector<int> &data, int k) {
+    int maxFrequency2(vector<int> &data, int k) {
         sort(data.begin(), data.end());
-
-        int low = 0, high = 0, ans = 0;
+        long long low = 0, high = 0, ans = 0, sumPre = 0;
+        while (high < (int)data.size()) {
+            int step = high - low;
+            if ((long long)data[high] * step - sumPre <= k) {
+                if (ans < step + 1) {
+                    ans = step + 1;
+                }
+                sumPre += data[high++];
+            }
+            while (high < (int)data.size() && low < high) {
+                step = high - low;
+                if ((long long)data[high] * step - sumPre > k) {
+                    sumPre -= data[low++];
+                } else {
+                    break;
+                }
+            }
+        }
         return ans;
     }
 
+    int maxFrequency(vector<int> &data, int k) {
+        sort(data.begin(), data.end());
+        int l = 0, ans = 1;
+        long long need = 0;
+        for (int r = 1; r < (int)data.size(); ++r) {
+            need += (long long)(data[r] - data[r - 1]) * (r - l);
+            while (need > k) {
+                need -= (data[r] - data[l]);
+                ++l;
+            }
+            ans = max(ans, r - l + 1);
+        }
+        return ans;
+    }
 };
 // @lc code=end
