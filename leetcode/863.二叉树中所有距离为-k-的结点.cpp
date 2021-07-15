@@ -44,20 +44,52 @@ public:
         return canVisit(root->right, target);
     }
 
-    void findPath(unordered_map<TreeNode *, int> &path, TreeNode *root, TreeNode *target) {
+    void findPath1(unordered_map<TreeNode *, int> &path, TreeNode *root, TreeNode *target) {
         int v = 0;
         TreeNode *cur = root;
         while (true) {
             path[cur] = v++;
             if (canVisit(cur->left, target)) {
-               cur = cur->left;
-            } else if(canVisit(cur->right, target)) {
+                cur = cur->left;
+            } else if (canVisit(cur->right, target)) {
                 cur = cur->right;
             } else {
                 break;
             }
         }
     }
+
+    void findPathHelper(TreeNode *node, TreeNode *target, string track, string &res) {
+        if (!node) {
+            return;
+        }
+        if (node == target) {
+            res = track;
+            return;
+        }
+        track.push_back('0');
+        findPathHelper(node->left, target, track, res);
+        track.pop_back();
+        track.push_back('1');
+        findPathHelper(node->right, target, track, res);
+    }
+
+    void findPath(unordered_map<TreeNode *, int> &path, TreeNode *root, TreeNode *target) {
+        string r;
+        findPathHelper(root, target, "", r);
+        int v = 0;
+        TreeNode* cur = root;
+        path[cur] = v++;
+        for (auto& c : r) {
+            if (c == '0') {
+                cur = cur->left;
+            } else {
+                cur = cur->right;
+            }
+            path[cur] = v++;
+        }
+    }
+
 
     void visit(unordered_map<TreeNode *, int> &hash, TreeNode *node, int v, int step) {
         if (!node) {
