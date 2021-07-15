@@ -70,8 +70,10 @@ public:
         track.push_back('0');
         findPathHelper(node->left, target, track, res);
         track.pop_back();
+        if (res == "") {
         track.push_back('1');
-        findPathHelper(node->right, target, track, res);
+            findPathHelper(node->right, target, track, res);
+        }
     }
 
     void findPath(unordered_map<TreeNode *, int> &path, TreeNode *root, TreeNode *target) {
