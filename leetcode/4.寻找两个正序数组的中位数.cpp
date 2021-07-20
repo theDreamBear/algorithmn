@@ -8,161 +8,161 @@
 #include<iostream>
 #include<algorithm>
 
-/ 最蠢的merge排序,占用大量空间
+// 最蠢的merge排序,占用大量空间
 // 出错地方,
-// 1. 下标改变位置, 
+// 1. 下标改变位置,
 // 2. 如果为偶数结果的时候, 因为要得到浮点数结果需要乘以 1.0
 
-double findMedianSortedArrays_Merge(int* nums1, int nums1Size, int* nums2, int nums2Size){
-    int temp[nums1Size + nums2Size];
-    // merge排序
-    int lindex = 0, rindex = 0, index = 0;
-    while (lindex < nums1Size && rindex < nums2Size) {
-        if (nums1[lindex] < nums2[rindex]) {
-            temp[index++] = nums1[lindex];
-            ++lindex;
-        } else {
-             temp[index++] = nums2[rindex];
-            ++rindex;
-        }
-    }
-    while (lindex < nums1Size) {
-        temp[index++] = nums1[lindex++];
-    }
-    while (rindex < nums2Size) {
-        temp[index++] = nums2[rindex++];
-    }
-    int mid = (nums1Size + nums2Size - 1) / 2;
-    if ((nums1Size + nums2Size) % 2 == 0) {
-        return (temp[mid] + temp[mid + 1]) * 1.0 / 2;
-    }
-    return temp[mid];
-}
+// double findMedianSortedArrays_Merge(int* nums1, int nums1Size, int* nums2, int nums2Size){
+//     int temp[nums1Size + nums2Size];
+//     // merge排序
+//     int lindex = 0, rindex = 0, index = 0;
+//     while (lindex < nums1Size && rindex < nums2Size) {
+//         if (nums1[lindex] < nums2[rindex]) {
+//             temp[index++] = nums1[lindex];
+//             ++lindex;
+//         } else {
+//              temp[index++] = nums2[rindex];
+//             ++rindex;
+//         }
+//     }
+//     while (lindex < nums1Size) {
+//         temp[index++] = nums1[lindex++];
+//     }
+//     while (rindex < nums2Size) {
+//         temp[index++] = nums2[rindex++];
+//     }
+//     int mid = (nums1Size + nums2Size - 1) / 2;
+//     if ((nums1Size + nums2Size) % 2 == 0) {
+//         return (temp[mid] + temp[mid + 1]) * 1.0 / 2;
+//     }
+//     return temp[mid];
+// }
 
 // 我们可以发现上面的代码有连个问题
 // 1. 使用了大量的内存
 // 2. 明明到了目的位置, 却还没有停止
 // 所以下面的代码会考虑这个问题
 /** 1. 停止的位置在哪?  若 nums1Size + nums2Size 为偶数, 则目标位置有两个 1, index = mid, 以及 lindex 和 rindex 中较小的那个数
- * 
- * 
+ *
+ *
 */
-double findMedianSortedArrays_notbad(int* nums1, int nums1Size, int* nums2, int nums2Size){
-    // 有一个为空
-    if (nums1Size * nums2Size == 0) {
-        int* temp = nums1;
-        int sz = nums1Size;
-        if (nums1Size == 0) {
-            temp = nums2;
-            sz = nums2Size;
-        }
-        int mid = (sz - 1) / 2;
-        if (sz % 2 == 0) {
-            return (temp[mid] + temp[mid + 1]) / 2.0;
-        }
-        return temp[mid];
-    }
-    // 都不为空
-    int lindex = 0, rindex = 0, index = -1;
-    int midIndex = (nums1Size + nums2Size - 1) / 2;
-    int midValue = 0;
-    while (lindex < nums1Size && rindex < nums2Size) {
-        if (nums1[lindex] < nums2[rindex]) {
-            midValue = nums1[lindex];
-            ++lindex;
-        } else {
-            midValue = nums2[rindex];
-            ++rindex;
-        }
-        if (++index == midIndex) {
-            break;
-        }
-    }
-    while (index < midIndex && lindex < nums1Size) {
-         midValue = nums1[lindex];
-         ++lindex;
-          if (++index == midIndex) {
-            break;
-        }
-    }
-     while (index < midIndex && rindex < nums2Size) {
-         midValue = nums2[rindex];
-         ++rindex;
-          if (++index == midIndex) {
-            break;
-        }
-    }
-    if ((nums1Size + nums2Size) % 2 != 0) {
-        return midValue;
-    }
-    int other = 0;
-    if (lindex < nums1Size && rindex < nums2Size) {
-        if (nums1[lindex] < nums2[rindex]) {
-            other = nums1[lindex];
-        } else {
-            other = nums2[rindex];
-        }
-    } else if (lindex == nums1Size) {
-        other = nums2[rindex];
-    } else {
-        other = nums1[lindex];
-    }
-    return (midValue + other) / 2.0;
-}
+// double findMedianSortedArrays_notbad(int* nums1, int nums1Size, int* nums2, int nums2Size){
+//     // 有一个为空
+//     if (nums1Size * nums2Size == 0) {
+//         int* temp = nums1;
+//         int sz = nums1Size;
+//         if (nums1Size == 0) {
+//             temp = nums2;
+//             sz = nums2Size;
+//         }
+//         int mid = (sz - 1) / 2;
+//         if (sz % 2 == 0) {
+//             return (temp[mid] + temp[mid + 1]) / 2.0;
+//         }
+//         return temp[mid];
+//     }
+//     // 都不为空
+//     int lindex = 0, rindex = 0, index = -1;
+//     int midIndex = (nums1Size + nums2Size - 1) / 2;
+//     int midValue = 0;
+//     while (lindex < nums1Size && rindex < nums2Size) {
+//         if (nums1[lindex] < nums2[rindex]) {
+//             midValue = nums1[lindex];
+//             ++lindex;
+//         } else {
+//             midValue = nums2[rindex];
+//             ++rindex;
+//         }
+//         if (++index == midIndex) {
+//             break;
+//         }
+//     }
+//     while (index < midIndex && lindex < nums1Size) {
+//          midValue = nums1[lindex];
+//          ++lindex;
+//           if (++index == midIndex) {
+//             break;
+//         }
+//     }
+//      while (index < midIndex && rindex < nums2Size) {
+//          midValue = nums2[rindex];
+//          ++rindex;
+//           if (++index == midIndex) {
+//             break;
+//         }
+//     }
+//     if ((nums1Size + nums2Size) % 2 != 0) {
+//         return midValue;
+//     }
+//     int other = 0;
+//     if (lindex < nums1Size && rindex < nums2Size) {
+//         if (nums1[lindex] < nums2[rindex]) {
+//             other = nums1[lindex];
+//         } else {
+//             other = nums2[rindex];
+//         }
+//     } else if (lindex == nums1Size) {
+//         other = nums2[rindex];
+//     } else {
+//         other = nums1[lindex];
+//     }
+//     return (midValue + other) / 2.0;
+// }
 
 
 // 增加哨兵 减少算法实现复杂度
 // 当指针指向数组最后一个元素时, 将指针指向 guard
-double findMedianSortedArrays_no(int* nums1, int nums1Size, int* nums2, int nums2Size){
-     // 有一个为空
-    if (nums1Size * nums2Size == 0) {
-        int* temp = nums1;
-        int sz = nums1Size;
-        if (nums1Size == 0) {
-            temp = nums2;
-            sz = nums2Size;
-        }
-        int mid = (sz - 1) / 2;
-        if (sz % 2 == 0) {
-            return (temp[mid] + temp[mid + 1]) / 2.0;
-        }
-        return temp[mid];
-    }
-    const int* p = nums1, *q = nums2;
-    int midIndex = (nums1Size + nums2Size - 1) / 2;
-    int index = -1;
-    int midValue = 0;
-    const int guard = 0x7fffffff;
-    while (true) {
-        if (*p < *q) {
-            midValue = *p;
-            if (p != &guard) {
-                if (nums1 + nums1Size - 1 == p) {
-                    p = &guard;
-                } else {
-                    ++p;
-                }
-            }
-        } else {
-            midValue = *q;
-            if (q != &guard) {
-                if (nums2 + nums2Size - 1 == q) {
-                    q = &guard;
-                } else {
-                    ++q;
-                }
-            }
-        }
-        if (++index == midIndex) {
-            break;
-        }
-    }
-    if ((nums1Size + nums2Size) % 2 != 0) {
-        return midValue;
-    }
-    int other = (*p > *q) ? *q : *p;
-    return (midValue + other) / 2.0;
- }
+// double findMedianSortedArrays_no(int* nums1, int nums1Size, int* nums2, int nums2Size){
+//      // 有一个为空
+//     if (nums1Size * nums2Size == 0) {
+//         int* temp = nums1;
+//         int sz = nums1Size;
+//         if (nums1Size == 0) {
+//             temp = nums2;
+//             sz = nums2Size;
+//         }
+//         int mid = (sz - 1) / 2;
+//         if (sz % 2 == 0) {
+//             return (temp[mid] + temp[mid + 1]) / 2.0;
+//         }
+//         return temp[mid];
+//     }
+//     const int* p = nums1, *q = nums2;
+//     int midIndex = (nums1Size + nums2Size - 1) / 2;
+//     int index = -1;
+//     int midValue = 0;
+//     const int guard = 0x7fffffff;
+//     while (true) {
+//         if (*p < *q) {
+//             midValue = *p;
+//             if (p != &guard) {
+//                 if (nums1 + nums1Size - 1 == p) {
+//                     p = &guard;
+//                 } else {
+//                     ++p;
+//                 }
+//             }
+//         } else {
+//             midValue = *q;
+//             if (q != &guard) {
+//                 if (nums2 + nums2Size - 1 == q) {
+//                     q = &guard;
+//                 } else {
+//                     ++q;
+//                 }
+//             }
+//         }
+//         if (++index == midIndex) {
+//             break;
+//         }
+//     }
+//     if ((nums1Size + nums2Size) % 2 != 0) {
+//         return midValue;
+//     }
+//     int other = (*p > *q) ? *q : *p;
+//     return (midValue + other) / 2.0;
+//  }
 
 
 // struct guardSafeArr {
@@ -255,7 +255,7 @@ double findMedianSortedArrays_no(int* nums1, int nums1Size, int* nums2, int nums
 //         return findMedianSortedArrays_11(nums2, nums2Size, nums1, nums1Size);
 //     }
 //     int total_left = (nums1Size + nums2Size + 1) / 2;
-//     // left 
+//     // left
 //     int left = 0;
 //     int right = nums1Size;
 //     while (left < right) {
@@ -284,8 +284,73 @@ double findMedianSortedArrays_no(int* nums1, int nums1Size, int* nums2, int nums
 
 class Solution {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        
+    int findMedianSortedArraysHelper(vector<int> &nums1, vector<int> &nums2, int rank) {
+        int m = nums1.size();
+        int n = nums2.size();
+        int l1 = 0, h1 = m - 1;
+        int l2 = 0, h2 = n - 1;
+        while (rank > 0 && l1 <= h1 && l2 <= h2) {
+            int m1 = (l1 + h1) / 2;
+            int m2 = (l2 + h2) / 2;
+            if (nums1[m1] < nums2[m2]) {
+                rank -= (m1 - l1 + 1);
+                if (rank == 0) {
+                    return nums1[m1];
+                }
+                l1 = m1 + 1;
+                h2 = m2;
+            } else {
+                rank -= (m2 - l2 + 1);
+                if (rank == 0) {
+                    return nums2[m2];
+                }
+                l2= m2 + 1;
+                h1 = m1;
+            }
+        }
+        if (l1 > h1) {
+            return nums2[l2 + rank - 1];
+        }
+        return nums1[l1 + rank - 1];
+    }
+
+    double findMedianSortedArrays(vector<int> &nums) {
+        int m = nums.size();
+        if (m == 0) {
+            return 0;
+        }
+        if (m % 2 == 0) {
+            return (nums[m / 2] + nums[m / 2 - 1]) / 2.0;
+        }
+        return nums[m / 2];
+    }
+
+    /*  1. 归并, 空间复杂度O(m + n), 时间 O(m + n)
+     *  2. 归并但不存, 预先算出目标下标, 时间 O(m + n)
+     *  3. 二分, 为什么想到二分,
+     *      <1> 期望时间复杂度 O(log(m + n))
+     *      <2> 数组相对有序
+     *
+     * */
+    double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+        if (m == 0 && n == 0) {
+            return 0;
+        }
+        if (m == 0) {
+            return findMedianSortedArrays(nums2);
+        }
+        if (n == 0) {
+            return findMedianSortedArrays(nums1);
+        }
+        int total = m + n;
+        if (total % 2 == 0) {
+            int first = findMedianSortedArraysHelper(nums1, nums2, total / 2);
+            int second = findMedianSortedArraysHelper(nums1, nums2, total / 2 + 1);
+            return (first + second) / 2.0;
+        }
+        return findMedianSortedArraysHelper(nums1, nums2, total / 2 + 1);
     }
 };
 // @lc code=end
