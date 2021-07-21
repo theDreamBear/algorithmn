@@ -24,7 +24,7 @@ struct TreeNode {
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-class Solution {
+class Solution1{
  public:
     TreeNode* buildHelper(vector<int>& preorder, vector<int>& inorder, int l1,
                           int h1, int l2, int h2) {
@@ -56,6 +56,25 @@ class Solution {
         }
         return buildHelper(preorder, inorder, 0, preorder.size() - 1, 0,
                            inorder.size() - 1);
+    }
+};
+
+
+class Solution {
+public:
+    TreeNode *buildHelper(vector<int> &preorder, vector<int> &inorder, int l1, int h1, int l2, int h2) {
+        if (l1 > h1 || l2 > h2) return NULL;
+        if (l1 == h1 && l2 == h2) return new TreeNode(preorder[l1]);
+        int off = find(inorder.begin() + l2, inorder.begin() + h2 + 1, preorder[l1]) - inorder.begin() - l2;
+        TreeNode *root = new TreeNode(preorder[l1]);
+        root->left = buildHelper(preorder, inorder, l1 + 1, l1 + off, l2, l2 + off);
+        root->right = buildHelper(preorder, inorder, l1 + off + 1, h1, l2 + off + 1, h2);
+        return root;
+    }
+
+    TreeNode *buildTree(vector<int> &preorder, vector<int> &inorder) {
+        if (preorder.size() == 0 || inorder.size() == 0 || preorder.size() != inorder.size()) return NULL;
+        return buildHelper(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
     }
 };
 // @lc code=end
