@@ -284,37 +284,37 @@
 
 class Solution {
 public:
-    int findMedianSortedArraysHelper(vector<int> &nums1, vector<int> &nums2, int rank) {
+    int findMedianSortedArraysHelper(vector<int> &nums1, vector<int> &nums2, int rank) { // NOLINT
         int m = nums1.size();
         int n = nums2.size();
         int l1 = 0, h1 = m - 1;
         int l2 = 0, h2 = n - 1;
-        while (rank > 0 && l1 <= h1 && l2 <= h2) {
-            int m1 = (l1 + h1) / 2;
-            int m2 = (l2 + h2) / 2;
-            if (nums1[m1] < nums2[m2]) {
+        while (true) {
+            if (l1 > h1) {
+                return nums2[l2 + rank - 1];
+            }
+            if (l2 > h2) {
+                return nums1[l1 + rank - 1];
+            }
+            if (rank == 1) {
+                return min(nums1[l1], nums2[l2]);
+            }
+            int m1 = ((l1 + rank / 2 - 1) < h1) ? (l1 + rank / 2 - 1) : h1;
+            int m2 = ((l2 + rank / 2 - 1) < h2) ? (l2 + rank / 2 - 1) : h2;
+            if (nums1[m1] <= nums2[m2]) {
                 rank -= (m1 - l1 + 1);
-                if (rank == 0) {
-                    return nums1[m1];
-                }
                 l1 = m1 + 1;
-                h2 = m2;
-            } else {
+            } else if (nums1[m1] > nums2[m2]) {
                 rank -= (m2 - l2 + 1);
                 if (rank == 0) {
                     return nums2[m2];
                 }
-                l2= m2 + 1;
-                h1 = m1;
+                l2 = m2 + 1;
             }
         }
-        if (l1 > h1) {
-            return nums2[l2 + rank - 1];
-        }
-        return nums1[l1 + rank - 1];
     }
 
-    double findMedianSortedArrays(vector<int> &nums) {
+    double findMedianSortedArrays(vector<int> &nums) {  // NOLINT
         int m = nums.size();
         if (m == 0) {
             return 0;
@@ -323,6 +323,27 @@ public:
             return (nums[m / 2] + nums[m / 2 - 1]) / 2.0;
         }
         return nums[m / 2];
+    }
+
+    double findMedianSortedArraysJointSorted(vector<int> &small, vector<int> &big) {  // NOLINT
+        int m = small.size();
+        int n = big.size();
+        int total = m + n;
+        if (total % 2 == 0) {
+            if (m == n) {
+                return (small.back() + big.front()) / 2.0;
+            }
+            if (m > n) {
+                return (small[total / 2 - 1] + small[total / 2]) / 2.0;
+            }
+            return (big[total / 2 - m - 1] + big[total / 2 - m]) / 2.0;
+        } else {
+            if (m > n) {
+                return small[total / 2];
+            } else {
+                return big[total / 2 - m];
+            }
+        }
     }
 
     /*  1. 归并, 空间复杂度O(m + n), 时间 O(m + n)
@@ -335,6 +356,7 @@ public:
     double findMedianSortedArrays(vector<int> &nums1, vector<int> &nums2) {
         int m = nums1.size();
         int n = nums2.size();
+        // 边界
         if (m == 0 && n == 0) {
             return 0;
         }
@@ -345,6 +367,13 @@ public:
             return findMedianSortedArrays(nums1);
         }
         int total = m + n;
+        // 拼接有序
+        if (nums1.back() <= nums2.front()) {
+            return findMedianSortedArraysJointSorted(nums1, nums2);
+        }
+        if (nums1.front() >= nums2.back()) {
+            return findMedianSortedArraysJointSorted(nums2, nums1);
+        }
         if (total % 2 == 0) {
             int first = findMedianSortedArraysHelper(nums1, nums2, total / 2);
             int second = findMedianSortedArraysHelper(nums1, nums2, total / 2 + 1);
@@ -353,4 +382,5 @@ public:
         return findMedianSortedArraysHelper(nums1, nums2, total / 2 + 1);
     }
 };
+
 // @lc code=end
