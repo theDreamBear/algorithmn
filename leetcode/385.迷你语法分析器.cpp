@@ -108,14 +108,14 @@ public:
         return ne;
     }
 
-    NestedInteger deserialize(string s) {
+    NestedInteger deserialize1(string s) {
         if (s[0] == '[') {
             return deserializeHelper(s, 1, s.size() - 2);
         }
         return NestedInteger(stoi(s));
     }
 
-    NestedInteger deserialize1(string s) {
+    NestedInteger deserialize2(string s) {
         if (s[0] != '[') {
             return NestedInteger(stoi(s));
         }
@@ -154,17 +154,54 @@ public:
             }
             if (s[i] == '-') {
                 sign = -1;
-                continue;
             }
             if (sign == 0) {
                 sign = 1;
+                continue;
             }
             value = value * 10 + (s[i] - '0');
         }
         return st.top();
     }
-};
 
+    NestedInteger dfs(const string &s, int& pos) {
+        NestedInteger ne;
+        ++pos;
+        while (pos < s.size()) {
+            if (isdigit(s[pos]) || s[pos] == '-') {
+                string cur;
+                if (s[pos] == '-') {
+                    cur.push_back(s[pos++]);
+                }
+                while (isdigit(s[pos])) {
+                    cur.push_back(s[pos++]);
+                }
+                ne.add(NestedInteger(stoi(cur)));
+                cur.clear();
+            }
+            if (s[pos] == ',') {
+                ++pos;
+            }
+            if (s[pos] == '[') {
+                NestedInteger temp = dfs(s, pos);
+                ne.add(temp);
+            }
+            if (s[pos] == ']') {
+                ++pos;
+                break;
+            }
+        }
+        return ne;
+    }
+
+    NestedInteger deserialize(string s) {
+        if (s[0] != '[') {
+            return NestedInteger(stoi(s));
+        }
+        int pos = 0;
+        return dfs(s, pos);
+    }
+};
 /**
  *  1. value 使用 string 会方面很多
  *
