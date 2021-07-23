@@ -124,21 +124,28 @@ public:
         int sign = 0;
         for (int i = 0; i < s.size(); ++i) {
             if (s[i] == '[') {
-                NestedInteger n;
-                st.push(n);
+                st.push(NestedInteger());
                 continue;
             }
-            if (s[i] == ']' || s[i] == ',') {
+            if (s[i] == ',') {
                 if (sign) {
                     value *= sign;
                     NestedInteger temp(value);
                     st.top().add(temp);
                     sign = 0;
                     value = 0;
-                } else if (s[i - 1] == '['){
-                    NestedInteger temp;
+                }
+                continue;
+            }
+            if (s[i] == ']') {
+                if (sign) {
+                    value *= sign;
+                    NestedInteger temp(value);
                     st.top().add(temp);
-                } else {
+                    sign = 0;
+                    value = 0;
+                }
+                if (st.size() > 1) {
                     auto item = st.top();
                     st.pop();
                     st.top().add(item);
@@ -147,6 +154,7 @@ public:
             }
             if (s[i] == '-') {
                 sign = -1;
+                continue;
             }
             if (sign == 0) {
                 sign = 1;
@@ -156,6 +164,5 @@ public:
         return st.top();
     }
 };
-
 // @lc code=end
 
