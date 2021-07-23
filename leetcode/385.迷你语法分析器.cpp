@@ -98,24 +98,24 @@ public:
                 sign = 1;
             }
             value = value * 10 + (s[i] - '0');
-            if (i == high) {
-                value *= sign;
-                NestedInteger temp;
-                temp.setInteger(value);
-                ne.add(temp);
-            }
+        }
+        if (sign) {
+            value *= sign;
+            NestedInteger temp;
+            temp.setInteger(value);
+            ne.add(temp);
         }
         return ne;
     }
 
-    NestedInteger deserialize1(string s) {
+    NestedInteger deserialize(string s) {
         if (s[0] == '[') {
             return deserializeHelper(s, 1, s.size() - 2);
         }
         return NestedInteger(stoi(s));
     }
 
-    NestedInteger deserialize(string s) {
+    NestedInteger deserialize1(string s) {
         if (s[0] != '[') {
             return NestedInteger(stoi(s));
         }
@@ -164,5 +164,12 @@ public:
         return st.top();
     }
 };
+
+/**
+ *  1. value 使用 string 会方面很多
+ *
+ *
+ *
+*/
 // @lc code=end
 
