@@ -56,7 +56,7 @@ class Solution {
 
     */
     //#define VIOLATE
-    int lengthOfLIS(vector<int> &nums) {
+    int lengthOfLIS1(vector<int> &nums) {
         if (nums.size() <= 1) {
             return nums.size();
         }
@@ -97,6 +97,18 @@ class Solution {
         }
         cout << endl;
         return ans;
+    }
+
+    int lengthOfLIS(vector<int> &nums) {
+        if (nums.size() <= 1) {
+            return nums.size();
+        }
+        vector<int> seq(nums.size(), INT_MAX);
+        for (auto v : nums) {
+            auto pos = lower_bound(seq.begin(), seq.end(), v);
+            *pos = v;
+        }
+        return lower_bound(seq.begin(), seq.end(), INT_MAX) - seq.begin();
     }
 };
 // @lc code=end
