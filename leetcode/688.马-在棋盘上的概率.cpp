@@ -109,7 +109,6 @@ public:
         if (dp[k][value]) {
             return dp[k][value];
         }
-       // int t = 0;
         double sum = 0;
         for (int j = 0; j < 8; ++j) {
             int nx = x + dx[j];
@@ -117,12 +116,7 @@ public:
             if (nx < 0 || ny < 0 || nx >= n || ny >= n) {
                 continue;
             }
-            //++t;
             int temp = nx * 25 + ny;
-            if (dp[k - 1][temp]) {
-                sum += dp[k - 1][temp];
-                continue;
-            }
             sum += knightProbabilityHelper2(n, k - 1, nx, ny, dp);
         }
         return dp[k][value] = sum / 8;
