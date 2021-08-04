@@ -22,19 +22,28 @@ using namespace std;
 // @lc code=start
 class MyCircularQueue {
 private:
-    queue<int> q;
+    vector<int> vec;
     int sz;
+    int front; // 队头
+    int rear;  // 下一个可插入的位置
+    bool full;
 
 public:
-    MyCircularQueue(int k) {
-        sz = k;
+    MyCircularQueue(int k) : vec(k), sz(k) {
+        front = 0;
+        rear = 0;
+        full = false;
     }
 
     bool enQueue(int value) {
         if (isFull()) {
             return false;
         }
-        q.push(value);
+        vec[rear] = value;
+        rear = (rear + 1) % sz;
+        if (rear == front) {
+            full = true;
+        }
         return true;
     }
 
@@ -42,7 +51,8 @@ public:
         if (isEmpty()) {
             return false;
         }
-        q.pop();
+        front = (front + 1) % sz;
+        full = false;
         return true;
     }
 
@@ -50,22 +60,23 @@ public:
         if (isEmpty()) {
             return -1;
         }
-        return q.front();
+        return vec[front];
     }
 
     int Rear() {
         if (isEmpty()) {
             return -1;
         }
-        return q.back();
+        int pos = (rear + sz - 1) % sz;
+        return vec[pos];
     }
 
     bool isEmpty() {
-        return q.empty();
+        return !full && rear == front;
     }
 
     bool isFull() {
-        return q.size() == sz;
+        return full;
     }
 };
 
