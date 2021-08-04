@@ -76,7 +76,6 @@ public:
             for (int j = i + 1; j < nums.size() - 1; ++j) {
                 int res = _binary_find(nums, j, nums[i] + nums[j], k);
                 ans += (res - j);
-
             }
         }
         return ans;
