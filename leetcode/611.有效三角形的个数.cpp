@@ -65,7 +65,7 @@ class Solution {
     }
 
 public:
-    int triangleNumber(vector<int> &nums) {
+    int triangleNumber1(vector<int> &nums) {
         int ans = 0;
         if (nums.size() < 3) {
             return ans;
@@ -82,7 +82,7 @@ public:
         return ans;
     }
 
-    int triangleNumber1(vector<int> &nums) {
+    int triangleNumber(vector<int> &nums) {
         int ans = 0;
         if (nums.size() < 3) {
             return ans;
