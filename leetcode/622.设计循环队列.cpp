@@ -20,7 +20,7 @@
 using namespace std;
 
 // @lc code=start
-class MyCircularQueue {
+class MyCircularQueue1 {
 private:
     vector<int> vec;
     int sz;
@@ -29,7 +29,7 @@ private:
     bool full;
 
 public:
-    MyCircularQueue(int k) : vec(k), sz(k) {
+    MyCircularQueue1(int k) : vec(k), sz(k) {
         front = 0;
         rear = 0;
         full = false;
@@ -77,6 +77,90 @@ public:
 
     bool isFull() {
         return full;
+    }
+};
+
+class MyCircularQueue {
+private:
+    struct ListNode {
+        int val;
+        ListNode *next;
+    };
+
+    ListNode *front;
+    ListNode *rear;
+    bool empty;
+
+public:
+    MyCircularQueue(int k) {
+        front = new ListNode;
+        rear = front;
+        for (int i = 0; i < k - 1; i++) {
+            ListNode *node = new ListNode;
+            rear->next = node;
+            rear = node;
+        }
+        rear->next = front;
+        rear = front;
+        empty = true;
+    }
+
+    ~MyCircularQueue() {
+        ListNode* node = this->rear;
+        node->next = nullptr;
+        node = this->front;
+        while (node) {
+            ListNode* next = node->next;
+            delete node;
+            node = next;
+        }
+    }
+
+    bool enQueue(int value) {
+        if (isFull()) {
+            return false;
+        }
+        if (isEmpty()) {
+            empty = false;
+        } else {
+            rear = rear->next;
+        }
+        rear->val = value;
+        return true;
+    }
+
+    bool deQueue() {
+        if (isEmpty()) {
+            return false;
+        }
+        if (front == rear) {
+            empty = true;
+            return true;
+        }
+        front = front->next;
+        return true;
+    }
+
+    int Front() {
+        if (isEmpty()) {
+            return -1;
+        }
+        return front->val;
+    }
+
+    int Rear() {
+        if (isEmpty()) {
+            return -1;
+        }
+        return rear->val;
+    }
+
+    bool isEmpty() {
+        return empty;
+    }
+
+    bool isFull() {
+        return !empty && rear->next == front;
     }
 };
 
