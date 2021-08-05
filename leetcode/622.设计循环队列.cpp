@@ -80,6 +80,9 @@ public:
     }
 };
 
+/*
+    不取尾和取尾有不同的写法
+*/
 class MyCircularQueue {
 private:
     struct ListNode {
