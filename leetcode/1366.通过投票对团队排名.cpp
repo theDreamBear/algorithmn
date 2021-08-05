@@ -20,7 +20,7 @@
 using namespace std;
 
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     string rankTeams(vector<string>& votes) {
         if (votes.size() == 1 || votes[0].size() == 1) {
@@ -57,8 +57,17 @@ public:
     }
 };
 
-class Solution1 {
+class Solution {
 public:
+    string get_key(char c, vector<int>& vl) {
+        string key;
+        for (int i = 0; i < vl.size(); i++) {
+            key += (to_string(vl[i]) + "_");
+        }
+        key.push_back(c);
+        return key;
+    }
+
     string rankTeams(vector<string>& votes) {
         if (votes.size() == 1 || votes[0].size() == 1) {
             return votes[0];
@@ -76,26 +85,12 @@ public:
         }
         string s = votes[0];
         unordered_map<char, string> ckey;
+        for (auto c : s) {
+            string key = get_key(c, hash[c]);
+            ckey[c] = key;
+        }
         sort(s.begin(), s.end(), [&](char last, char before) {
             string lkey, bkey;
-            if (ckey.count(last) == 0) {
-                auto& vl = hash[last];
-                string key;
-                for (int i = 0; i < vl.size(); i++) {
-                    key += (to_string(vl[i]) + "_");
-                }
-                key.push_back(last);
-                ckey[last] = key;
-            }
-            if (ckey.count(before) == 0) {
-                auto& vl = hash[before];
-                string key;
-                for (int i = 0; i < vl.size(); i++) {
-                    key += (to_string(vl[i]) + "_");
-                }
-                key.push_back(last);
-                ckey[before] = key;
-            }
             return ckey[last] < ckey[before];
         });
         return s;
