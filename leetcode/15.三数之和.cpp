@@ -106,6 +106,59 @@ class Solution {
         return result;
     }
 };
+
+
+class Solution1 {
+public:
+    static constexpr int E = 2e5 + 1;
+    static constexpr int A = 1e5;
+    unordered_set<unsigned int> exist;
+
+    void get_three_random(vector<int> &nums, vector<vector<int>> &ans, int times) {
+        random_device rd;
+        mt19937 mt(rd());
+        uniform_int_distribution<int> u(0, nums.size() - 1);
+        for (int i = 0; i < times; i++) {
+            int first = u(mt);
+            int second = u(mt);
+            while (first == second) {
+                second = u(mt);
+            }
+            int third = u(mt);
+            while (first == third || second == third) {
+                third = u(mt);
+            }
+            if (nums[first] > nums[second]) {
+                swap(first, second);
+            }
+            if (nums[second] > nums[third]) {
+                swap(second, third);
+            }
+            if (nums[first] > nums[second]) {
+                swap(first, second);
+            }
+            unsigned int hash = (((unsigned int)nums[first] + A) * E + (nums[second]) + A) * E + nums[third] + A;
+            if (exist.count(hash) > 0) {
+                continue;
+            }
+            if (nums[first] + nums[second] + nums[third] == 0) {
+                ans.push_back({nums[first], nums[second], nums[third]});
+            }
+            exist.insert(hash);
+        }
+    }
+
+    vector<vector<int>> threeSum(vector<int> &nums) {
+        vector<vector<int>> result;
+        if (nums.size() < 3) {
+            return result;
+        }
+        for (int i = 0; i < 1; i++) {
+            get_three_random(nums, result, 100000);
+        }
+        return result;
+    }
+};
 // @lc code=end
 
 template <typename Result, typename... Input>
