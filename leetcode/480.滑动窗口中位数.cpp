@@ -20,7 +20,7 @@
 using namespace std;
 
 // @lc code=start
-class Solution {
+class Solution1 {
  public:
     /*
         暴力解法 nklgk, 超时
@@ -56,114 +56,6 @@ class Solution {
     vector<double> medianSlidingWindow(vector<int>& nums, int k) {}
 };
 // @lc code=end
-
-class hashHeap {
- private:
-    const vector<int>& _data;
-    // 存每个元素在_data 里面的下标
-    vector<int> _indexes;
-    int _sz;
-
-    // 外部下标映射内部下标, 方面删除
-    unordered_map<int, int> outInner;
-
-    // _data 下标对应 _indexes 下标
-    function<bool(int, int)> _comparator;
-
-    void update(int innerIndex) {}
-
-    int size() { return _sz; }
-
-    int getValue(int innerIndex) { return _data[_indexes[innerIndex]]; }
-
-    void heapUp(int innerIndex) {
-        int vOuter = _indexes[innerIndex];
-        int pos = innerIndex;
-        while (pos > 0) {
-            int pInner = (pos - 1) / 2;
-            if (_comparator(getValue(pInner), _data[vOuter])) {
-                break;
-            }
-            _indexes[pos] = _indexes[pInner];
-            outInner[_indexes[pInner]] = pos;
-            pos = pInner;
-
-        }
-        _indexes[pos] = vOuter;
-        outInner[vOuter] = pos;
-    }
-
-    void headDown(int innerIndex) {
-        int vOuter = _indexes[innerIndex];
-        int pos = innerIndex;
-        while (pos * 2 + 1 < _sz) {
-            int mm = 2 * pos + 1;
-            int ma = mm + 1;
-            if (ma < size() && _comparator(getValue(ma), getValue(mm))) {
-                mm = ma;
-            }
-            if (_comparator(_data[vOuter], getValue(mm))) {
-                break;
-            }
-            _indexes[pos] = _indexes[mm];
-            outInner[_indexes[pos]] = pos;
-            pos = mm;
-        }
-        _indexes[pos] = vOuter;
-        outInner[vOuter] = pos;
-    }
-
-    int lastIndex() {
-        return size() - 1;
-    }
-
-    int top() {
-        return 0;
-    }
-
-    void shrink() { --_sz; }
-
-    void expand() {
-        ++_sz;
-    }
- public:
-    hashHeap(const vector<int>& nums, function<bool(int, int)> cmp = less<int>()) : _data(nums), _comparator(cmp) {
-        _sz = 0;
-    }
-
-    void push(int outIndex) {
-        if (_sz == _indexes.size()) {
-            _indexes.push_back(outIndex);
-        } else {
-            _indexes[_sz] = outIndex;
-        }
-        expand();
-        heapUp(lastIndex());
-    }
-
-    void deletePos(int outerIndex) {
-        int inner = outInner[outerIndex];
-        swap(_indexes[inner], _indexes[lastIndex()]);
-        outInner[_indexes[inner]] = inner;
-        shrink();
-        headDown(inner);
-    }
-
-    void pop() {
-        swap(_indexes[top()], _indexes[lastIndex()]);
-        outInner[_indexes[top()]] = top();
-        shrink();
-        headDown(top());
-    }
-
-    void print() {
-        for (int i = 0; i < _data.size(); ++i) {
-            cout << getValue(top());
-            deletePos(i);
-        }
-        cout << endl;
-    }
-};
 
 
 int main() {
