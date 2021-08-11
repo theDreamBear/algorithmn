@@ -135,10 +135,6 @@ class Solution {
 
         void pop(int inner_index = 0) {
             vector<int> temp = _indexes;
-            if (!check()) {
-                cout << "pop1 error" << endl;
-                exit(-1);
-            }
             if (inner_index >= sz) {
                 return;
             }
