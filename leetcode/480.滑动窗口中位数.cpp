@@ -118,7 +118,6 @@ class Solution {
             : _data(data), _cmp(std::move(cmp)), sz(0) {}
 
         void push(int index) {
-            vector<int> temp = _indexes;
             if (index >= _data.size()) {
                 return;
             }
@@ -134,7 +133,6 @@ class Solution {
         }
 
         void pop(int inner_index = 0) {
-            vector<int> temp = _indexes;
             if (inner_index >= sz) {
                 return;
             }
@@ -362,14 +360,3 @@ class Solution {
     }
 };
 // @lc code=end
-
-int main() {
-    vector<int> data = {1, 3, 2};
-    hashHeap hd(data);
-    for (int i = 0; i < data.size(); ++i) {
-        hd.push(i);
-    }
-    hd.deletePos(1);
-    hd.print();
-    cout << "hello world" << endl;
-}
