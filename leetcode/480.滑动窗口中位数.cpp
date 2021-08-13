@@ -353,11 +353,131 @@ public:
 };
 
 
-class Solution {
+class Solution2 {
 public:
     vector<double> medianSlidingWindow(vector<int> &nums, int k) {
         medianWindows nw(nums, k);
         vector<double> res = nw.getMedian();
+        return res;
+    }
+};
+
+class medianSlidingWindows {
+private:
+    int _windows_size;
+    priority_queue<int> _max_heap;
+    priority_queue<int, vector<int>, greater<>> _min_heap;
+    int _max_heap_size{};
+    int _min_heap_size{};
+
+    //
+    unordered_map<int, int> _delay_delete_map;
+
+    void _check_clean() {
+        while (!_max_heap.empty() && _delay_delete_map.count(_max_heap.top()) > 0) {
+            if (--_delay_delete_map[_max_heap.top()] == 0) {
+                _delay_delete_map.erase(_max_heap.top());
+            }
+            _max_heap.pop();
+        }
+        while (!_min_heap.empty() && _delay_delete_map.count(_min_heap.top()) > 0) {
+            if (--_delay_delete_map[_min_heap.top()] == 0) {
+                _delay_delete_map.erase(_min_heap.top());
+            }
+            _min_heap.pop();
+        }
+    }
+
+    void _make_balance() {
+        _check_clean();
+        if (_max_heap_size > _min_heap_size + 1) {
+            int v = _max_heap.top();
+            _push_heap(_min_heap, v, _min_heap_size);
+            _pop_heap(_max_heap, _max_heap_size);
+            while (_delay_delete_map.count(_max_heap.top()) > 0) {
+                if (--_delay_delete_map[_max_heap.top()] == 0) {
+                    _delay_delete_map.erase(_max_heap.top());
+                }
+                _max_heap.pop();
+            }
+            return;
+        }
+        if (_min_heap_size > _max_heap_size) {
+            int v = _min_heap.top();
+            _push_heap(_max_heap, v, _max_heap_size);
+            _pop_heap(_min_heap, _min_heap_size);
+            while (_delay_delete_map.count(_min_heap.top()) > 0) {
+                if (--_delay_delete_map[_min_heap.top()] == 0) {
+                    _delay_delete_map.erase(_min_heap.top());
+                }
+                _min_heap.pop();
+            }
+        }
+    }
+
+    template<typename Heap>
+    void _push_heap(Heap &heap, int v, int &sz) {
+        heap.push(v);
+        ++sz;
+    }
+
+    template<typename Heap>
+    void _pop_heap(Heap &heap, int &sz) {
+        heap.pop();
+        --sz;
+    }
+
+    double _getMedian(int k) {
+        if (k % 2 == 0) {
+            return (((long long)_max_heap.top() + _min_heap.top()) / 2.0);
+        } else {
+            return _max_heap.top();
+        }
+    }
+
+public:
+    medianSlidingWindows(int k) : _windows_size(k) {}
+
+    vector<double> getMedian(vector<int> &data) {
+        vector<double> res;
+        for (int i = 0; i < _windows_size && i < data.size(); i++) {
+            if (_max_heap.empty() || data[i] <= _max_heap.top()) {
+                _push_heap(_max_heap, data[i], _max_heap_size);
+            } else {
+                _push_heap(_min_heap, data[i], _min_heap_size);
+            }
+            _make_balance();
+        }
+        if (_windows_size >= data.size()) {
+            res.push_back(_getMedian(data.size()));
+            return res;
+        }
+        res.push_back(_getMedian(_windows_size));
+        for (int i = _windows_size; i < data.size(); i++) {
+            if (_max_heap.empty() || data[i] <= _max_heap.top()) {
+                _push_heap(_max_heap, data[i], _max_heap_size);
+            } else {
+                _push_heap(_min_heap, data[i], _min_heap_size);
+            }
+            // 延迟删除标记
+            _delay_delete_map[data[i - _windows_size]]++;
+            if (data[i - _windows_size] <= _max_heap.top()) {
+                --_max_heap_size;
+            } else {
+                --_min_heap_size;
+            }
+            _make_balance();
+            res.push_back(_getMedian(_windows_size));
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<double> medianSlidingWindow(vector<int> &nums, int k) {
+        medianSlidingWindows nw(k);
+        vector<double> res = nw.getMedian(nums);
         return res;
     }
 };

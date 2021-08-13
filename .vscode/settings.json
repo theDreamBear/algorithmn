@@ -27,9 +27,15 @@
         "__hash_table": "cpp",
         "__tree": "cpp",
         "deque": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "__functional_base": "cpp",
+        "array": "cpp",
+        "future": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "thread": "cpp"
     },
     "bracket-pair-colorizer-2.excludedLanguages": [
-    
+
     ]
 }
