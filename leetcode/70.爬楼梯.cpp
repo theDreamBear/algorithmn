@@ -14,36 +14,36 @@
  * Testcase Example:  '2'
  *
  * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
- * 
+ *
  * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
- * 
+ *
  * 注意：给定 n 是一个正整数。
- * 
+ *
  * 示例 1：
- * 
+ *
  * 输入： 2
  * 输出： 2
  * 解释： 有两种方法可以爬到楼顶。
  * 1.  1 阶 + 1 阶
  * 2.  2 阶
- * 
+ *
  * 示例 2：
- * 
+ *
  * 输入： 3
  * 输出： 3
  * 解释： 有三种方法可以爬到楼顶。
  * 1.  1 阶 + 1 阶 + 1 阶
  * 2.  1 阶 + 2 阶
  * 3.  2 阶 + 1 阶
- * 
- * 
+ *
+ *
  */
 #include <iostream>
 #include<vector>
 using namespace std;
 // @lc code=start
 
-//#define DEBUG 
+//#define DEBUG
 ostream& operator << (ostream& os, vector<vector<int> >& vec) {
     for (int i = 0; i < vec.size(); ++i) {
         // 循环要注意初始化, 结束以及迭代
@@ -55,7 +55,7 @@ ostream& operator << (ostream& os, vector<vector<int> >& vec) {
     return os;
 }
 
-class Solution {
+class Solution1{
 public:
     int climbStairs1(int n) {
         if (n <= 1) {
@@ -137,6 +137,46 @@ public:
         return 2 * ans[0][0] + ans[1][0];
     }
 };
+
+constexpr int MAX_N = 50;
+vector<size_t> res(MAX_N + 1);
+
+template<size_t N>
+struct AA {
+    static constexpr size_t value = AA<N - 1>::value + AA<N - 2>::value;
+    AA() {
+        AA<N - 1> temp;
+        res[N] = value;
+    }
+};
+
+template<>
+struct AA<0> {
+    static constexpr size_t value = 1;
+    AA() {
+        res[0] = 1;
+    }
+};
+
+template<>
+struct AA<1> {
+    static constexpr size_t value = 1;
+    AA() {
+        res[1] = 1;
+    }
+};
+
+
+AA<MAX_N> aa;
+
+class Solution{
+public:
+    int climbStairs(int n) {
+        return res[n];
+    }
+};
+
+
 // @lc code=end
 
 int fastPowerRecursion(int base, int n) {
