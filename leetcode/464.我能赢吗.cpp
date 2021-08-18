@@ -7,28 +7,43 @@
 // @lc code=start
 constexpr int MAX_N = 20;
 
-signed char dp[1 << MAX_N][300];
-int max_state;
+signed char dp[1 << MAX_N][301];
+unsigned int max_state;
 int max_choosable_integer;
 
 class Solution {
 public:
-    int canIWinHelper(int state, int left) {
+    int max_left(unsigned int state) {
+        return 32 - __builtin_clz(state);
+    }
+
+    int canIWinHelper(unsigned int state, int left) {
         if (dp[state][left] != 0) {
             return dp[state][left];
         }
-        int cur = state;
+        if (max_left(state) >= left) {
+            return dp[state][left] = 1;
+        }
+#ifdef VI
         for (int i = max_choosable_integer - 1;i >= 0; i--) {
             if (!(state & (1 << i))) {
                 continue;
-            }
-            if (i + 1 >= left) {
-                return dp[state][left] = 1;
             }
             if (canIWinHelper(state ^ (1 << i), left - i - 1) == -1) {
                 return dp[state][left] = 1;
             }
         }
+#else   // 加速
+        int cur = state;
+        while (cur) {
+            int rank = max_left(cur);
+            int val = (1 << (rank - 1));
+            cur ^= val;
+            if (canIWinHelper(state ^ val, left - rank) == -1) {
+                return dp[state][left] = 1;
+            }
+        }
+#endif
         return dp[state][left] = -1;
     }
 
@@ -40,11 +55,11 @@ public:
      * */
     bool canIWin(int maxChoosableInteger, int desiredTotal) {
         max_choosable_integer = maxChoosableInteger;
-        max_state = (1 << maxChoosableInteger) - 1;
         int sum = (maxChoosableInteger + 1) * maxChoosableInteger / 2;
         if (sum < desiredTotal) {
             return false;
         }
+        max_state = (1 << maxChoosableInteger) - 1;
         if (canIWinHelper(max_state, desiredTotal) == 1) {
             return true;
         }
