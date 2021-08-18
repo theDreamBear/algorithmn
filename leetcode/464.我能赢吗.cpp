@@ -3,29 +3,43 @@
  *
  * [464] 我能赢吗
  */
+#include <string.h>
+
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
+using namespace std;
 
 // @lc code=start
-constexpr int MAX_N = 20;
-
-signed char dp[1 << MAX_N][301];
-unsigned int max_state;
-int max_choosable_integer;
+static constexpr int MAX_N = 20;
 
 class Solution {
-public:
-    int max_left(unsigned int state) {
-        return 32 - __builtin_clz(state);
-    }
+ public:
+    signed char dp[1 << MAX_N];
+    unsigned int max_state;
+    int max_choosable_integer;
+
+    int max_left(unsigned int state) { return 32 - __builtin_clz(state); }
 
     int canIWinHelper(unsigned int state, int left) {
-        if (dp[state][left] != 0) {
-            return dp[state][left];
+        if (dp[state] != 0) {
+            return dp[state];
         }
         if (max_left(state) >= left) {
-            return dp[state][left] = 1;
+            return dp[state] = 1;
         }
 #ifdef VI
-        for (int i = max_choosable_integer - 1;i >= 0; i--) {
+        for (int i = max_choosable_integer - 1; i >= 0; i--) {
             if (!(state & (1 << i))) {
                 continue;
             }
@@ -33,18 +47,18 @@ public:
                 return dp[state][left] = 1;
             }
         }
-#else   // 加速
+#else  // 加速
         int cur = state;
         while (cur) {
             int rank = max_left(cur);
             int val = (1 << (rank - 1));
             cur ^= val;
             if (canIWinHelper(state ^ val, left - rank) == -1) {
-                return dp[state][left] = 1;
+                return dp[state] = 1;
             }
         }
 #endif
-        return dp[state][left] = -1;
+        return dp[state] = -1;
     }
 
     /*
@@ -68,3 +82,4 @@ public:
 };
 // @lc code=end
 
+int main() { cout << Solution{}.canIWin(10, 1) << endl; }
