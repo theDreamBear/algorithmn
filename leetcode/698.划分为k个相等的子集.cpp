@@ -129,7 +129,6 @@ public:
         int len = 1 << n;
         vector<int> dp(len);
         vector<int> total(len);
-        vector<bool> used(n);
 
         dp[0] = true;
         for (int mask = 0; mask < len; mask++) {
