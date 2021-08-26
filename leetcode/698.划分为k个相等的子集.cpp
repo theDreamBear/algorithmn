@@ -115,7 +115,7 @@ public:
         return backtrack2(nums, used, nums.size() - 1, k, 0, subSum);
     }
 
-    bool canPartitionKSubsets(vector<int> &nums, int k) {
+    bool canPartitionKSubsets3(vector<int> &nums, int k) {
         int sum = accumulate(nums.begin(), nums.end(), 0);
         if (sum % k != 0) {
             return false;
@@ -127,9 +127,8 @@ public:
         }
         int n = nums.size();
         int len = 1 << n;
-        vector<int> dp(len);
         vector<int> total(len);
-
+        vector<bool> dp(len);
         dp[0] = true;
         for (int mask = 0; mask < len; mask++) {
             if (!dp[mask]) {
@@ -151,6 +150,44 @@ public:
             }
         }
         return dp[len - 1];
+    }
+
+    bool canPartitionKSubsets(vector<int> &nums, int k) {
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        if (sum % k != 0) {
+            return false;
+        }
+        int subSum = sum / k;
+        sort(nums.begin(), nums.end());
+        if (nums.back() > subSum) {
+            return false;
+        }
+        int n = nums.size();
+        int len = 1 << n;
+        vector<int> total(len);
+        vector<bool> dp(len, true);
+        dp[len - 1] = false;
+        for (int mask = len - 1; mask > 0; mask--) {
+            if (dp[mask]) {
+                continue;
+            }
+            unsigned temp = mask;
+            while (temp) {
+                int p = temp & ~(temp - 1);
+                int pos = __builtin_ffs(p) - 1;
+                int next = mask ^ p;
+                temp -= p;
+                if (!dp[next]) {
+                    continue;
+                }
+                if (total[mask] + nums[pos] > subSum) {
+                    break;
+                }
+                total[next] = (total[mask] + nums[pos]) % subSum;
+                dp[next] = false;
+            }
+        }
+        return !dp[0];
     }
 
 };
