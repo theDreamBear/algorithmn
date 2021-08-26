@@ -61,6 +61,63 @@ using namespace std;
 using namespace std;
 
 // @lc code=start
+constexpr unsigned int primeRK = 16777619;
+
+unsigned int quickMi(unsigned int base, int n) {
+    unsigned int ans = 1;
+    while (n) {
+        if (n & 0x1) {
+            ans *= base;
+        }
+        base *= base;
+        n >>= 1;
+    }
+    return ans;
+}
+
+void hashStr(const string &s, unsigned int &hash) {
+    hash = 0;
+    for (auto c : s) {
+        hash = (hash * primeRK) + c;
+    }
+    return;
+}
+
+bool strcmp(const char *source, const char *target, int p1, int p2, int n) {
+    for (int i = 0; i < n; i++) {
+        if (source[p1++] != target[p2++]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+int indexRabinKarp(const string &source, const string &target) {
+    if (source.size() < target.size()) {
+        return -1;
+    }
+    int n = target.size();
+    unsigned int tHash, p;
+    hashStr(target, tHash);
+    p = quickMi(primeRK, target.size());
+
+    unsigned int h;
+    hashStr(source.substr(0, target.size()), h);
+    if (tHash == h && strcmp(source.c_str(), target.c_str(), 0, 0, n)) {
+        return 0;
+    }
+    int i = 0;
+    while (i + n < source.size()) {
+        h = h * primeRK + source[i + n];
+        h -= (p * source[i]);
+        i++;
+        if (tHash == h && strcmp(source.c_str(), target.c_str(), i, 0, n)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 class Solution {
  public:
     int strStr1(string haystack, string needle) {
@@ -279,7 +336,7 @@ class Solution {
     }
 
     // 暴力 kmp
-    int strStr(string haystack, string needle) {
+    int strStr5(string haystack, string needle) {
         if (needle.size() > haystack.size()) {
             return -1;
         }
@@ -289,6 +346,11 @@ class Solution {
         vector<int> nNext;
         makeNext2(needle, nNext);
         return strStrK(haystack, needle, nNext);
+    }
+
+        // 暴力 kmp
+    int strStr(string haystack, string needle) {
+        return indexRabinKarp(haystack, needle);
     }
 };
 // @lc code=end
