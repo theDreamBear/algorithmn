@@ -141,6 +141,9 @@ public:
         return hash[v] = ans;
     }
 
+    /*
+        dfs + 记忆化搜索
+    */
     vector<int> findMinHeightTrees(int n, vector<vector<int>> &edges) {
         vector<int> G[n];
         for (auto &vec : edges) {
