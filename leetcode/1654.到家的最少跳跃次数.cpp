@@ -172,46 +172,6 @@ class Solution {
         if (x == 0) {
             return 0;
         }
-        int max_n = 6001;
-        vector<bool> forb(max_n);
-        for (auto v : forbidden) {
-            forb[v] = true;
-        }
-        queue<pair<int, int>> q;
-        q.push({0, 0});
-        forb[0] = true;
-        int ans = -1;
-        while (!q.empty()) {
-            ++ans;
-            int sz = q.size();
-            for (int i = 0; i < sz; i++) {
-                auto node = q.front();
-                q.pop();
-                if (node.first == x) {
-                    return ans;
-                }
-                int f = node.first + a;
-                if (f <= max_n && !forb[f]) {
-                    forb[f] = true;
-                    q.push({f, 0});
-                }
-                if (node.second == 0) {
-                    int be = node.first - b;
-                    if (be >= 0 && !forb[be]) {
-                        // 回退时不需要加入到 forb
-                        // 避免前进到该位置时缺少回退能力
-                        q.push({be, 1});
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
-    int minimumJumps(vector<int> &forbidden, int a, int b, int x) {
-        if (x == 0) {
-            return 0;
-        }
         // 数学知识优化
         int g = gcd(a, b);
         if (x % g != 0) {
@@ -251,6 +211,44 @@ class Solution {
             }
         }
         return -1;
+    }
+
+
+    int minimumJumps(vector<int> &forbidden, int a, int b, int x) {
+        if (x == 0) {
+            return 0;
+        }
+        // 数学知识优化
+        int g = gcd(a, b);
+        if (x % g != 0) {
+            return -1;
+        }
+        int max_n = 6001;
+        vector<bool> forb(max_n);
+        for (auto v : forbidden) {
+            forb[v] = true;
+        }
+        forb[0] = true;
+        int ans = -1;
+        function<void(int, int, bool)> dfs = [&](int nums, int cnt, bool back) {
+            if (ans == -1 && nums >= 0 && nums < max_n) {
+                if (nums == x) {
+                    ans = cnt;
+                    return;
+                }
+                int after = nums + a;
+                if (after < max_n && !forb[after]) {
+                    forb[after] = true;
+                    dfs(after, cnt + 1, false);
+                }
+                int be = nums - b;
+                if (!back && be >= 0 && !forb[be]) {
+                    dfs(be, cnt + 1, true);
+                }
+            }
+        };
+        dfs(0, 0, false);
+        return ans;
     }
 };
 
