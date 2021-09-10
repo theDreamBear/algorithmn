@@ -51,14 +51,14 @@ class Solution {
             return ma[i][j];
         }
         dp[i][j][m] = INT_MAX;
-        for (int k = i; k < j; k++) {
+        // 逆序加速
+        for (int k = j - 1; k >= i; k--) {
             int left = splitArrayHelper(nums, suff, i, k, m - 1);
             int right = splitArrayHelper(nums, suff, k + 1, j, 1);
-            if (left != -1 && right != -1) {
-                int v = min(dp[i][j][m], max(left, right));
-                dp[i][j][m] = v;
-            } else {
-                if (right == -1) {
+            if (left != -1) {
+                dp[i][j][m] = min(dp[i][j][m], max(left, right));
+                //
+                if (left < right) {
                     break;
                 }
             }
