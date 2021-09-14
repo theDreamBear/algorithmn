@@ -39,13 +39,17 @@ class Solution {
         return i;
     }
 
+    bool isFit(int index, const vector<int>& nums) {
+        return nums[index] == index + 1;
+    }
+
     int firstMissingPositive(vector<int>& nums) {
         for (int i = 0; i < nums.size(); i++) {
             while(true) {
                 if (nums[i] <= 0 || nums[i] >= nums.size()) {
                     break;
                 }
-                if (nums[i] != i + 1 && nums[nums[i] - 1] != nums[i]) {
+                if (!isFit(i, nums) && !isFit(nums[i] - 1, nums)) {
                     swap(nums[nums[i] - 1], nums[i]);
                 } else {
                     break;
