@@ -48,6 +48,13 @@ int query(int l, int r, int node = 0, int left = 0, int right = n - 1) {
 
 class Solution {
  public:
+    int getVal(int index, const vector<int>& data) {
+        if (index == -1 || index == data.size() - 1) {
+            return INT_MIN;
+        }
+        return data[index];
+    }
+
     int maximumScore(vector<int> &nums, int k) {
         int ans = INT_MIN;
         // 对于每一种情况最小值是固定
@@ -77,7 +84,7 @@ class Solution {
                 st.push(i);
             }
         }
-#else
+#elif VV
         int i = 0;
         for (; i < nums.size(); i++) {
             while (!st.empty() && nums[st.top()] >= nums[i]) {
@@ -112,9 +119,27 @@ class Solution {
                 ans = max(ans, width * nums[node]);
             }
         }
+#else
+        int i = 0;
+        st.push(-1);
+        nums.push_back(0);
+        for (; i < nums.size(); i++) {
+            while (!st.empty() && getVal(st.top(), nums) > getVal(i, nums)) {
+                int node = st.top();
+                st.pop();
+                if (k > st.top() && k < i) {
+                    int width = i - st.top() - 1;
+                    ans = max(ans, width * nums[node]);
+                }
+            }
+            if (st.empty() || getVal(st.top(), nums) <= getVal(i, nums)) {
+                st.push(i);
+            }
+        }
 #endif
         return ans;
     }
 };
+
 // @lc code=end
 
