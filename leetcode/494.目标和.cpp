@@ -16,7 +16,7 @@ class Solution {
 
     int findTargetSumWays(vector<int>& nums, int target) {
         int sz = 1 << nums.size();
-        unsigned int sum[sz];
+        int sum[sz];
         sum[0] = accumulate(nums.begin(), nums.end(), 0);
         int ans = 0;
         if (sum[0] == target) {
