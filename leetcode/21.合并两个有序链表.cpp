@@ -54,12 +54,12 @@ class Solution {
                 tail->next = l1;
                 l1 = l1->next;
                 tail = tail->next;
-                tail->next= 0;
+                //tail->next= 0;
             } else {
                 tail->next = l2;
                 l2 = l2->next;
                 tail = tail->next;
-                tail->next = 0;
+                //tail->next = 0;
             }
         }
         if (l1) {
