@@ -14,13 +14,13 @@
  * Testcase Example:  '[1,2,4]\n[1,3,4]'
  *
  * 将两个有序链表合并为一个新的有序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。 
- * 
+ *
  * 示例：
- * 
+ *
  * 输入：1->2->4, 1->3->4
  * 输出：1->1->2->3->4->4
- * 
- * 
+ *
+ *
  */
 
 // @lc code=start
@@ -40,29 +40,26 @@
 
 class Solution {
 public:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        if (l1 == 0) {
+   ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        if (l1 == nullptr) {
             return l2;
         }
-        if (l2 == 0) {
+        if (l2 == nullptr) {
             return l1;
         }
         ListNode dummy(-1);
         ListNode* tail = &dummy;
         while (l1 && l2) {
-            ListNode* lnext;
             if (l1->val <= l2->val) {
                 tail->next = l1;
+                l1 = l1->next;
                 tail = tail->next;
-                lnext = l1->next;
                 tail->next= 0;
-                l1 = lnext;
             } else {
                 tail->next = l2;
+                l2 = l2->next;
                 tail = tail->next;
-                lnext = l2->next;
                 tail->next = 0;
-                l2 = lnext;
             }
         }
         if (l1) {
