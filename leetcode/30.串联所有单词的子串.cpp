@@ -20,7 +20,7 @@
 using namespace std;
 
 // @lc code=start
-class Solution {
+class Solution1 {
  public:
     struct TriesNode {
         vector<TriesNode *> children;
@@ -106,5 +106,107 @@ class Solution {
         return ans;
     }
 };
+
+
+class Solution {
+ public:
+    struct TriesNode {
+        vector<TriesNode *> children;
+        bool end;
+        int strIndex;
+
+        TriesNode() : children(26, nullptr), end(false), strIndex(-1) {}
+    };
+
+    struct TriesTree {
+        TriesNode root;
+
+        void add(const string &str, int index) {
+            TriesNode *th = &root;
+            for (auto ch : str) {
+                if (!th->children[ch - 'a']) {
+                    th->children[ch - 'a'] = new TriesNode;
+                }
+                th = th->children[ch - 'a'];
+            }
+            th->strIndex = index;
+            th->end = true;
+        }
+
+        bool search(const string &s, int &i, int &index) {
+            if (i >= (int) s.size()) {
+                return false;
+            }
+            TriesNode *th = &root;
+            while (!th->end) {
+                if (i >= s.size() || !th->children[s[i] - 'a']) {
+                    return false;
+                }
+                th = th->children[s[i] - 'a'];
+                i++;
+            }
+            index = th->strIndex;
+            return true;
+        }
+    };
+
+    string getWord(const vector<string> &words, int index) {
+        if (index < 0 || index >= words.size()) {
+            return "";
+        }
+        return words[index];
+    }
+
+    vector<int> findSubstring(string s, vector<string> &words) {
+        vector<int> ans;
+        TriesTree tree;
+        unordered_map<string, int> word_counter;
+        for (int i = 0; i < (int) words.size(); i++) {
+            tree.add(words[i], i);
+            word_counter[getWord(words, i)]++;
+        }
+        int word_count = words.size();
+        int step = words[0].size();
+        int min_len = word_count * step;
+        int left = word_counter.size();
+
+        unordered_map<string, int> word_left = word_counter;
+        deque<string> exist;
+
+        for (int m = 0; m < step; m++) {
+            for (int i = m; i + min_len <= (int) s.size(); i += step) {
+                int j = i;
+                word_left = word_counter;
+                exist.clear();
+                left = word_counter.size();
+                int index = -1;
+                while (j < (int) s.size()) {
+                    if (tree.search(s, j, index)) {
+                        while (word_left[getWord(words, index)] <= 0) {
+                            if (++word_left[exist.front()] == 1) {
+                                ++left;
+                            }
+                            i += step;
+                            exist.pop_front();
+                        }
+                        if (--word_left[getWord(words, index)] == 0) {
+                            --left;
+                        }
+                        exist.push_back(getWord(words, index));
+                        if (left == 0) {
+                            ans.push_back(i);
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
 // @lc code=end
 
