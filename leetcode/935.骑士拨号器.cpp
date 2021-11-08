@@ -82,8 +82,8 @@ class Solution {
         next_pos[8] = {1, 3};
         next_pos[9] = {2, 4};
 
-#define ROLL
-#ifndef ROLL
+#define GOOD_ROLL
+#ifdef NO_ROLL
         vector<vector<long>> dp(10, vector<long>(n, 0));
         for (int i = 0; i < 10; i++) {
             dp[i][0] = 1;
@@ -100,7 +100,7 @@ class Solution {
             ans += dp[i][n - 1];
         }
         return ans % Mod;
-#else
+#elif ROLL
         vector<vector<long>> dp(10, vector<long>(2, 0));
         for (int i = 0; i < 10; i++) {
             dp[i][0] = 1;
@@ -116,6 +116,24 @@ class Solution {
         }
         for (int i = 0; i < 10; i++) {
             ans += dp[i][(n - 1) & 0x1];
+        }
+        return ans % Mod;
+#else // GOOD_ROLL  注意和 roll 的区别, 利用缓存
+        vector<vector<long>> dp(2, vector<long>(10, 0));
+        for (int i = 0; i < 10; i++) {
+            dp[0][i] = 1;
+        }
+        long long ans = 0;
+        for (int j = 1; j < n; j++) {
+            for (int i = 0; i < 10; i++) {
+                dp[j & 0x1][i] = 0;
+                for (auto& next : next_pos[i]) {
+                    dp[j & 0x1][i] =  (dp[j & 0x1][i] + dp[(j - 1) & 0x1][next]) % Mod;
+                }
+            }
+        }
+        for (int i = 0; i < 10; i++) {
+            ans += dp[(n - 1) & 0x1][i];
         }
         return ans % Mod;
 #endif
