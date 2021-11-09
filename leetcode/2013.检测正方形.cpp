@@ -23,7 +23,7 @@ using namespace std;
 class DetectSquares {
  private:
     map<pair<int, int>, int> data;
-    map<int, vector<pair<int, int>>> rowEqualData;
+    map<int, vector<int>> rowEqualData;
  public:
     DetectSquares() {
     }
@@ -31,7 +31,7 @@ class DetectSquares {
     void add(vector<int> point) {
         auto p = make_pair(point[0], point[1]);
         ++data[p];
-        rowEqualData[point[0]].push_back(p);
+        rowEqualData[point[0]].push_back(point[1]);
     }
 
     int countHelper(int x, int y, int y1) {
@@ -58,8 +58,7 @@ class DetectSquares {
             return 0;
         }
         int ans = 0;
-        for (auto & vec : rowEqualData[x]) {
-            int y1 = vec.second;
+        for (auto & y1 : rowEqualData[x]) {
             if (y1 == y) {
                 continue;
             }
@@ -68,7 +67,6 @@ class DetectSquares {
         return ans;
     }
 };
-
 
 /**
  * Your DetectSquares object will be instantiated and called as such:
