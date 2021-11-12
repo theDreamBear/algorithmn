@@ -10,37 +10,47 @@ using namespace std;
 static constexpr int INTMAX = 0x7ffffff;
 static constexpr int UNREACHABLE = -1;
 
-int dijkstra_common(vector<vector<int>> costs, int start, int end) {
-    int vCount = costs.size();
-    vector<int> distance(vCount, INTMAX);
-    vector<int> visit(vCount, 0);
-    distance[start] = 0;
+// 起点已知最短路径
+int dijkstra(const vector<vector<int>> &graph, int start, int target) {
+    // 边界
+    if (start == target) {
+        return 0;
+    }
+    auto checkIndexFunc = [&](int index) {
+        return index >= 0 && index < graph.size();
+    };
+    if (!checkIndexFunc(start) || !checkIndexFunc(target)) {
+        return INT_MAX;
+    }
 
-    for (int ct = costs.size(); ct > 0; --ct) {
-        int v = -1;
-        // 找到最小距离的点  这个地方可以优化因为我们去掉以访问节点
-        for (int i = 0; i < vCount; ++i) {
-            // 未访问节点
-            if (!visit[i]) {
-                if (v == -1 || distance[i] < distance[v]) {
-                    v = i;
-                }
+    vector<int> distance(graph.size(), INT_MAX);
+    vector<bool> visited(graph.size(), false);
+    distance[start] = 0;
+    for (;;) {
+        int minNode = -1;
+        // 找一个当前距离最短点
+        for (int nodeId = 0; nodeId < graph.size(); nodeId++) {
+            if (!visited[nodeId] && (minNode == -1 || distance[nodeId] < distance[minNode])) {
+                minNode = nodeId;
             }
         }
-        visit[v] = 1;
-        // 更新
-        if (distance[v] == INTMAX) {
+        // 没有找到能加入到当前图的点
+        if (minNode == -1) {
             break;
         }
-        // 有哪些边我们也可以存起来
-        for (int i = 0; i < vCount; ++i) {
-            if (costs[v][i] != UNREACHABLE) {
-                distance[i] = min(distance[i], costs[v][i] + distance[v]);
+        visited[minNode] = true;
+        for (int nextNode = 0; nextNode < graph[minNode].size(); ++nextNode) {
+            // 连通
+            if (graph[minNode][nextNode] == INT_MAX) {
+                continue;
             }
+            // 更新
+            distance[nextNode] = min(distance[nextNode], distance[minNode] + graph[minNode][nextNode]);
         }
     }
-    return distance[end];
+    return distance[target];
 }
+
 
 int dijkstra_c(vector<vector<int>> costs, int start, int end) {
     vector<int> distance(costs.size(), INT_MAX);
