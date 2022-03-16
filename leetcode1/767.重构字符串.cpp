@@ -59,5 +59,50 @@ class Solution {
         return ans;
     }
 };
+
+
+// 2. 上面的算法, 每次取两个能让算法简单
+
+// 3. 使用基于排序的拼接应该也可以, 根据个数进行排序, 首先取两个, 然后把这两个进行拼接, 然后再取一个把没用完的那个消耗完
+// 这个有点像 求 在 n 个数中求, 大于其总数的 n / 2 的那个思想,但是那个不用排序
+
+// 基于计数的贪心算法
+/// 这个是 leet 官方的, 思想非常有意思
+class Solution_leet {
+public:
+    string reorganizeString(string s) {
+        if (s.length() < 2) {
+            return s;
+        }
+        vector<int> counts(26, 0);
+        int maxCount = 0;
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char c = s[i];
+            counts[c - 'a']++;
+            maxCount = max(maxCount, counts[c - 'a']);
+        }
+        if (maxCount > (length + 1) / 2) {
+            return "";
+        }
+        string reorganizeArray(length, ' ');
+        int evenIndex = 0, oddIndex = 1;
+        int halfLength = length / 2;
+        for (int i = 0; i < 26; i++) {
+            char c = 'a' + i;
+            while (counts[i] > 0 && counts[i] <= halfLength && oddIndex < length) {
+                reorganizeArray[oddIndex] = c;
+                counts[i]--;
+                oddIndex += 2;
+            }
+            while (counts[i] > 0) {
+                reorganizeArray[evenIndex] = c;
+                counts[i]--;
+                evenIndex += 2;
+            }
+        }
+        return reorganizeArray;
+    }
+};
 // @lc code=end
 
