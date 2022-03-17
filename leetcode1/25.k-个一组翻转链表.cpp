@@ -62,7 +62,37 @@ class Solution {
         return {pre, next};
     }
 
-    ListNode* reverseKGroup(ListNode* head, int k) {
+    ListNode* nextK(ListNode* cur, int k) {
+        if (!cur) {
+            return nullptr;
+        }
+        ListNode* last = cur;
+        for (int i = 0; i < k && last; i++) {
+            last = last->next;
+        }
+        return last;
+    }
+
+    ListNode *reverseKGroup(ListNode *head, int k) {
+        // 1. 统计长度
+        ListNode* last = nextK(head, k - 1);
+        if (!last) {
+            // 不足 k 不用逆序;
+            return head;
+        }
+        // 辅助节点
+        ListNode dummuy;
+        ListNode* tail = &dummuy;
+        ListNode* cur = head;
+
+        auto [pre, next] = reverseK(cur, k);
+        tail->next = pre;
+        tail = cur;
+        tail->next = reverseKGroup(next, k);
+        return dummuy.next;
+    }
+
+    ListNode* reverseKGroup1(ListNode* head, int k) {
         // 1. 统计长度
         int sz = len(head);
         if (sz < k || 1 == k) {
