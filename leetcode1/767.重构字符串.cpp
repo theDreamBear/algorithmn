@@ -22,7 +22,7 @@ using namespace std;
 // @lc code=start
 class Solution {
  public:
-    string reorganizeString(string s) {
+    string reorganizeString1(string s) {
         vector<int> alphaCount(26);
         int threshold = (s.size() + 1) >> 1;
         for (auto c : s) {
@@ -58,12 +58,65 @@ class Solution {
         }
         return ans;
     }
+
+    // 使用基于排序的拼接应该也可以, 根据个数进行排序, 首先取两个, 然后把这两个进行拼接, 然后再取一个把没用完的那个消耗完   aabbcc 这个方法不可行
+    // 还是需要重新添加进去, 然后再取, 这样还是需要排序, 所以还是需要优先队列
+    string reorganizeString_bad(string s) {
+        vector<int> alphaCount(26);
+        int threshold = (s.size() + 1) >> 1;
+        for (auto c : s) {
+            if (++alphaCount[c - 'a'] > threshold) {
+                return "";
+            }
+        }
+        vector<pair<int, char>> vec;
+        for (int i = 0; i < alphaCount.size(); i++) {
+            if (alphaCount[i] > 0) {
+                vec.emplace_back(alphaCount[i], i + 'a');
+            }
+        }
+        // 决定最终复杂度 nlgn
+        sort(vec.begin(), vec.end(), greater<>{});
+        string ans;
+        // 已知 vec.size() > 2
+        char lhs = '#';
+        int lhsLeft = 0;
+        char rhs = '#';
+        int rhsLeft = 0;
+        for (int i = 0; i < vec.size(); i++) {
+            if (0 == lhsLeft) {
+                lhs = vec[i].second;
+                lhsLeft = vec[i].first;
+                continue;
+                i++;
+                rhs = vec[i].second;
+                rhsLeft = vec[i].first;
+            } else if (0 == rhsLeft) {
+                rhs = vec[i].second;
+                rhsLeft = vec[i].first;
+                if (lhsLeft < vec[i].first) {
+                    swap(lhs, rhs);
+                    swap(lhsLeft, rhsLeft);
+                }
+            }
+            while (lhsLeft > 0 && rhsLeft > 0) {
+                ans.push_back(lhs);
+                ans.push_back(rhs);
+                lhsLeft--;
+                rhsLeft--;
+            }
+        }
+        if (lhsLeft > 0) {
+            ans.push_back(lhs);
+        }
+        return ans;
+    }
 };
 
 
 // 2. 上面的算法, 每次取两个能让算法简单
 
-// 3. 使用基于排序的拼接应该也可以, 根据个数进行排序, 首先取两个, 然后把这两个进行拼接, 然后再取一个把没用完的那个消耗完
+// 3. 使用基于排序的拼接应该也可以, 根据个数进行排序, 首先取两个, 然后把这两个进行拼接, 然后再取一个把没用完的那个消耗完   aabbcc 这个方法不可行
 // 这个有点像 求 在 n 个数中求, 大于其总数的 n / 2 的那个思想,但是那个不用排序
 
 // 基于计数的贪心算法
