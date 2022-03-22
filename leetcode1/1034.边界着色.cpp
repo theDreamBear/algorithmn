@@ -20,7 +20,7 @@
 using namespace std;
 
 // @lc code=start
-class Solution {
+class Solution1 {
  public:
     int dx[4] = {0, -1, 0, 1};
     int dy[4] = {-1, 0, 1, 0};
@@ -75,6 +75,72 @@ class Solution {
                     v = color;
                 }
             }
+        }
+        return grid;
+    }
+};
+
+class Solution {
+ public:
+    int dx[4] = {0, -1, 0, 1};
+    int dy[4] = {-1, 0, 1, 0};
+    constexpr static int BASE = 1005;
+
+    bool outOfBoundary(int row, int col, const vector<vector<int>> &grid) {
+        if (row < 0 || col < 0 || row >= grid.size() || col >= grid[row].size()) {
+            return true;
+        }
+        return false;
+    }
+
+    void colorOne(vector<vector<int>> &grid, vector<vector<int>>& added, int row, int col, int source, int color, queue<int>& q) {
+        if (outOfBoundary(row, col, grid)) {
+            throw logic_error("outOfBoundary");
+            return;
+        }
+        if (grid[row][col] != source) {
+            throw logic_error("wrong color");
+            return;
+        }
+        bool isBoundary = false;
+        for (int k = 0; k < 4; k++) {
+            int nx = row + dx[k];
+            int ny = col + dy[k];
+            if (outOfBoundary(nx, ny, grid)) {
+                isBoundary = true;
+                continue;
+            }
+            if (added[nx][ny]) {
+                continue;
+            }
+            if (grid[nx][ny] == source) {
+                q.push(nx * BASE + ny);
+                added[nx][ny] = 1;
+                continue;
+            }
+            isBoundary = true;
+        }
+        if (isBoundary) {
+            grid[row][col] = color;
+        }
+    }
+
+    vector<vector<int>> colorBorder(vector<vector<int>> &grid, int row, int col, int color) {
+        if (grid[row][col] == color) {
+            return grid;
+        }
+        vector<vector<int>> added(grid.size(), vector<int>(grid[row].size()));
+        queue<int> q;
+
+        int source = grid[row][col];
+        q.push(row * BASE + col);
+        added[row][col] = 1;
+        while (!q.empty()) {
+            auto v = q.front();
+            q.pop();
+            int x = v / BASE;
+            int y = v % BASE;
+            colorOne(grid, added, x, y, source, color, q);
         }
         return grid;
     }
