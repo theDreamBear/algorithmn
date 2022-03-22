@@ -36,7 +36,6 @@ class Solution {
         }
     }
 
-    // bfs
     int snakesAndLadders(vector<vector<int>> &board) {
         if (board.empty() || board.size() == 1) {
             return 0;
@@ -44,9 +43,8 @@ class Solution {
         int n = board.size();
         int destination = n * n;
         vector<int> times(n * n + 1, INT_MAX);
-        int cur = 1;
         queue<int> q;
-        q.push(cur);
+        q.push(1);
         int ct = 0;
         while (!q.empty()) {
             ++ct;
