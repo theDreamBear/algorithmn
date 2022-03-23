@@ -25,8 +25,10 @@ using namespace std;
 class Solution {
  public:
     // 计算区间和
+    // O(1)
     int getPartialSum(const vector<int> &sum, int i, int step) {
         int j = i + step;
+        // 防止越界
         if (j > sum.size() - 1) {
             return 0;
         }
@@ -63,6 +65,7 @@ class Solution {
         return ans;
     }
 #endif
+    //  O(n)
     void calMax(const vector<int> &nums, const vector<int> &sum, vector<int>& sumMax, int len) {
         // 逆序求
         int curMax = INT_MIN;
@@ -72,11 +75,16 @@ class Solution {
         }
     }
 
+    // O(n)
     int getAnsHelperOptimize(const vector<int> &nums, const vector<int> &sum, const vector<int>& secondSumMax, int firstLen, int secondLen) {
         int ans = INT_MIN;
         for (int first = 0; first + firstLen + secondLen <= nums.size(); first++) {
             int firstValue = getPartialSum(sum, first, firstLen);
             int secondStartPos = first + firstLen;
+            // 反正越界
+            if (secondStartPos >= secondSumMax.size()) {
+                break;
+            }
             ans = max(ans, firstValue + secondSumMax[secondStartPos]);
         }
         return ans;
@@ -87,16 +95,16 @@ class Solution {
         // partial_sum(nums.begin(), nums.end(), ++sum.begin());
         inclusive_scan(nums.begin(), nums.end(), ++sum.begin(), plus<>{});
 
-        vector<int> fisrtSumMax(nums.size());
+        vector<int> firstSumMax(nums.size());
         vector<int> secondSumMax(nums.size());
 
-        calMax(nums, sum, fisrtSumMax, firstLen);
+        calMax(nums, sum, firstSumMax, firstLen);
         calMax(nums, sum, secondSumMax, secondLen);
         int ans = INT_MIN;
         // L 在左边
         ans = max(ans, getAnsHelperOptimize(nums, sum, secondSumMax, firstLen, secondLen));
 //        // L 在右边
-        ans = max(ans, getAnsHelperOptimize(nums, sum, fisrtSumMax, secondLen, firstLen));
+        ans = max(ans, getAnsHelperOptimize(nums, sum, firstSumMax, secondLen, firstLen));
         return ans;
     }
 };
