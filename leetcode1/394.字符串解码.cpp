@@ -22,27 +22,23 @@ using namespace std;
 // @lc code=start
 class Solution {
  public:
-    int findEnd(const string& s, int start, int end) {
+    int findEnd(const string &s, int start, int end) {
         int l = 0;
         int r = 0;
         int i = start;
         do {
             if (s[i] == '[') {
-                ++i;
                 ++l;
-                continue;
-            }
-            if (s[i] == ']') {
-                ++i;
+
+            } else if (s[i] == ']') {
                 ++r;
-                continue;
             }
             i++;
         } while (i <= end && l > r);
-        return i;
+        return i - 1;
     }
 
-    string decodeStringHelper(const string& s, int start, int end, int times) {
+    string decodeStringHelper(const string &s, int start, int end, int times) {
         string ans;
         int i = start;
         while (i <= end) {
@@ -64,8 +60,8 @@ class Solution {
             }
             int r = findEnd(s, i, end);
             int l = i + 1;
-            ans += decodeStringHelper(s, l, r - 2, val);
-            i = r;
+            ans += decodeStringHelper(s, l, r - 1, val);
+            i = r + 1;
         }
         string temp = ans;
         for (int t = 1; t < times; t++) {
