@@ -20,48 +20,80 @@
 using namespace std;
 
 // @lc code=start
+#define PR cout
 class Solution {
  public:
+    /* 保证:   1. 至少包括两个字符 start + 2 <= end  最起码[]
+     *        2. 第一个字符是[
+     *        3. 返回和第一个[ 想匹配的]的位置, 且ans > start
+     *        4. 如果找不到返回-1
+     * */
     int findEnd(const string &s, int start, int end) {
+        if (start + 2 > end) {
+            PR << "start + 2 > end" << start << " " << end << endl;
+            return -1;
+        }
         int l = 0;
         int r = 0;
         int i = start;
-        do {
+        // 第一个字符是'['
+        if (i <= end && s[i] == '[') {
+            l++;
+            i++;
+        } else {
+            PR << "first char is not [" << endl;
+            return -1;
+            //throw logic_error("the first char is not [");
+        }
+        for (; i <= end; ++i) {
             if (s[i] == '[') {
                 ++l;
-
             } else if (s[i] == ']') {
                 ++r;
             }
-            i++;
-        } while (i <= end && l > r);
-        return i - 1;
+            // 异常情况
+            if (l < r) {
+                PR << "[ not match" << endl;
+                return -1;
+                //throw logic_error("the first char is not l < r");
+            }
+            if (l == r) {
+                break;
+            }
+        }
+        return i;
     }
 
     string decodeStringHelper(const string &s, int start, int end, int times) {
         string ans;
         int i = start;
         while (i <= end) {
+            // 非倍数部分直接回收
             if (isalpha(s[i])) {
                 ans.push_back(s[i]);
                 i++;
                 continue;
             }
+            // 若出现非字符, 第一个必为数字
             if (!isdigit(s[i])) {
                 throw logic_error("s is bad");
             }
+            // 解析数字
             int val = 0;
             while (i < end && isdigit(s[i])) {
                 val = val * 10 + s[i] - '0';
                 i++;
             }
-            if (i >= end) {
+            // 数字后无别异常
+            if (i >= end || s[i] != '[') {
                 throw logic_error("s is bad");
             }
-            int r = findEnd(s, i, end);
+            int r = findEnd(s, i, end) - 1;
             int l = i + 1;
-            ans += decodeStringHelper(s, l, r - 1, val);
-            i = r + 1;
+            if (l <= r) {
+                ans += decodeStringHelper(s, l, r, val);
+            }
+            i = r + 2;
         }
         string temp = ans;
         for (int t = 1; t < times; t++) {
