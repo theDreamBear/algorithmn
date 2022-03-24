@@ -20,6 +20,15 @@
 using namespace std;
 
 // @lc code=start
+// 递归
+// 为什么递归了
+// 因为
+// 待解码字符串符合 递归定义
+// 1. 本身是待解码字符串
+// 2. 子串也是待解码字符串
+// 3. 待解码字符串的通项为  [az]*([1-9][a-z])*[a-z]*
+// 4. 所以把每个 子项解析完 拼接就能得到结果
+
 #define PR cout
 class Solution {
  public:
