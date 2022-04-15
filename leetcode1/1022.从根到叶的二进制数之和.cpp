@@ -41,18 +41,18 @@ public:
 		return total;
 	}
 
-	int sumRootToLeaf(TreeNode *root) {
+	int sumRootToLeaf2(TreeNode *root) {
 		if (!root) {
 			return 0;
 		}
-		// 
-		unordered_map<TreeNode*, int> pre_map;
-		
+		//
+		unordered_map<TreeNode *, int> pre_map;
+
 		pre_map[root] = 0;
 
 		int total = 0;
-		stack<TreeNode*> st;
-		TreeNode* cur = root;
+		stack<TreeNode *> st;
+		TreeNode *cur = root;
 
 		while(cur || !st.empty()) {
 			// 保证栈中节点必定不为空
@@ -62,12 +62,12 @@ public:
 				// 需要知道每一个节点的先前值
 				// val 为当前值
 				int val = pre_map[cur] * 2 + cur->val;
-				
+
 				// 遇到根节点计算值
 				if (!cur->left && !cur->right) {
 					total += val;
 					break;
-				}	
+				}
 
 				cur = cur->left;
 
@@ -83,7 +83,46 @@ public:
 			// cur 变成未录入节点， 需要知道其pre
 			if (cur) {
 				pre_map[cur] = pre_map[node] * 2 + node->val;
-			}	
+			}
+		}
+		return total;
+	}
+
+	struct  PreNode {
+		TreeNode *node;
+		int pre;
+
+		PreNode(TreeNode *node = nullptr, int pre = 0) : node(node), pre(pre) {}
+
+		int getVal() {
+			if (!node) {
+				return 0;
+			}
+			return pre * 2 + node->val;
+		}
+	};
+
+	int sumRootToLeaf(TreeNode *root) {
+		if (!root) {
+			return 0;
+		}
+		stack<PreNode> st;
+		int total = 0;
+		st.push(PreNode(root, 0));
+		while (!st.empty()) {
+			auto cur = st.top();
+			st.pop();	
+			if (!cur.node->left && !cur.node->right) {
+				total += cur.getVal();
+				continue;
+			}
+			int val = cur.getVal();
+			if (cur.node->right) {
+				st.push(PreNode(cur.node->right, val));
+			}
+			if (cur.node->left) {
+				st.push(PreNode(cur.node->left, val));
+			}
 		}
 		return total;
 	}
