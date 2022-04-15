@@ -47,6 +47,7 @@ public:
 		}
 		// 
 		unordered_map<TreeNode*, int> pre_map;
+		
 		pre_map[root] = 0;
 
 		int total = 0;
@@ -54,22 +55,32 @@ public:
 		TreeNode* cur = root;
 
 		while(cur || !st.empty()) {
+			// 保证栈中节点必定不为空
 			while (cur) {
 				st.push(cur);
-				int pre = pre_map[cur];
-				int val = pre * 2 + cur->val;
+
+				// 需要知道每一个节点的先前值
+				// val 为当前值
+				int val = pre_map[cur] * 2 + cur->val;
+				
+				// 遇到根节点计算值
 				if (!cur->left && !cur->right) {
 					total += val;
 					break;
 				}	
+
 				cur = cur->left;
+
+				// 存下当前节点的pre值
 				if (cur) {
 					pre_map[cur] = val;
 				}
 			}
 			auto node = st.top();
 			st.pop();
+
 			cur = node->right;
+			// cur 变成未录入节点， 需要知道其pre
 			if (cur) {
 				pre_map[cur] = pre_map[node] * 2 + node->val;
 			}	
