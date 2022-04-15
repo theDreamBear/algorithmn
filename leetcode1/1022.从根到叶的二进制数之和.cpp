@@ -18,7 +18,7 @@
  */
 class Solution {
 public:
-    void sumRootToLeafHelper(TreeNode *root, int pre, int& total) {
+	void sumRootToLeafHelper(TreeNode *root, int pre, int &total) {
 		if (nullptr == root) {
 			return;
 		}
@@ -35,9 +35,45 @@ public:
 		}
 
 	}
-	int sumRootToLeaf(TreeNode *root) {
+	int sumRootToLeaf1(TreeNode *root) {
 		int total = 0;
 		sumRootToLeafHelper(root, 0, total);
+		return total;
+	}
+
+	int sumRootToLeaf(TreeNode *root) {
+		if (!root) {
+			return 0;
+		}
+		// 
+		unordered_map<TreeNode*, int> pre_map;
+		pre_map[root] = 0;
+
+		int total = 0;
+		stack<TreeNode*> st;
+		TreeNode* cur = root;
+
+		while(cur || !st.empty()) {
+			while (cur) {
+				st.push(cur);
+				int pre = pre_map[cur];
+				int val = pre * 2 + cur->val;
+				if (!cur->left && !cur->right) {
+					total += val;
+					break;
+				}	
+				cur = cur->left;
+				if (cur) {
+					pre_map[cur] = val;
+				}
+			}
+			auto node = st.top();
+			st.pop();
+			cur = node->right;
+			if (cur) {
+				pre_map[cur] = pre_map[node] * 2 + node->val;
+			}	
+		}
 		return total;
 	}
 };
