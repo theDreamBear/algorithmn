@@ -115,22 +115,13 @@ new 状态:
 
 struct Helper {
     unordered_set<TreeNode*> addedSet;
-    unordered_set<TreeNode*> visitedSet;
 
     void add(TreeNode* node) {
         addedSet.insert(node);
     }
 
-    void visit(TreeNode* node) {
-        visitedSet.insert(node);
-    }
-
     bool notAdd(TreeNode* node) {
         return addedSet.find(node) == addedSet.end();
-    }
-
-    bool notVisit(TreeNode* node) {
-        return visitedSet.find(node) == visitedSet.end();
     }
 };
 
@@ -154,6 +145,7 @@ void postTravel(TreeNode* root, DoMethod ds) {
             cur = cur->left;
         }
         cur = nodeStack.top();
+        // 右节点为空或者访问过 才访问当前节点
         if (cur->right == NULL || !h.notAdd(cur->right)) {
             ds(cur->val);
             cur = NULL;
@@ -192,12 +184,16 @@ vector<int> preorderTraversal1(TreeNode* root) {
     }
     stack<TreeNode*> st;
     TreeNode* cur = root;
+
+    // 第一次遇到时添加访问并入栈
     ans.push_back(cur->val);
     st.push(root);
+
     while (!st.empty()) {
         if (cur) {
             cur = cur->left;
             if (cur) {
+                // 第一次遇到
                 ans.push_back(cur->val);
                 st.push(cur);
             }
@@ -206,6 +202,7 @@ vector<int> preorderTraversal1(TreeNode* root) {
             st.pop();
             cur = cur->right;
             if (cur) {
+                // 第一次遇到
                 ans.push_back(cur->val);
                 st.push(cur);
             }
@@ -221,11 +218,13 @@ vector<int> preorderTraversal3(TreeNode* root) {
     }
     stack<TreeNode*> st;
     TreeNode* cur = root;
+    // 第一次遇到添加进栈
     ans.push_back(cur->val);
     st.push(root);
     while (!st.empty()) {
-        while(cur && cur->left) {
+        while (cur && cur->left) {
             cur = cur->left;
+            // 第一次遇到
             st.push(cur);
             ans.push_back(cur->val);
         }
@@ -234,6 +233,7 @@ vector<int> preorderTraversal3(TreeNode* root) {
         if (cur) {
             cur = cur->right;
             if (cur) {
+                // 第一次遇到
                 st.push(cur);
                 ans.push_back(cur->val);
             }
@@ -245,8 +245,10 @@ vector<int> preorderTraversal3(TreeNode* root) {
             }
             cur = st.top();
             st.pop();
+
             cur = cur->right;
             if (cur) {
+                // 第一次遇到
                 st.push(cur);
                 ans.push_back(cur->val);
             }
