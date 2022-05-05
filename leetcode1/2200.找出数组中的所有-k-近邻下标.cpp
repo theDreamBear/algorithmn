@@ -9,7 +9,7 @@ class Solution {
    public:
     vector<int> findKDistantIndices(vector<int>& nums, int key, int k) {
         vector<int> ans;
-        unordered_map<int, int> cnt;
+        vector<int> cnt(1001);
         for (int i = 0; i < k && i < nums.size(); i++) {
             cnt[nums[i]]++;
         }
