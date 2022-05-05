@@ -14,6 +14,7 @@
 #include <unordered_set>
 #include <algorithm>
 #include <numeric>
+#include <ranges>
 
 using namespace std;
 
