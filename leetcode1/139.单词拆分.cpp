@@ -154,7 +154,7 @@ class Solution {
     // 2. 结果 dp[0][s.size() - 1]
     // 3. 状态转移方程 dp[i][j] = dp[i][k] && dp[k + 1][j]
     // 4. 初始化
-    bool wordBreak(string s, vector<string>& wordDict) {
+    bool wordBreak2(string s, vector<string>& wordDict) {
         unordered_set<string> words(wordDict.begin(), wordDict.end());
         vector<vector<int>> dp(s.size(), vector<int>(s.size()));
         // 初始化
@@ -183,5 +183,55 @@ class Solution {
     }
 
     // 上面的动态规划还可以优化， 继续优化中
+    // 没有必要计算所有的值
+    bool wordBreak3(string s, vector<string>& wordDict) {
+        unordered_set<string> words(wordDict.begin(), wordDict.end());
+        vector<vector<int>> dp(s.size() + 1, vector<int>(s.size() + 1));
+        // 初始化
+        for (int i = 0; i < s.size(); i++) {
+            for (int j = i; j < s.size(); j++) {
+                string temp = s.substr(i, j - i + 1);
+                if (words.count(temp)) {
+                    dp[i][j] = 1;
+                }
+            }
+        }
+
+        for (int i = 0; i < s.size(); i++) {
+            for (int j = i; j < s.size(); j++) {
+                if (i > 0 && dp[0][i - 1] && dp[i][j]) {
+                    dp[0][j] = 1;
+                }
+            }
+        }
+        return dp[0][s.size() - 1];
+    }
+
+    // 上面的动态规划还可以优化， 继续优化中
+    // 没有必要计算所有的值
+    // 可以空间压缩
+    // 定义 dp[i] (0, i - 1) 能否构成
+    // 初始化 dp[0] = 1
+    // 状态转移方程， dp[i] = dp[k] && wordDict.contains(s.substr(k + 1, i - k + 1))
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> words(wordDict.begin(), wordDict.end());
+        string dp(s.size() + 1, '0');
+        //cout << dp << endl;
+        // 初始化
+        dp[0] = '1';
+        for (int i = 1; i <= s.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if ('1' == dp[j]) {
+                    string temp = s.substr(j, i - j);
+                    if (words.count(temp)) {
+                        dp[i] = '1';
+                        break;
+                    }
+                }
+            }
+        }
+        //cout << dp << endl;
+        return dp.back() == '1';
+    }
 };
 // @lc code=end
