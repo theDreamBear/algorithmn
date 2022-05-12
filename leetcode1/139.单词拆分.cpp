@@ -213,11 +213,11 @@ class Solution {
     // 定义 dp[i] (0, i - 1) 能否构成
     // 初始化 dp[0] = 1
     // 状态转移方程， dp[i] = dp[k] && wordDict.contains(s.substr(k + 1, i - k + 1))
-    bool wordBreak(string s, vector<string>& wordDict) {
+    bool wordBreak4(string s, vector<string>& wordDict) {
         unordered_set<string> words(wordDict.begin(), wordDict.end());
         string dp(s.size() + 1, '0');
-        //cout << dp << endl;
-        // 初始化
+        // cout << dp << endl;
+        //  初始化
         dp[0] = '1';
         for (int i = 1; i <= s.size(); i++) {
             for (int j = 0; j < i; j++) {
@@ -230,8 +230,90 @@ class Solution {
                 }
             }
         }
-        //cout << dp << endl;
+        // cout << dp << endl;
         return dp.back() == '1';
+    }
+};
+
+
+// template <typename T>
+// concept LinearContainer = requires(T t) {
+//     t[0];
+//     t.size();
+// };
+
+class Solution1 {
+   public:
+    class DpAbs {
+       private:
+        virtual void _check(int i) = 0;
+        virtual void _set(int i) = 0;
+        virtual bool _test(int i) = 0;
+
+       public:
+        virtual void init(int n) {}
+
+        void set(int i) {
+            _check(i);
+            _set(i);
+        }
+        bool test(int i) {
+            _check(i);
+            return _test(i);
+        }
+    };
+
+    class DpStr : public DpAbs {
+       private:
+        string s;
+        virtual void _check(int i) { assert(i < s.size()); }
+
+        virtual void _set(int i) { s[i] = '1'; }
+        virtual bool _test(int i) { return '1' == s[i]; }
+
+       public:
+        DpStr(int n) : s(n, '0') {}
+    };
+
+    template <typename T, size_t TRUE>
+    class LinearDpAbs : public DpAbs {
+       protected:
+        T s;
+       public:
+        virtual void _check(int i) { assert(i < s.size()); }
+        virtual void _set(int i) { s[i] = TRUE; }
+        virtual bool _test(int i) { return TRUE == s[i]; }
+    };
+
+    class DpStrLinear : public LinearDpAbs<string, '1'> {
+       public:
+        DpStrLinear(int n) { s = string(n, '0'); }
+    };
+
+    class DpIntVecLinear : public LinearDpAbs<vector<int>, 1> {
+       public:
+        DpIntVecLinear(int n) { s = vector<int>(n, 0); }
+    };
+
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> words(wordDict.begin(), wordDict.end());
+        // unique_ptr<DpAbs> dp = make_unique<DpStr>(s.size() + 1);
+        // unique_ptr<DpAbs> dp = make_unique<DpStrLinear>(s.size() + 1);
+        unique_ptr<DpAbs> dp = make_unique<DpIntVecLinear>(s.size() + 1);
+        dp->set(0);
+        for (int i = 1; i <= s.size(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp->test(j)) {
+                    string temp = s.substr(j, i - j);
+                    if (words.count(temp)) {
+                        dp->set(i);
+                        break;
+                    }
+                }
+            }
+        }
+        // cout << dp << endl;
+        return dp->test(s.size());
     }
 };
 // @lc code=end
