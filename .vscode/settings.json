@@ -33,7 +33,10 @@
         "future": "cpp",
         "istream": "cpp",
         "locale": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "chrono": "cpp",
+        "limits": "cpp",
+        "valarray": "cpp"
     },
     "bracket-pair-colorizer-2.excludedLanguages": [
 
