@@ -227,12 +227,14 @@ vector<int> getSeqValue(TreeNodeAdapter* root) {
     return data;
 }
 
+///    业务层代码
+
 struct AnsObj : public Hook{
     TreeNodeAdapter* pre{};
     TreeNodeAdapter* left{};
     TreeNodeAdapter* right{};
 
-    bool operator()(TreeNodeAdapter* node) {
+    bool operator()(TreeNodeAdapter* node) override{
         if (nullptr == node) {
             return true;
         }
@@ -255,6 +257,36 @@ struct AnsObj : public Hook{
 
 class Solution {
 public:
+     void recoverTree1(TreeNode* root) {
+        if (nullptr == root) {
+            return;
+        }
+        setTraversal(IN);
+        vector<TreeNodeAdapter*> data = getSeqTreeNode((TreeNodeAdapter*)root);
+
+        long long pre = INT64_MIN;
+        int left = 0;
+        int right = 0;
+        for (int i = 0; i + 1 < data.size(); i++) {
+            if (data[i]->val > pre && data[i]->val > data[i + 1]->val) {
+                left = i;
+                break;
+            } else {
+                pre = data[i]->val;
+            }
+        }
+        pre = INT64_MAX;
+        for (int i = data.size() - 1; i > left; i--) {
+            if (data[i]->val < pre && data[i]->val < data[i - 1]->val) {
+                right = i;
+                break;
+            } else {
+                pre = data[i]->val;
+            }
+        }
+        swap(data[left]->val, data[right]->val);
+    }
+
     void recoverTree(TreeNode* root) {
         if (nullptr == root) {
             return;
