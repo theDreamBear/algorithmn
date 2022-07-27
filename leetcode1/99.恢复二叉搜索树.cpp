@@ -57,6 +57,25 @@ struct TreeNodeAdapter {
 
 };
 
+struct Hook {
+    virtual bool operator()(TreeNodeAdapter* node) {
+        return false;
+    }
+    virtual void after() {
+
+    }
+    bool done{};
+
+    bool isDone() const{
+        return done;
+    }
+};
+
+struct EmptyHook : public Hook {};
+EmptyHook emptyHook;
+
+static Hook* hook = &emptyHook;
+
 struct TreeNodeIteratorImpAbs {
     stack<TreeNodeAdapter *> st;
     TreeNodeAdapter* now{};
@@ -70,7 +89,7 @@ struct TreeNodeIteratorImpAbs {
     }
 
     bool getNext() {
-        while (!st.empty()) {
+        while (!hook->isDone() && !st.empty()) {
             // 当前指针指向栈顶节点
             TreeNodeAdapter *cur = st.top();
             if (cur) {    // 当前节点不为空
@@ -83,6 +102,9 @@ struct TreeNodeIteratorImpAbs {
                 // 弹出中间节点并将它的值加入结果数组
                 now = st.top();
                 st.pop();
+                if ((*hook)(now)) {
+                    hook->done = true;
+                }
                 return true;
             }
         }
@@ -171,6 +193,19 @@ TreeNodeIterator TreeNodeAdapter::end() {
     return TreeNodeIterator(new preOrderTreeNodeIteratorImp(nullptr));
 }
 
+////       对外层
+
+void traversal(TreeNodeAdapter* root, SEQ se, Hook* func = nullptr) {
+    setTraversal(se);
+    if (func) {
+        hook = func;
+    }
+    auto beg = ((TreeNodeAdapter*)root)->begin();
+    auto end = ((TreeNodeAdapter*)root)->end();
+    for (; beg != end; ++beg);
+    hook->after();
+}
+
 vector<TreeNodeAdapter*> getSeqTreeNode(TreeNodeAdapter* root) {
     vector<TreeNodeAdapter*> data;
     auto beg = ((TreeNodeAdapter*)root)->begin();
@@ -181,41 +216,53 @@ vector<TreeNodeAdapter*> getSeqTreeNode(TreeNodeAdapter* root) {
     return data;
 }
 
+vector<int> getSeqValue(TreeNodeAdapter* root) {
+    vector<int> data;
+    if (!root) {
+        return data;
+    }
+    for (auto v : *root) {
+        data.push_back(v);
+    }
+    return data;
+}
+
+struct AnsObj : public Hook{
+    TreeNodeAdapter* pre{};
+    TreeNodeAdapter* left{};
+    TreeNodeAdapter* right{};
+
+    bool operator()(TreeNodeAdapter* node) {
+        if (nullptr == node) {
+            return true;
+        }
+        if (pre && pre->val > node->val) {
+            right = node;
+            if (nullptr == left) {
+                left = pre;
+            } else {
+                return true;
+            }
+        }
+        pre = node;
+        return false;
+    }
+
+    void after() override {
+        swap(left->val, right->val);
+    }
+};
+
 class Solution {
 public:
-
     void recoverTree(TreeNode* root) {
         if (nullptr == root) {
             return;
         }
-        setTraversal(IN);
-        vector<TreeNodeAdapter*> data = getSeqTreeNode((TreeNodeAdapter*)root);
-
-        // 找第一个峰顶
-        long long pre = INT64_MIN;
-        int left = 0;
-        int right = 0;
-        for (int i = 0; i + 1 < data.size(); i++) {
-            if (data[i]->val > pre && data[i]->val > data[i + 1]->val) {
-                left = i;
-                break;
-            } else {
-                pre = data[i]->val;
-            }
-        }
-
-        // 找最后一个峰谷
-        pre = INT64_MAX;
-        for (int i = data.size() - 1; i > left; i--) {
-            if (data[i]->val < pre && data[i]->val < data[i - 1]->val) {
-                right = i;
-                break;
-            } else {
-                pre = data[i]->val;
-            }
-        }
-        swap(data[left]->val, data[right]->val);
+        AnsObj ans;
+        traversal((TreeNodeAdapter*)root, IN, &ans);
     }
 };
+
 // @lc code=end
 
