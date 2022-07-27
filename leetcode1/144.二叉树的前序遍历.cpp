@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=94 lang=cpp
+ * @lc app=leetcode.cn id=144 lang=cpp
  *
- * [94] 二叉树的中序遍历
+ * [144] 二叉树的前序遍历
  */
 
 // @lc code=start
@@ -231,11 +231,8 @@ vector<int> getSeqValue(TreeNodeAdapter* root, SEQ se = PRE) {
 
 class Solution {
 public:
-    vector<int> inorderTraversal(TreeNode* root) {
-        if (!root) {
-            return {};
-        }
-        return getSeqValue((TreeNodeAdapter*)root, IN);
+    vector<int> preorderTraversal(TreeNode* root) {
+        return getSeqValue((TreeNodeAdapter*)root, PRE);
     }
 };
 // @lc code=end

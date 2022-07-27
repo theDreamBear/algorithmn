@@ -57,6 +57,25 @@ struct TreeNodeAdapter {
 
 };
 
+struct Hook {
+    virtual bool operator()(TreeNodeAdapter* node) {
+        return false;
+    }
+    virtual void after() {
+
+    }
+    bool done{};
+
+    bool isDone() const{
+        return done;
+    }
+};
+
+struct EmptyHook : public Hook {};
+EmptyHook emptyHook;
+
+static Hook* hook = &emptyHook;
+
 struct TreeNodeIteratorImpAbs {
     stack<TreeNodeAdapter *> st;
     TreeNodeAdapter* now{};
@@ -70,7 +89,7 @@ struct TreeNodeIteratorImpAbs {
     }
 
     bool getNext() {
-        while (!st.empty()) {
+        while (!hook->isDone() && !st.empty()) {
             // 当前指针指向栈顶节点
             TreeNodeAdapter *cur = st.top();
             if (cur) {    // 当前节点不为空
@@ -83,6 +102,9 @@ struct TreeNodeIteratorImpAbs {
                 // 弹出中间节点并将它的值加入结果数组
                 now = st.top();
                 st.pop();
+                if ((*hook)(now)) {
+                    hook->done = true;
+                }
                 return true;
             }
         }
@@ -171,18 +193,50 @@ TreeNodeIterator TreeNodeAdapter::end() {
     return TreeNodeIterator(new preOrderTreeNodeIteratorImp(nullptr));
 }
 
+////       对外层
+
+void traversal(TreeNodeAdapter* root, SEQ se, Hook* func = nullptr) {
+    setTraversal(se);
+    if (func) {
+        hook = func;
+    }
+    auto beg = ((TreeNodeAdapter*)root)->begin();
+    auto end = ((TreeNodeAdapter*)root)->end();
+    for (; beg != end; ++beg);
+    hook->after();
+}
+
+vector<TreeNodeAdapter*> getSeqTreeNode(TreeNodeAdapter* root, SEQ se = PRE) {
+    setTraversal(se);
+    vector<TreeNodeAdapter*> data;
+    auto beg = ((TreeNodeAdapter*)root)->begin();
+    auto end = ((TreeNodeAdapter*)root)->end();
+    for (; beg != end; ++beg) {
+        data.push_back(beg.node->now);
+    }
+    return data;
+}
+
+vector<int> getSeqValue(TreeNodeAdapter* root, SEQ se = PRE) {
+    setTraversal(se);
+    vector<int> data;
+    if (!root) {
+        return data;
+    }
+    for (auto v : *root) {
+        data.push_back(v);
+    }
+    return data;
+}
+
+
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode* root) {
-         vector<int> data;
         if (!root) {
-            return data;
+            return {};
         }
-        setTraversal(POST);
-        for (auto v : *(TreeNodeAdapter*)(root)) {
-            data.push_back(v);
-        }
-        return data;
+        return getSeqValue((TreeNodeAdapter*)root, POST);
     }
 };
 // @lc code=end
