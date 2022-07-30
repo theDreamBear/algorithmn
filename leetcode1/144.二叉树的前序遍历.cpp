@@ -231,8 +231,60 @@ vector<int> getSeqValue(TreeNodeAdapter* root, SEQ se = PRE) {
 
 class Solution {
 public:
-    vector<int> preorderTraversal(TreeNode* root) {
+    vector<int> preorderTraversal1(TreeNode* root) {
         return getSeqValue((TreeNodeAdapter*)root, PRE);
+    }
+
+    struct Item {
+        int t{};
+        TreeNode* node;
+    };
+
+    static void add(stack<Item>& st, vector<int> &ans, TreeNode* node) {
+        if (nullptr == node) {
+            throw logic_error("违反约定2");
+            return;
+        }
+        ans.push_back(node->val);
+        st.push({0, node});
+    }
+
+    vector<int> preorderTraversal(TreeNode *root) {
+        vector<int> ans;
+        if (nullptr == root) {
+            return ans;
+        }
+        // 约定1. 先访问后入栈
+        // 约定2. 空节点不入栈
+        // 约定3. 注意前序遍历节点的出栈位置
+        //        节点左右都访问了才出栈
+        stack<Item> st;
+        add(st, ans, root);
+        while (!st.empty()) {
+            auto item = st.top();
+            st.pop();
+            auto node = item.node;
+            ++item.t;
+            if (1 == item.t) {
+                st.push(item);
+                // 还不能出栈， 修改完状态重新入栈
+                if (node->left) {
+                    add(st, ans, node->left);
+                }
+                continue;
+            }
+            if (2 == item.t) {
+                st.push(item);
+                if (node->right) {
+                    add(st, ans, node->right);
+                }
+                continue;
+            }
+            if (3 == item.t) {
+                continue;
+            }
+        }
+        return ans;
     }
 };
 // @lc code=end
