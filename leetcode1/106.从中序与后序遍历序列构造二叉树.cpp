@@ -36,11 +36,36 @@ public:
         return root;
     }
 
-    TreeNode* buildTree_recursion(vector<int>& inorder, vector<int>& postorder) {
-        return buildTreeHelper(inorder, 0, (int)inorder.size() - 1, postorder, 0, (int)postorder.size() - 1);
+    void buildTreeHelper2(vector<int>& inorder, int l1, int h1, vector<int>& postorder, int l2, int h2, TreeNode* &father, TreeNode* TreeNode::*child) {
+        if (l1 > h1) {
+            return;
+        }
+        int val = postorder[h2];
+        auto node = new TreeNode(val);
+        if (nullptr == father) {
+            father = node;
+        } else {
+            father->*child = node;
+        }
+        int i = l1;
+        for (; i <= h1; i++) {
+            if (inorder[i] == val) {
+                break;
+            }
+        }
+        int lsz = i - l1;
+        buildTreeHelper2(inorder, l1, i - 1, postorder, l2, l2 + lsz - 1, node, &TreeNode::left);
+        buildTreeHelper2(inorder, i + 1, h1, postorder, l2 + lsz, h2 - 1, node, &TreeNode::right);
     }
 
     TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        //return buildTreeHelper(inorder, 0, (int)inorder.size() - 1, postorder, 0, (int)postorder.size() - 1);
+        TreeNode* root = nullptr;
+        buildTreeHelper2(inorder, 0, (int)inorder.size() - 1, postorder, 0, (int)postorder.size() - 1, root, nullptr);
+        return root;
+    }
+
+    TreeNode* buildTree_stack(vector<int>& inorder, vector<int>& postorder) {
         if (inorder.empty()) {
             return nullptr;
         }
@@ -55,8 +80,7 @@ public:
         stack<Item> st;
         st.push(Item(0, (int)inorder.size() - 1, 0, (int)inorder.size() - 1, nullptr, nullptr));
         while (!st.empty()) {
-            auto item = st.top();
-            st.pop();
+            auto item = st.top(); st.pop();
             int l1 = item.l1;
             int h1 = item.h1;
             int l2 = item.l2;
@@ -68,12 +92,12 @@ public:
             }
             int val = postorder[h2];
             TreeNode* node = new TreeNode(val);
-            if (nullptr == father) {
-                root = node;
-            } else {
-                father->*child = node;
-            }
             if (l1 == h1) {
+                if (nullptr == root) {
+                    root = node;
+                } else {
+                    node->*child = node;
+                }
                 continue;
             }
             int i = l1;
@@ -84,7 +108,7 @@ public:
             }
             int lsz = i - l1;
             st.push(Item(l1, i - 1, l2, l2 + lsz - 1, &TreeNode::left, node));
-            st.push(Item{i + 1, h1, l2 + lsz, h2 - 1, &TreeNode::right, node});
+            st.push(Item{0, (int)inorder.size() - 1, 0, (int)postorder.size() - 1, &TreeNode::right, node});
         }
         return root;
     }

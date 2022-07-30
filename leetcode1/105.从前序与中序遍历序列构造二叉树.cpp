@@ -36,9 +36,34 @@ public:
         return root;
     }
 
+    void buildTreeHelper2(vector<int>& preorder, int l1, int h1, vector<int>& inorder, int l2, int h2, TreeNode* &father, TreeNode* TreeNode::*child) {
+        if (l1 > h1) {
+            return;
+        }
+        int val = preorder[l1];
+        auto node = new TreeNode(val);
+        if (nullptr == father) {
+            father = node;
+        } else {
+            father->*child = node;
+        }
+        int i = l2;
+        for (; i <= h2; i++) {
+            if (inorder[i] == val) {
+                break;
+            }
+        }
+        int lsz = i - l2;
+        buildTreeHelper2(preorder, l1 + 1, l1 + lsz, inorder, l2, i - 1, node, &TreeNode::left);
+        buildTreeHelper2(preorder, l1 + lsz + 1, h1, inorder, i + 1, h2, node, &TreeNode::right);
+    }
+
     // 最一般的递归构造
-    TreeNode* buildTree_recursion(vector<int>& preorder, vector<int>& inorder) {
-        return buildTreeHelper(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1);
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        //return buildTreeHelper(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1);
+        TreeNode* root = nullptr;
+        buildTreeHelper2(preorder, 0, preorder.size() - 1, inorder, 0, inorder.size() - 1, root, nullptr);
+        return root;
     }
 
     struct OneItemTag {
