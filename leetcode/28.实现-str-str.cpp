@@ -335,6 +335,37 @@ class Solution {
         return -1;
     }
 
+    vector<int> makeNext(const string& target) {
+        vector<int> next = vector<int>(target.size(), 0);
+        int k = 0;
+        for (int i = 1; i < target.size(); ++i) {
+            while (k > 0 && target[k] != target[i]) {
+                k = next[k - 1];
+            }
+            if (target[k] == target[i]) {
+                ++k;
+            }
+            next[i] = k;
+        }
+        return next;
+    }
+
+    int kmp(const string& target, const string& pattern) {
+        auto next= makeNext(pattern);
+        int k = 0;
+        for (int i = 0; i < target.size(); i++) {
+            while (k > 0 && target[i] != pattern[k]) {
+                k = next[k - 1];
+            }
+            if (target[i] == pattern[k]) {
+                if (++k == pattern.size()) {
+                    return i - (int)pattern.size() + 1;
+                }
+            }
+        }
+        return -1;
+    }
+
     // 暴力 kmp
     int strStr5(string haystack, string needle) {
         if (needle.size() > haystack.size()) {
@@ -350,7 +381,8 @@ class Solution {
 
         // 暴力 kmp
     int strStr(string haystack, string needle) {
-        return indexRabinKarp(haystack, needle);
+        //return indexRabinKarp(haystack, needle);
+        return kmp(haystack, needle);
     }
 };
 // @lc code=end
