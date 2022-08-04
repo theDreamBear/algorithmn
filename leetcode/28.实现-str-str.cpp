@@ -118,7 +118,7 @@ int indexRabinKarp(const string &source, const string &target) {
     return -1;
 }
 
-class Solution {
+class Solution1 {
  public:
     int strStr1(string haystack, string needle) {
         // 边界条件
@@ -383,6 +383,50 @@ class Solution {
     int strStr(string haystack, string needle) {
         //return indexRabinKarp(haystack, needle);
         return kmp(haystack, needle);
+    }
+};
+
+class Sunday {
+public:
+    const string& needle;
+    int mp[300];
+
+    Sunday(const string& needle) : needle(needle) {
+        fill(mp, mp + 300, -1);
+        for (int i = 0; i < needle.size(); i++) {
+            mp[needle[i]] = i;
+        }
+    }
+    int advance(char c) {
+        int n = mp[c];
+        return (int)needle.size() - n;
+    }
+
+    void advance(int& i, int &j, char c) {
+        i += advance(c);
+        j = 0;
+    }
+
+    int strstr(const string& target) {
+        int i = 0, j = 0;
+        while (i + needle.size() < target.size() + 1) {
+            if (needle[j] == target[i + j]) {
+                if (++j == needle.size()) {
+                    return i;
+                }
+            } else {
+                advance(i, j, target[i + needle.size()]);
+            }
+        }
+        return -1;
+    }
+};
+
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        Sunday sun(needle);
+        return sun.strstr(haystack);
     }
 };
 // @lc code=end
