@@ -46,68 +46,90 @@ enum Order {
     Post_Order = 2
 };
 
-class Solution {
-public:
+struct Frame {
     constexpr static TreeNode *TreeNode::*next_child[3] = {&TreeNode::left, &TreeNode::right, nullptr};
+    TreeNode *node;
+    int t;
+    shared_ptr<Frame> left{};
+    shared_ptr<Frame> right{};
 
-    struct Frame {
-        Frame *left;
-        Frame *right;
-        int depth;
-        TreeNode *node;
-        int t;
+    explicit Frame(TreeNode *node = nullptr, int t = -1, shared_ptr<Frame> left = nullptr,
+                   shared_ptr<Frame> right = nullptr,
+                   int depth = 0) : node(node), t(t), left(left), right(right){}
 
-        explicit Frame(TreeNode *node = nullptr, int t = -1, Frame *left = nullptr, Frame *right = nullptr,
-                       int depth = 0) : node(node), t(t), left(left), right(right), depth(0) {}
+    TreeNode *TreeNode::* getNextChild() {
+        t++;
+        if (t > 2) {
+            t = 2;
+        }
+        return next_child[t];
+    }
+};
 
-        TreeNode *TreeNode::* getNextChild() {
-            t++;
-            if (t > 2) {
-                t = 2;
+class BinaryTreeVisitor {
+private:
+    Order order;
+    void *data;
+    shared_ptr<Frame> currentFrame{};
+    stack<shared_ptr<Frame>> st;
+    unordered_map<Frame*, void *> priData;
+
+    void setFramePriData(shared_ptr<Frame> frame, void *v) {
+        priData[frame.get()] = v;
+    }
+
+    void *getFramePriData(shared_ptr<Frame> frame) {
+        return priData[frame.get()];
+    }
+
+    virtual shared_ptr<Frame> newFrame(TreeNode *node = nullptr) {
+        return make_shared<Frame>(node);
+    }
+
+    virtual void doWhenVisit() {
+        int left = 0, right = 0;
+        if (currentFrame->left) {
+            left = *(int *) getFramePriData(currentFrame->left);
+        }
+        if (currentFrame->right) {
+            right = *(int *) getFramePriData(currentFrame->right);
+        }
+        if (!currentFrame->left && !currentFrame->right) {
+            setFramePriData(currentFrame, new int(1));
+        } else if (!currentFrame->left || !currentFrame->right) {
+            if (!currentFrame->left) {
+                setFramePriData(currentFrame, new int(right + 1));
+            } else {
+                setFramePriData(currentFrame, new int(left + 1));
             }
-            return next_child[t];
+        } else {
+            setFramePriData(currentFrame, new int(min(left, right) + 1));
         }
-    };
+        if (st.empty()) {
+            *(int*)data = *(int*)getFramePriData(currentFrame);
+        }
+    }
 
-    int traversal_simulate_stack(TreeNode *root, Order order = Pre_Order) {
+public:
+    explicit BinaryTreeVisitor(Order order, void *data = nullptr) : order(order), data(data) {}
+
+    void traversal(TreeNode *root) {
         if (nullptr == root) {
-            return 0;
+            return;
         }
-        int ans = 0;
-        stack<Frame *> st;
-        Frame *currentFrame = new Frame{root};
+        currentFrame = newFrame(root);
         while (currentFrame || !st.empty()) {
             if (!currentFrame) {
                 currentFrame = st.top();
                 st.pop();
             }
             auto child = currentFrame->getNextChild();
-            // order == Pre_Order 先序遍历
-            // order == In_Order 中序遍历
-            // order == Post_Order 后序遍历
-            if (child == next_child[order]) {
-                do {
-                    if (!currentFrame->left && !currentFrame->right) {
-                        currentFrame->depth = 1;
-                        continue;
-                    }
-                    if (!currentFrame->left || !currentFrame->right) {
-                        if (!currentFrame->left) {
-                            currentFrame->depth = currentFrame->right->depth + 1;
-                        } else {
-                            currentFrame->depth = currentFrame->left->depth + 1;
-                        }
-                        continue;
-                    }
-                    currentFrame->depth = min(currentFrame->left->depth, currentFrame->right->depth) + 1;
-                } while (false);
-                if (st.empty()) {
-                    ans = currentFrame->depth;
-                }
+            if (child == Frame::next_child[order]) {
+                doWhenVisit();
             }
             if (child) {
                 if (currentFrame->node->*child) {
-                    Frame *frame = new Frame{currentFrame->node->*child};
+                    auto frame = newFrame(currentFrame->node->*child);
                     if (child == &TreeNode::left) {
                         currentFrame->left = frame;
                     } else {
@@ -120,14 +142,19 @@ public:
             }
             currentFrame = nullptr;
         }
-        return ans;
     }
+};
 
+class Solution {
+public:
+    int ans{};
     int minDepth(TreeNode *root) {
         if (nullptr == root) {
             return 0;
         }
-        return traversal_simulate_stack(root, Post_Order);
+        BinaryTreeVisitor visitor(Post_Order, &ans);
+        visitor.traversal(root);
+        return ans;
     }
 };
 // @lc code=end
