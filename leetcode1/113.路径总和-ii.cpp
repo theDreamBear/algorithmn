@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=112 lang=cpp
+ * @lc app=leetcode.cn id=113 lang=cpp
  *
- * [112] 路径总和
+ * [113] 路径总和 II
  */
 
 // @lc code=start
@@ -39,7 +39,7 @@ struct Frame {
     shared_ptr<Frame> left{};
     shared_ptr<Frame> right{};
     shared_ptr<Frame> parrent{};
-    DefinePrivate(int, currentSum);
+    DefinePrivate(int, extra);
 
     explicit Frame(TreeNode *node = nullptr, int t = -1, shared_ptr<Frame> left = nullptr,
                    shared_ptr<Frame> right = nullptr, shared_ptr<Frame> parrent = nullptr) : node(node), t(t),
@@ -126,42 +126,52 @@ public:
     }
 };
 
-class PathSumVisitor : public BinaryTreeVisitor {
+struct Data {
+    int targetSum;
+    vector<vector<int>> ans;
+};
+
+class PathSumVisitor2 : public BinaryTreeVisitor {
 protected:
     bool doWhenVisit() override {
-        pair<bool, int> &now = *(pair<bool, int> *) (data);
+        auto &now = *(Data *) (data);
         if (currentFrame->parrent == nullptr) {
-            currentFrame->currentSum = currentFrame->node->val;
+            currentFrame->extra = currentFrame->node->val;
         } else {
-            currentFrame->currentSum = currentFrame->parrent->currentSum + currentFrame->node->val;
+            currentFrame->extra = currentFrame->parrent->extra + currentFrame->node->val;
         }
         if (!currentFrame->node->left && !currentFrame->node->right) {
-            if (currentFrame->currentSum == now.second) {
-                now.first = true;
-                return true;
+            if (currentFrame->extra == now.targetSum) {
+                vector<int> temp;
+                auto frame = currentFrame;
+                while(frame) {
+                    temp.push_back(frame->node->val);
+                    frame = frame->parrent;
+                }
+                reverse(temp.begin(), temp.end());
+                now.ans.push_back(temp);
             }
-            return false;
         }
         return false;
     }
 
 public:
-    PathSumVisitor(Order order, void *data) : BinaryTreeVisitor(order, data) {}
+    PathSumVisitor2(Order order, void *data) : BinaryTreeVisitor(order, data) {}
 };
 
 class Solution {
 private:
-    pair<bool, int> data;
-
+    Data data;
 public:
-    bool hasPathSum(TreeNode *root, int targetSum) {
-        if (!root) {
-            return false;
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        data.targetSum = targetSum;
+        data.ans.clear();
+        if (nullptr == root) {
+            return data.ans;
         }
-        data.second = targetSum;
-        PathSumVisitor visitor(Pre_Order, &data);
-        visitor.traversal(root);
-        return data.first;
+        PathSumVisitor2 path(Pre_Order, &data);
+        path.traversal(root);
+        return data.ans;
     }
 };
 // @lc code=end

@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=112 lang=cpp
+ * @lc app=leetcode.cn id=129 lang=cpp
  *
- * [112] 路径总和
+ * [129] 求根节点到叶节点数字之和
  */
 
 // @lc code=start
@@ -39,7 +39,7 @@ struct Frame {
     shared_ptr<Frame> left{};
     shared_ptr<Frame> right{};
     shared_ptr<Frame> parrent{};
-    DefinePrivate(int, currentSum);
+    DefinePrivate(int, extra);
 
     explicit Frame(TreeNode *node = nullptr, int t = -1, shared_ptr<Frame> left = nullptr,
                    shared_ptr<Frame> right = nullptr, shared_ptr<Frame> parrent = nullptr) : node(node), t(t),
@@ -126,42 +126,34 @@ public:
     }
 };
 
-class PathSumVisitor : public BinaryTreeVisitor {
+class sumVisitor : public BinaryTreeVisitor {
 protected:
     bool doWhenVisit() override {
-        pair<bool, int> &now = *(pair<bool, int> *) (data);
         if (currentFrame->parrent == nullptr) {
-            currentFrame->currentSum = currentFrame->node->val;
+            currentFrame->extra = currentFrame->node->val;
         } else {
-            currentFrame->currentSum = currentFrame->parrent->currentSum + currentFrame->node->val;
+            currentFrame->extra = currentFrame->parrent->extra * 10 + currentFrame->node->val;
         }
         if (!currentFrame->node->left && !currentFrame->node->right) {
-            if (currentFrame->currentSum == now.second) {
-                now.first = true;
-                return true;
-            }
-            return false;
+            *(int*)data += currentFrame->extra;
         }
         return false;
     }
 
 public:
-    PathSumVisitor(Order order, void *data) : BinaryTreeVisitor(order, data) {}
+    sumVisitor(Order order, void *data = nullptr) : BinaryTreeVisitor(order, data) {}
 };
 
 class Solution {
-private:
-    pair<bool, int> data;
-
 public:
-    bool hasPathSum(TreeNode *root, int targetSum) {
+    int sumNumbers(TreeNode* root) {
+        int ans = 0;
         if (!root) {
-            return false;
+            return ans;
         }
-        data.second = targetSum;
-        PathSumVisitor visitor(Pre_Order, &data);
+        sumVisitor visitor(Pre_Order, &ans);
         visitor.traversal(root);
-        return data.first;
+        return ans;
     }
 };
 // @lc code=end

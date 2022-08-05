@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=112 lang=cpp
+ * @lc app=leetcode.cn id=114 lang=cpp
  *
- * [112] 路径总和
+ * [114] 二叉树展开为链表
  */
 
 // @lc code=start
@@ -39,7 +39,7 @@ struct Frame {
     shared_ptr<Frame> left{};
     shared_ptr<Frame> right{};
     shared_ptr<Frame> parrent{};
-    DefinePrivate(int, currentSum);
+    DefinePrivate(int, extra);
 
     explicit Frame(TreeNode *node = nullptr, int t = -1, shared_ptr<Frame> left = nullptr,
                    shared_ptr<Frame> right = nullptr, shared_ptr<Frame> parrent = nullptr) : node(node), t(t),
@@ -126,42 +126,43 @@ public:
     }
 };
 
-class PathSumVisitor : public BinaryTreeVisitor {
+
+class FlattenVisitor : public BinaryTreeVisitor {
 protected:
-    bool doWhenVisit() override {
-        pair<bool, int> &now = *(pair<bool, int> *) (data);
-        if (currentFrame->parrent == nullptr) {
-            currentFrame->currentSum = currentFrame->node->val;
-        } else {
-            currentFrame->currentSum = currentFrame->parrent->currentSum + currentFrame->node->val;
+    TreeNode* zuiyou(TreeNode* node) {
+        while(node->right) {
+            node = node->right;
         }
-        if (!currentFrame->node->left && !currentFrame->node->right) {
-            if (currentFrame->currentSum == now.second) {
-                now.first = true;
-                return true;
+        return node;
+    }
+
+    bool doWhenVisit() override {
+        if (currentFrame->node->left) {
+            TreeNode *right = nullptr;
+            if (currentFrame->node->right) {
+                right  = currentFrame->node->right;
+                auto z = zuiyou(currentFrame->node->left);
+                z->right = right;
             }
-            return false;
+            currentFrame->node->right = currentFrame->node->left;
+            currentFrame->node->left = nullptr;
         }
         return false;
     }
 
 public:
-    PathSumVisitor(Order order, void *data) : BinaryTreeVisitor(order, data) {}
+    FlattenVisitor(Order order, void *data = nullptr) : BinaryTreeVisitor(order, data) {}
 };
 
 class Solution {
-private:
-    pair<bool, int> data;
-
 public:
-    bool hasPathSum(TreeNode *root, int targetSum) {
+    void flatten(TreeNode* root) {
         if (!root) {
-            return false;
+            return;
         }
-        data.second = targetSum;
-        PathSumVisitor visitor(Pre_Order, &data);
+        FlattenVisitor visitor(Pre_Order);
         visitor.traversal(root);
-        return data.first;
+        return;
     }
 };
 // @lc code=end
