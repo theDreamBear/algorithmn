@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=111 lang=cpp
+ * @lc app=leetcode.cn id=112 lang=cpp
  *
- * [111] 二叉树的最小深度
+ * [112] 路径总和
  */
 
 // @lc code=start
@@ -16,30 +16,6 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution1 {
-public:
-    int minDepthHelper(TreeNode* root) {
-        if (!root->left && !root->right) {
-            return 1;
-        }
-        if (!root->left) {
-            return minDepthHelper(root->right) + 1;
-        }
-        if (!root->right) {
-            return minDepthHelper(root->left) + 1;
-        }
-        int left = minDepthHelper(root->left);
-        int right = minDepthHelper(root->right);
-        return min(left, right) + 1;
-    }
-    int minDepth(TreeNode* root) {
-        if (nullptr == root) {
-            return 0;
-        }
-        return minDepthHelper(root);
-    }
-};
-
 enum Order {
     Pre_Order = 0,
     In_Order = 1,
@@ -47,7 +23,7 @@ enum Order {
 };
 
 #define DefinePrivate(type, name) \
-    type name; \
+    type name{}; \
     void set##name(type other) { \
         name = other; \
     } \
@@ -63,10 +39,14 @@ struct Frame {
     shared_ptr<Frame> left{};
     shared_ptr<Frame> right{};
     shared_ptr<Frame> parrent{};
-    DefinePrivate(int ,depth);
+    DefinePrivate(int, currentSum);
 
     explicit Frame(TreeNode *node = nullptr, int t = -1, shared_ptr<Frame> left = nullptr,
-                   shared_ptr<Frame> right = nullptr, shared_ptr<Frame> parrent = nullptr) : node(node), t(t), left(std::move(left)), right(std::move(right)), parrent(std::move(parrent)) {}
+                   shared_ptr<Frame> right = nullptr, shared_ptr<Frame> parrent = nullptr) : node(node), t(t),
+                                                                                             left(std::move(left)),
+                                                                                             right(std::move(right)),
+                                                                                             parrent(std::move(
+                                                                                                     parrent)) {}
 
     TreeNode *TreeNode::* getNextChild() {
         t++;
@@ -83,7 +63,7 @@ protected:
     Order order;
     shared_ptr<Frame> currentFrame{};
     stack<shared_ptr<Frame>> st;
-    void* data;
+    void *data;
     bool done{};
 
     virtual shared_ptr<Frame> newFrame(TreeNode *node = nullptr) {
@@ -97,33 +77,29 @@ protected:
     virtual void afterVisit() {}
 
     virtual bool doWhenVisit() {
-        int left = 0, right = 0;
-        if (currentFrame->left) {
-            left = currentFrame->left->getdepth();
-        }
-        if (currentFrame->right) {
-            right =currentFrame->right->getdepth();
-        }
-        if (!currentFrame->left && !currentFrame->right) {
-            currentFrame->setdepth(1);
-        } else if (!currentFrame->left || !currentFrame->right) {
-            if (!currentFrame->left) {
-                currentFrame->setdepth(right + 1);
-            } else {
-                currentFrame->setdepth(left + 1);
-            }
+        pair<bool, int> &now = *(pair<bool, int> *) (data);
+        if (currentFrame->parrent == nullptr) {
+            currentFrame->currentSum = currentFrame->node->val;
         } else {
-            currentFrame->setdepth(min(left, right) + 1);
+            currentFrame->currentSum = currentFrame->parrent->currentSum + currentFrame->node->val;
         }
-        if (nullptr == currentFrame->parrent) {
-            *(int *) data = currentFrame->getdepth();
-            return true;
+        if (!currentFrame->node->left && !currentFrame->node->right) {
+            if (currentFrame->currentSum == now.second) {
+                now.first = true;
+                return true;
+            }
+            return false;
         }
         return false;
     }
 
 public:
-    explicit BinaryTreeVisitor(Order order, void *data = nullptr) : order(order), data(data) {}
+    explicit BinaryTreeVisitor(Order
+                               order,
+                               void *data = nullptr
+    ) :
+
+            order(order), data(data) {}
 
     void traversal(TreeNode *root) {
         if (nullptr == root) {
@@ -161,18 +137,22 @@ public:
             currentFrame = nullptr;
         }
     }
+
 };
 
 class Solution {
+private:
+    pair<bool, int> data;
+
 public:
-    int ans{};
-    int minDepth(TreeNode *root) {
-        if (nullptr == root) {
-            return 0;
+    bool hasPathSum(TreeNode *root, int targetSum) {
+        if (!root) {
+            return false;
         }
-        BinaryTreeVisitor visitor(Post_Order, &ans);
+        data.second = targetSum;
+        BinaryTreeVisitor visitor(Pre_Order, &data);
         visitor.traversal(root);
-        return ans;
+        return data.first;
     }
 };
 // @lc code=end
