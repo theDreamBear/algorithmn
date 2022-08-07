@@ -136,17 +136,28 @@ class SubVisitor : public BinaryTreeVisitor {
 public:
     SubVisitor(Order order, void *data) : BinaryTreeVisitor(order, data) {}
 
+    string toString(int val) {
+        auto sVal = to_string(val);
+        string ans = "[";
+        for (int i = 0; i < sVal.size() - 1; i++) {
+            ans.push_back(sVal[i]);
+            ans.push_back('_');
+        }
+        ans.push_back(sVal.back());
+        ans.push_back(']');
+        return ans;
+    }
 protected:
     bool doWhenVisit() override {
-        if (nullptr == currentFrame->left && nullptr == currentFrame->right) {
-            currentFrame->path = string("(") +  to_string(currentFrame->node->val) + string(")");
-        } else if (nullptr == currentFrame->left) {
-            currentFrame->path = string("x") + "a" + to_string(currentFrame->node->val) + "b" + currentFrame->right->path;
-        } else if (nullptr == currentFrame->right) {
-            currentFrame->path = currentFrame->left->path + "a" + to_string(currentFrame->node->val) + "b" + "y";
-        } else {
-            currentFrame->path = currentFrame->left->path + "a" + to_string(currentFrame->node->val) + "b" + currentFrame->right->path;
+        string left = "(x)";
+        string right = "(x)";
+        if (currentFrame->left) {
+            left = "(" + currentFrame->left->path + ")";
         }
+        if (currentFrame->right) {
+            right = "(" + currentFrame->right->path + ")";
+        }
+        currentFrame->path = toString(currentFrame->node->val) + left + right;
         if (nullptr == currentFrame->parrent) {
             ((Data *) data)->path = currentFrame->path;
         }
@@ -198,5 +209,6 @@ public:
         return rp.find(sp) != string::npos;
     }
 };
+
 // @lc code=end
 
