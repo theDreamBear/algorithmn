@@ -1,7 +1,7 @@
 /*
- * @lc app=leetcode.cn id=572 lang=cpp
+ * @lc app=leetcode.cn id=297 lang=cpp
  *
- * [572] 另一棵树的子树
+ * [297] 二叉树的序列化与反序列化
  */
 
 // @lc code=start
@@ -11,22 +11,10 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
+
 enum Order {
     Pre_Order = 0,
     In_Order = 1,
@@ -142,20 +130,20 @@ struct Data {
     string path;
 };
 
-class SubVisitor : public BinaryTreeVisitor {
+class EncodeVisitor : public BinaryTreeVisitor {
 
 public:
-    SubVisitor(Order order, void *data) : BinaryTreeVisitor(order, data) {}
+    EncodeVisitor(Order order, void *data) : BinaryTreeVisitor(order, data) {}
 
     string toString(int val) {
         auto sVal = to_string(val);
-        string ans = "[";
+        string ans = "(";
         for (int i = 0; i < sVal.size() - 1; i++) {
             ans.push_back(sVal[i]);
             ans.push_back('_');
         }
         ans.push_back(sVal.back());
-        ans.push_back(']');
+        ans.push_back(')');
         return ans;
     }
 protected:
@@ -176,49 +164,89 @@ protected:
     }
 };
 
-class Solution {
+class Codec {
 public:
-    bool isSubtreeHelper(TreeNode *left, TreeNode *right) {
-        if (nullptr == left && nullptr == right) {
-            return true;
-        }
-        if (nullptr == left || nullptr == right || left->val != right->val) {
-            return false;
-        }
-        return isSubtreeHelper(left->left, right->left) && isSubtreeHelper(left->right, right->right);
-    }
-
-    bool isSubtree_recursion(TreeNode *root, TreeNode *subRoot) {
-        if (root == nullptr) {
-            return false;
-        }
-        if (root->val == subRoot->val && isSubtreeHelper(root, subRoot)) {
-            return true;
-        }
-        if (isSubtree(root->left, subRoot)) {
-            return true;
-        }
-        if (isSubtree(root->right, subRoot)) {
-            return true;
-        }
-        return false;
-    }
-
     string getPath(TreeNode *node) {
         if (nullptr == node) {
             return "";
         }
         Data data;
-        SubVisitor visitor(Post_Order, &data);
+        EncodeVisitor visitor(Post_Order, &data);
         visitor.traversal(node);
         return data.path;
     }
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        return getPath(root);
+    }
 
-    bool isSubtree(TreeNode *root, TreeNode *subRoot) {
-        auto rp = getPath(root);
-        auto sp = getPath(subRoot);
-        return rp.find(sp) != string::npos;
+    pair<int, int> findChar(const string& data, int left, int high) {
+        int l = 0, r = 0;
+        while (left <= high && data[left] != '(') {
+            ++left;
+        }
+        ++left;
+        ++l;
+        int start = left;
+        while (left <= high && r < l) {
+            if (data[left] == '(') {
+                ++l;
+            } else if (data[left] == ')') {
+                if (++r == l) {
+                    break;
+                }
+            }
+            ++left;
+        }
+        return {start, left - 1};
+    }
+
+    pair<TreeNode*, int> childNode(const string& data, int left, int high) {
+        auto p = findChar(data, left, high);
+        return {deserializeHelper(data, p.first, p.second), p.second};
+    }
+
+    TreeNode* deserializeHelper(const string& data, int low, int high) {
+        if (low > high) {
+            return nullptr;
+        }
+        if (data.substr(low, high - low + 1).find('(') == string::npos) {
+            if (data[low] == 'x') {
+                return nullptr;
+            }
+            int ans = 0;
+            int sign = 1;
+            if (data[low] == '-') {
+                sign = -1;
+                ++low;
+            }
+            for (int i = low; i <= high; i++) {
+                if (!isdigit(data[i])) {
+                    continue;
+                }
+                ans = ans * 10 + (data[i] - '0');
+            }
+            return new TreeNode(ans * sign);
+        }
+        auto pRoot = childNode(data, low, high);
+        auto pLeft = childNode(data, pRoot.second, high);
+        auto pRight = childNode(data, pLeft.second, high);
+        pRoot.first->left = pLeft.first;
+        pRoot.first->right = pRight.first;
+        return pRoot.first;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        if (data.empty()) {
+            return nullptr;
+        }
+        return deserializeHelper(data, 0, data.size());
     }
 };
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));
 // @lc code=end
 
