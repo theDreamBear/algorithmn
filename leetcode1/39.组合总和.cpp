@@ -5,7 +5,7 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     vector<vector<int>> combinationSum1(vector<int>& candidates, int target) {
         sort(candidates.begin(), candidates.end());
@@ -71,6 +71,60 @@ public:
             }
         }
         return ans;
+    }
+
+};
+
+class Solution {
+public:
+    struct State {
+    int val{};
+    int next_pos{};
+    int cur_sum{};
+    State* pre;
+
+    State(){
+        val = INT_MIN;
+        pre = nullptr;
+    }
+
+    State(State* state, int pos, int val) {
+        this->val = val;
+        next_pos = pos;
+        cur_sum = state->cur_sum +  val;
+        this->pre = state;
+    }
+};
+
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+         vector<vector<int>> ans;
+    auto state = new State();
+
+    sort(candidates.begin(), candidates.end());
+
+    stack<State *> st;
+    st.push(state);
+    while (!st.empty()) {
+        auto s = st.top();
+        st.pop();
+        if (s->cur_sum > target) {
+            continue;
+        }
+        if (s->cur_sum == target) {
+            vector<int> temp;
+            while (s->pre) {
+                temp.push_back(s->val);
+                s = s->pre;
+            }
+            ans.push_back(std::move(temp));
+            continue;
+        }
+        for (int i = s->next_pos; i < candidates.size(); i++) {
+            auto next_state = new State(s, i, candidates[i]);
+            st.push(next_state);
+        }
+    }
+    return ans;
     }
 
 };
