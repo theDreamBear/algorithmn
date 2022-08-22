@@ -7,17 +7,17 @@
 // @lc code=start
 class Solution {
 public:
-    vector<int> findMinHeightTrees_violate(int n, vector<vector<int>>& edges) {
+    vector<int> findMinHeightTrees_violate(int n, vector<vector<int>> &edges) {
         vector<int> ans;
         vector<vector<int>> Graph(n);
-        for (auto& vec : edges) {
+        for (auto &vec: edges) {
             int one = vec[0];
             int two = vec[1];
             Graph[one].push_back(two);
             Graph[two].push_back(one);
         }
         int min_depth = n;
-        function<int(int)> get_depth = [&](int root)->int {
+        function<int(int)> get_depth = [&](int root) -> int {
             vector<int> visited(n);
             int dep = 0;
             queue<int> q;
@@ -29,7 +29,7 @@ public:
                 for (int i = 0; i < sz; i++) {
                     auto node = q.front();
                     q.pop();
-                    for (auto child : Graph[node]) {
+                    for (auto child: Graph[node]) {
                         if (visited[child]) {
                             continue;
                         }
@@ -53,99 +53,73 @@ public:
         return ans;
     }
 
-    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+    struct Node {
+        bool know = false;
+        int distance = 0;
+        int pre = -1;
+        vector<int> adjacent;
+    };
+
+    void init(vector<Node>& nodes) {
+        for (int i = 0; i < nodes.size(); i++) {
+            nodes[i].pre = -1;
+            nodes[i].know = false;
+            nodes[i].distance = 0;
+        }
+    }
+
+    vector<int> findMinHeightTrees(int n, vector<vector<int>> &edges) {
         vector<int> ans;
-        vector<vector<int>> Graph(n);
-        for (auto& vec : edges) {
+        vector<Node> nodes(n);
+        for (auto &vec: edges) {
             int one = vec[0];
             int two = vec[1];
-            Graph[one].push_back(two);
-            Graph[two].push_back(one);
+            nodes[one].adjacent.push_back(two);
+            nodes[two].adjacent.push_back(one);
         }
-        int root = 0;
-        int cd = n;
-        for (int i = 0; i < Graph.size(); i++) {
-            if (Graph[i].size() < cd) {
-                cd = Graph[i].size();
+        // 求起点的问题
+        int root = -1;
+        int max_depth = INT_MIN;
+        function<void(int, int , int)> dfs = [&](int i, int pre, int d) {
+            if (root == -1 || max_depth < d) {
                 root = i;
+                max_depth = d;
             }
-        }
-        struct Item {
-            int node;
-            vector<int> path;
-        };
-        vector<int> temp;
-        function<void(int)> get_max = [&](int root)->void {
-            vector<int> visited(n);
-
-            Item* item = new Item;
-            item->node = root;
-            item->path.push_back(root);
-            if (item->path.size() > temp.size()) {
-                temp = item->path;
-            }
-            queue<Item*> q;
-            q.push(item);
-            visited[root] = 1;
-            while (!q.empty()) {
-                int sz = q.size();
-                for (int i = 0; i < sz; i++) {
-                    auto node = q.front();
-                    q.pop();
-                    for (auto child : Graph[node->node]) {
-                        if (visited[child]) {
-                            continue;
-                        }
-                        visited[child] = 1;
-                        Item* item = new Item;
-                        item->node = child;
-                        item->path = node->path;
-                        item->path.push_back(child);
-                        if (item->path.size() > temp.size()) {
-                            temp = item->path;
-                        }
-                        q.push(item);
-                    }
+            nodes[i].know = true;
+            nodes[i].pre = pre;
+            nodes[i].distance = d;
+            for (int nodeId: nodes[i].adjacent) {
+                if (nodes[nodeId].know) {
+                    continue;
                 }
+                dfs(nodeId, i, d + 1);
             }
-            return;
         };
-        // 找到最长的那个链路
-        get_max(root);
-
-        int min_depth = n;
-        function<int(int)> get_depth = [&](int root)->int {
-            vector<int> visited(n);
-            int dep = 0;
-            queue<int> q;
-            q.push(root);
-            visited[root] = 1;
-            while (!q.empty()) {
-                ++dep;
-                int sz = q.size();
-                for (int i = 0; i < sz; i++) {
-                    auto node = q.front();
-                    q.pop();
-                    for (auto child : Graph[node]) {
-                        if (visited[child]) {
-                            continue;
+        dfs(0, -1, 0);
+        init(nodes);
+        dfs(root, -1, 0);
+        unordered_set<int> added;
+        for (int i = 0; i < n; i++) {
+            if (nodes[i].distance == max_depth) {
+                int half = (max_depth + 1) / 2;
+                int j = i;
+                while (-1 != j) {
+                    if (nodes[j].distance == half) {
+                        if (added.count(j) == 0) {
+                            ans.push_back(j);
                         }
-                        visited[child] = 1;
-                        q.push(child);
+                        added.insert(j);
+                        if (max_depth % 2 != 0) {
+                            j = nodes[j].pre;
+                            if (added.count(j) == 0) {
+                                ans.push_back(j);
+                            }
+                            added.insert(j);
+                            break;
+                        }
                     }
+                    j = nodes[j].pre;
                 }
-            }
-            return dep;
-        };
-
-        for (int i = 0; i < temp.size(); i++) {
-            int dep = get_depth(temp[i]);
-            if (dep < min_depth) {
-                ans.clear();
-                ans.push_back(temp[i]);
-                min_depth = dep;
-            } else if (dep == min_depth) {
-                ans.push_back(temp[i]);
             }
         }
         return ans;
