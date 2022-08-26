@@ -1,27 +1,26 @@
-#include <algorithm>
-#include <chrono>
 #include <iostream>
-#include <map>
-#include <queue>
-#include <stack>
-#include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <stack>
+#include <string>
 #include <vector>
+#include <queue>
+#include <map>
+#include <algorithm>
+#include <chrono>
 
 using namespace std;
 
 class Graph {
-   protected:
+public:
     virtual void add(int from, int to) {
         nodes[from].adjacent.push_back(to);
         nodes[to].adjacent.push_back(from);
     }
-
     struct Vertex {
         vector<int> adjacent;
     };
-    vector<Vertex> nodes;
+
     vector<int> know;
     vector<int> id;
     int count = 0;
@@ -33,7 +32,7 @@ class Graph {
         preOrder.push_back(node);
         know[node] = 1;
         id[node] = count;
-        for (auto adj : nodes[node].adjacent) {
+        for (auto adj: nodes[node].adjacent) {
             if (know[adj]) {
                 continue;
             }
@@ -42,62 +41,108 @@ class Graph {
         postOrder.push_back(node);
     }
 
-   public:
+    vector<Vertex> nodes;
+public:
     vector<int> preOrder;
     vector<int> postOrder;
     vector<int> reversePostOrder;
 
     Graph() {}
 
-    void traversal(int n, vector<vector<int>> edges) {
-        nodes.resize(n);
-        know.resize(n);
-        id.resize(n);
-        for (auto& vec : edges) {
-            add(vec[0], vec[1]);
-        }
-        vector<int> know(nodes.size());
-        vector<int> ans;
+    void traversal() {
         for (int i = 0; i < nodes.size(); i++) {
             dfs(i);
+            ++count;
         }
         reversePostOrder = postOrder;
         std::reverse(reversePostOrder.begin(), reversePostOrder.end());
     }
 
-    void reverse() {
-        vector<Vertex> new_nodes(nodes.size());
-        for (int i = 0; i < nodes.size(); i++) {
-            for (auto adj : nodes[i].adjacent) {
-                new_nodes[adj].adjacent.push_back(i);
-            }
+     void traversal(int n, vector<vector<int>> edges) {
+        nodes = vector<Vertex>(n);
+        know = vector<int>(n);
+        id = vector<int>(n, -1);
+        for (auto &vec: edges) {
+            add(vec[0], vec[1]);
         }
-        nodes = new_nodes;
+        for (int i = 0; i < nodes.size(); i++) {
+            dfs(i);
+            ++count;
+        }
+        reversePostOrder = postOrder;
+        std::reverse(reversePostOrder.begin(), reversePostOrder.end());
+    }
+
+    bool connected(int v, int w) {
+        return id[v] != -1 && id[v] == id[w];
     }
 };
 
 class Digraph : public Graph {
-   public:
-   protected:
-    void add(int from, int to) override { nodes[from].adjacent.push_back(to); }
+public:
+    Graph *reverse() {
+        Graph *g = new Digraph;
+        vector<Vertex> new_nodes(nodes.size());
+        for (int i = 0; i < nodes.size(); i++) {
+            for (auto adj: nodes[i].adjacent) {
+                new_nodes[adj].adjacent.push_back(i);
+            }
+        }
+        g->nodes = new_nodes;
+        g->know = vector<int>(nodes.size());
+        g->id = vector<int>(nodes.size(), -1);
+        return g;
+    }
+
+    void connet_traversal(int n, vector<vector<int>> edges) {
+        nodes = vector<Vertex>(n);
+        know = vector<int>(n);
+        id = vector<int>(n, -1);
+        for (auto &vec: edges) {
+            add(vec[0], vec[1]);
+        }
+
+        Graph *x = this->reverse();
+        x->traversal();
+        for (auto i: x->reversePostOrder) {
+            if (know[i]) {
+                continue;
+            }
+            dfs(i);
+            ++count;
+        }
+    }
+
+public:
+    void add(int from, int to) override {
+        nodes[from].adjacent.push_back(to);
+    }
 };
 
 int main() {
-    vector<vector<int>> edg = {{0, 1}, {2, 1}, {1, 4}, {3, 4}, {4, 5}};
-    auto g = new Digraph;
-    g->traversal(6, edg);
-    for (auto v : g->preOrder) {
-        cout << v << "\t";
+    vector<vector<int>> edg = {{0, 1},
+                               {1, 2},
+                               {3, 4},
+                               {4, 5},
+                               {5, 4},
+                               {3, 2},
+                               {3, 7},
+                               {7, 5},
+                               {2, 6},
+                               {6, 0},
+    };
+    Digraph* g = new Digraph;
+    g->connet_traversal(8, edg);
+    for (int i = 0 ; i < 10; i++) {
+        for (int node = 0; node < 8; node++) {
+            if (g->id[node] == i) {
+                cout << node << " ";
+            }
+        }
+        cout << endl;
     }
-    cout << endl;
-
-    for (auto v : g->postOrder) {
-        cout << v << "\t";
-    }
-    cout << endl;
-
-    for (auto v : g->reversePostOrder) {
-        cout << v << "\t";
-    }
-    cout << endl;
 }
+
+
+
+
