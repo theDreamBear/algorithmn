@@ -15,58 +15,78 @@ struct Edge {
 
 struct Vertex {
     vector<Edge> adjacent;
-    int dis = INT_MAX;
-    int closed = 0;
-    int pre = -1;
 };
 
+// 无向图
 class Graph {
-    vector<Vertex> nodes;
+   public:
     int n{};
+    vector<Vertex> nodes;
 
-   private:
-    Graph() = default;
+   protected:
+    [[nodiscard]] virtual Graph* clone() const { return new Graph(*this); }
 
    public:
-    Graph(int n, vector<vector<int>>& edges) : nodes(n) {
+    Graph() = default;
+
+    Graph(const Graph& other) {
+        this->n = other.n;
+        this->nodes = other.nodes;
+    }
+
+    virtual void addEdge(int v, int w, int weight = 0) {
+        nodes[v].adjacent.push_back({.to = w, .weight = weight});
+        nodes[w].adjacent.push_back({.to = v, .weight = weight});
+    }
+
+    void addAllEdge(int n, vector<vector<int>>& edges) {
         this->n = n;
+        nodes.resize(n);
         for (auto& vec : edges) {
             int from = vec[0];
             int to = vec[1];
-            int weight = vec[2];
-            nodes[from].adjacent.push_back({.to = to, .weight = weight});
+            int weight = 0;
+            if (vec.size() >= 3) {
+                weight = vec[2];
+            }
+            addEdge(from, to, weight);
         }
     }
 
     [[nodiscard]] int Vex() const { return n; }
 
-    const vector<Edge>& getEdges(int v) const { return nodes[v].adjacent; }
+    [[nodiscard]] const vector<Edge>& getEdges(int v) const { return nodes[v].adjacent; }
 
-    void setClosed(int v) { nodes[v].closed = 1; }
+    [[nodiscard]] virtual Graph* reverse() const {
+        auto g = this->clone();
+        return g;
+    }
+};
 
-    [[nodiscard]] bool isClosed(int v) const { return nodes[v].closed; }
+// 有向图
+class DiGraph : public Graph {
+   public:
+    DiGraph() = default;
 
-    void setDistance(int v, int d) { nodes[v].dis = d; }
+    [[nodiscard]] Graph* reverse() const override {
+        Graph* g = new DiGraph;
+        g->n = this->n;
+        g->nodes.resize(g->n);
 
-    int getDistance(int v) { return nodes[v].dis; }
-
-    void setPre(int v, int pre) { nodes[v].pre = pre; }
-
-    int getPre(int v) { return nodes[v].pre; }
-
-    Graph reverse() const {
-        Graph g;
-        g.n = this->n;
-        g.nodes = vector<Vertex>(n);
-        for (int i = 0; i < n; i++) {
-            for (const auto& e : this->getEdges(i)) {
+        for (int from = 0; from < Vex(); from++) {
+            for (auto& e : getEdges(from)) {
                 int to = e.to;
-                int weight = e.weight;
-                g.nodes[to].adjacent.push_back({.to = i, .weight = weight});
+                int weight = e.to;
+                g->addEdge(to, from, weight);
             }
         }
         return g;
     }
+
+    void addEdge(int v, int w, int weight) override { nodes[v].adjacent.push_back({.to = w, .weight = weight}); }
+
+   private:
+    [[nodiscard]] Graph* clone() const override { return new DiGraph(*this); }
 };
 
 class QAbs {
@@ -121,22 +141,21 @@ class TraversalAbs {
     vector<bool> known;
     QAbs* q;
 
+   protected:
     virtual void pre(int v) { cout << v << "\t"; }
-
-    virtual void after(int v) {}
 
     virtual void afterOneTraversal() { cout << endl; }
 
     virtual void afterTraversal() {}
 
    public:
-    TraversalAbs(Graph* g, Order order) : g(g), known(g->Vex()) {
-        if (order == Order::BFS) {
-            q = new BfsQ;
-        } else {
-            q = new DfsQ;
-        }
-    }
+ TraversalAbs(Graph* g, Order order) : g(g), known(g->Vex()) {
+     if (order == Order::BFS) {
+         q = new BfsQ;
+     } else {
+         q = new DfsQ;
+     }
+ }
 
     void traversal(int v) {
         known[v] = true;
@@ -150,11 +169,9 @@ class TraversalAbs {
                 if (known[to]) {
                     continue;
                 }
-                g->setPre(to, id);
                 known[to] = true;
                 q->enQ(to);
             }
-            after(id);
         }
         afterOneTraversal();
     }
@@ -170,22 +187,17 @@ class TraversalAbs {
     }
 };
 
-class DfsFirstTopology : public TraversalAbs {
+class DfsTopology : public TraversalAbs {
    public:
-    explicit DfsFirstTopology(Graph* g) : TraversalAbs(g, Order::DFS) {}
+    explicit DfsTopology(Graph* g) : TraversalAbs(g, Order::DFS) {}
 
    private:
     stack<int> st;
     stack<int> ans;
 
-    void pre(int v) override {
-        // 入栈
-        st.push(v);
-    }
+   protected:
+    void pre(int v) override { st.push(v); }
 
-    void after(int v) override {}
-
-   public:
     void afterTraversal() override {
         while (!ans.empty()) {
             cout << ans.top() << "\t";
@@ -206,7 +218,8 @@ int main() {
     vector<vector<int>> data = {
         {0, 1, 2}, {1, 2, 2}, {2, 3, 1}, {3, 4, 2}, {0, 4, 3},
     };
-    auto g = new Graph(5, data);
+    auto g = new DiGraph;
+    g->addAllEdge(5, data);
 
     auto rg = g->reverse();
 
@@ -219,6 +232,6 @@ int main() {
     dtr.traversal(0);
 
     // 拓扑排序
-    auto df = new DfsFirstTopology(&rg);
+    auto df = new DfsTopology(rg);
     df->traversal();
 }
