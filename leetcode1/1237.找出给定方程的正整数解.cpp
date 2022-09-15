@@ -31,7 +31,7 @@ public:
         return ans;
     }
 
-    vector<vector<int>> findSolution(CustomFunction &customfunction, int z) {
+    vector<vector<int>> findSolution_2(CustomFunction &customfunction, int z) {
         vector<vector<int>> ans;
         struct Node {
             int left, right, top, bottom;
@@ -70,6 +70,24 @@ public:
                 if (node.left + 1 <= x && y + 1 <= node.bottom) {
                     st.push({node.left, x - 1, y + 1, node.bottom});
                 }
+            }
+        }
+        return ans;
+    }
+
+    vector<vector<int>> findSolution(CustomFunction &customfunction, int z) {
+        vector<vector<int>> ans;
+        int x = 1, y = 1000;
+        while (x <= 1000 && y >= 1) {
+            int v = customfunction.f(x, y);
+            if (v > z) {
+                y--;
+            } else if (v < z) {
+                x++;
+            } else {
+                ans.push_back({x, y});
+                x++;
+                y--;
             }
         }
         return ans;
