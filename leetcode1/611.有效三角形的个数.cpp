@@ -36,16 +36,13 @@ public:
 #else
         //
         for (int i = 0; i < n; i++) {
-            int k = i + 2;
+            int k = i + 1;
             for (int j = i + 1; j < n; j++) {
-                if (k <= j) {
-                    k = j + 1;
-                }
-                // O(n^2 * lgn)
                 int sum = nums[i] + nums[j];
-                auto it = lower_bound(nums.begin() + k, nums.end(), sum);
-                k = it - nums.begin();
-                ans += (k - j - 1);
+                while (k + 1 < n && nums[k + 1] < sum) {
+                    ++k;
+                }
+                ans += max(k - j, 0);
             }
         }
 #endif
