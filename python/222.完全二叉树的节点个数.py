@@ -19,6 +19,15 @@ def treeHigh(root):
     return h
 
 
+def treeRightHigh(root):
+    h = 0
+    while root:
+        h += 1
+        root = root.right
+    return h
+
+
+
 def exist(root, value, index):
     while root and index > 1:
         v = (1 << (index - 2))
@@ -32,7 +41,7 @@ def exist(root, value, index):
 
 
 class Solution:
-    def countNodes(self, root: Optional[TreeNode]) -> int:
+    def countNodes1(self, root: Optional[TreeNode]) -> int:
         # 空
         if root is None:
             return 0
@@ -48,5 +57,17 @@ class Solution:
         if exist(root, right, high):
             return right
         return left
+
+    def countNodes(self, root: Optional[TreeNode]) -> int:
+        # 空
+        if root is None:
+            return 0
+        left = treeHigh(root)
+        right = treeRightHigh(root)
+        if left == right:
+            return (1 << left) - 1
+        left_sum = self.countNodes(root.left)
+        right_sum = self.countNodes(root.right)
+        return left_sum + right_sum + 1
 # @lc code=end
 
