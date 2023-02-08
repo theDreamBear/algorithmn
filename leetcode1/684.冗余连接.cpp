@@ -5,7 +5,7 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     vector<int> findRedundantConnection(vector<vector<int>> &edges) {
         struct Node {
@@ -68,6 +68,53 @@ public:
             }
         }
         return edges[i];
+    }
+};
+
+class Solution {
+public:
+    struct UnionFinder {
+        int n;
+        vector<int> fa;
+        int count;
+
+        UnionFinder(int n) : n(n), fa(n), count(n) {
+            for (int i = 0; i < n; i++) {
+                fa[i] = i;
+            }
+        }
+
+        int find(int v) {
+            if (fa[fa[v]] == fa[v]) {
+                return fa[v];
+            }
+            fa[v] = find(fa[v]);
+            return fa[v];
+        }
+
+        bool merge(int v, int w) {
+            int l = find(v);
+            int r = find(w);
+            if (l == r) {
+                return false;
+            }
+            fa[l] = r;
+            return true;
+        }
+    };
+
+    vector<int> findRedundantConnection(vector<vector<int>> &edges) {
+        UnionFinder uf(edges.size());
+        int pre = 0;
+        int i = 0;
+        for (; i < edges.size(); i++) {
+            int v = edges[i][0] - 1;
+            int w = edges[i][1] - 1;
+            if (!uf.merge(v, w)) {
+                return edges[i];
+            }
+        }
+        return {};
     }
 };
 // @lc code=end
