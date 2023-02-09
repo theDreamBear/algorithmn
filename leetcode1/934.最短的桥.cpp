@@ -90,7 +90,7 @@ public:
     }
 };
 
-class Solution {
+class Solution2 {
 private:
     int dx[4] = {-1, 0, 1, 0};
     int dy[4] = {0, 1, 0, -1};
@@ -138,6 +138,74 @@ public:
         queue<pair<int, int>> q;
         for (auto& v : first) {
             q.push(v);
+        }
+        int ans = -1;
+        bool finish = false;
+        while (!finish && !q.empty()) {
+            ++ans;
+            int sz = q.size();
+            for (int idx = 0; idx < sz; idx++) {
+                auto [i, j] = q.front(); q.pop();
+                for (int k = 0; k < 4; k++) {
+                    int nx = i + dx[k];
+                    int ny = j + dy[k];
+                    // 不能越界
+                    if (nx < 0 || nx >= grid.size() || ny < 0 || ny >= grid[nx].size()) {
+                        continue;
+                    }
+                    if (grid[nx][ny] == -1) {
+                        continue;
+                    }
+                    if (grid[nx][ny] == 1) {
+                        finish = true;
+                        break;
+                    }
+                    q.push({nx, ny});
+                    grid[nx][ny] = -1;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+private:
+    int dx[4] = {-1, 0, 1, 0};
+    int dy[4] = {0, 1, 0, -1};
+public:
+    int shortestBridge(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        queue<pair<int, int>> q;
+
+        // 加入的时候改
+        function<void(int, int)> dfs = [&](int i, int j) {
+            if (i < 0 || i >= m || j < 0 || j >= n) {
+                return;
+            }
+            for (int k = 0; k < 4; k++) {
+                int nx = i + dx[k];
+                int ny = j + dy[k];
+                // 不能越界
+                if (nx < 0 || nx >= m || ny < 0 || ny >= n || grid[nx][ny] != 1) {
+                    continue;
+                }
+                q.push({nx, ny});
+                grid[nx][ny] = -1;
+                dfs(nx, ny);
+            }
+        };
+        bool found = false;
+        for (int i = 0; i < grid.size(); i++) {
+            for  (int j = 0; !found && j < grid[i].size(); j++) {
+                if (grid[i][j] == 1) {
+                    q.push({i, j});
+                    grid[i][j] = -1;
+                    dfs(i, j);
+                    found = true;
+                }
+            }
         }
         int ans = -1;
         bool finish = false;
