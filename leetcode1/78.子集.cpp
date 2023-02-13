@@ -39,7 +39,7 @@ auto nextRightOneIndex(unsigned int val) -> func {
     };
 }
 
-class Solution {
+class Solution1 {
 public:
     vector<vector<int>> subsets1(vector<int>& nums) {
         vector<vector<int>> ans;
@@ -73,5 +73,92 @@ public:
         return ans;
     }
 };
+
+////////////////////////////////////////// ++++++++++++++++++++++++++++++++++++++++++++++
+
+// 第一种方案
+void subsetsHelper1(const vector<int>& nums, vector<int>& cur, int pos, vector<vector<int>>& ans) {
+    // 注意这个边界
+    if (pos > nums.size()) {
+        return;
+    }
+    ans.push_back(cur);
+    for (int i = pos; i < nums.size(); i++) {
+        // 回溯
+        cur.push_back(nums[i]);
+        subsetsHelper1(nums, cur, i + 1, ans);
+        cur.pop_back();
+    }
+}
+
+// 第二种方案
+void subsetsHelper2(const vector<int>& nums, vector<int>& cur, int pos, vector<vector<int>>& ans) {
+   // 边界
+   if (pos > nums.size()) {
+       return;
+   }
+   if (pos == nums.size()) {
+       ans.push_back(cur);
+       return;
+   }
+   // 不取
+   subsetsHelper2(nums, cur, pos + 1, ans);
+
+   // 取
+   cur.push_back(nums[pos]);
+   subsetsHelper2(nums, cur, pos + 1, ans);
+   cur.pop_back();
+}
+
+auto nextValueIndex = [](int mask) {
+    auto rightMostOne = [](int mask)  {
+        if (mask == 0) {
+            return -1;
+        }
+        int pos = __builtin_ctz(mask);
+
+        return pos;
+    };
+    return [my_mask = mask, rightMostOne]() mutable -> int {
+        int pos = rightMostOne(my_mask);
+        if (pos != -1) {
+            my_mask ^= (1 << pos);
+        }
+        return pos;
+    };
+};
+
+// 第三种方案
+void subsetsHelper3(const vector<int>& nums, vector<int>& cur, int pos, vector<vector<int>>& ans) {
+    int n = nums.size();
+    for (int i = 0; i < (1 << n); i++) {
+        // 统计1的位置
+        vector<int> temp;
+        int p;
+        auto gen = nextValueIndex(i);
+        while ((p = gen()) != -1) {
+            if (p == -1) {
+                break;
+            }
+            temp.push_back(nums[p]);
+        }
+        ans.push_back(temp);
+    }
+}
+
+
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> cur;
+        //subsetsHelper1(nums, cur, 0, ans);
+        // subsetsHelper2(nums, cur, 0, ans);
+        subsetsHelper3(nums, cur, 0, ans);
+        return ans;
+    }
+};
+
 // @lc code=end
 
