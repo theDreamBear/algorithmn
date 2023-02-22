@@ -90,13 +90,36 @@ private:
         }
     }
 
+    void greedy2(const string &s, vector<int> &ans) {
+        if (s.empty()) {
+            return;
+        }
+        if (s.size() == 1) {
+            ans.push_back(1);
+            return;
+        }
+        int cLast[26]{};
+        for (int i = 0; i < s.size(); i++) {
+            cLast[s[i] - 'a'] = i;
+        }
+        int end = 0;
+        int start = 0;
+        for (int i = 0; i < s.size(); i++) {
+            end = max(end, cLast[s[i] - 'a']);
+            if (i == end) {
+                ans.push_back(end - start + 1);
+                start = end + 1;
+            }
+        }
+    }
+
 public:
     // 1 <= s.length <= 500
     // s 仅由小写英文字母组成
     // n ^ 3 = 1.25e8
     vector<int> partitionLabels(string s) {
         vector<int> ans;
-        greedy(s, ans);
+        greedy2(s, ans);
         return ans;
     }
 };
