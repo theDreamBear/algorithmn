@@ -6,11 +6,10 @@
 
 // @lc code=start
 void backTracking(const string &s, int pos, unordered_map<char, int>& rMaks, vector<int> &ans, vector<int> &temp) {
-    auto n = s.size();
-    if (pos > n) {
+    if (pos > (int)s.size()) {
         return;
     }
-    if (pos == n) {
+    if (pos == (int)s.size()) {
         if (temp.size() > ans.size()) {
             ans = temp;
             return;
@@ -18,8 +17,7 @@ void backTracking(const string &s, int pos, unordered_map<char, int>& rMaks, vec
     }
     unordered_set<char> mask;
     auto right = pos;
-    int start = pos;
-    for (; right < n; right++) {
+    for (; right < (int)s.size(); right++) {
         mask.insert(s[right]);
         rMaks[s[right]]--;
         bool flag = true;
@@ -36,17 +34,13 @@ void backTracking(const string &s, int pos, unordered_map<char, int>& rMaks, vec
             // 符合
             temp.push_back(right - pos + 1);
             backTracking(s, right + 1, rMaks, ans, temp);
-            break;
             //temp.pop_back();
         }
     }
-
-
 }
 
 class Solution {
 private:
-
     void normal_partition(const string &s, vector<int> &ans) {
         if (s.empty()) {
             return;
@@ -64,13 +58,45 @@ private:
         return;
     }
 
+    void greedy(const string &s, vector<int> &ans) {
+        if (s.empty()) {
+            return;
+        }
+        if (s.size() == 1) {
+            ans.push_back(1);
+            return;
+        }
+        int rMaks[26]{};
+        for (auto ch : s) {
+            rMaks[ch - 'a']++;
+        }
+        int mask[26]{};
+        int kind = 0;
+        auto left = 0;
+        auto right = 0;
+        for (; right < (int)s.size(); right++) {
+            int idx = s[right] - 'a';
+            if (1 == ++mask[idx]) {
+                ++kind;
+            }
+            if (0 == --rMaks[idx]) {
+                --kind;
+            }
+            if (0 == kind) {
+                // 符合
+                ans.push_back(right - left + 1);
+                left = right + 1;
+            }
+        }
+    }
+
 public:
     // 1 <= s.length <= 500
     // s 仅由小写英文字母组成
     // n ^ 3 = 1.25e8
     vector<int> partitionLabels(string s) {
         vector<int> ans;
-        normal_partition(s, ans);
+        greedy(s, ans);
         return ans;
     }
 };
