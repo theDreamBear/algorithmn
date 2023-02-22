@@ -38,7 +38,6 @@ void backTracking(const string &s, int pos, unordered_map<char, int>& rMaks, vec
             backTracking(s, right + 1, rMaks, ans, temp);
             break;
             //temp.pop_back();
-            //start = right + 1;
         }
     }
 
