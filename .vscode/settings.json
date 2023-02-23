@@ -37,7 +37,8 @@
         "chrono": "cpp",
         "limits": "cpp",
         "valarray": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "xutility": "cpp"
     },
     "bracket-pair-colorizer-2.excludedLanguages": [
 
