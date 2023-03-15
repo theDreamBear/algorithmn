@@ -395,3 +395,107 @@ int main(int argc, char *argv[]) {
     //cout << Solution{}.isSymmetric(root);
     postTraversal4(root);
 }
+
+#include <iostream>
+#include <iterator>
+#include <queue>
+#include <stack>
+#include <unordered_map>
+
+using namespace std;
+
+struct TreeNode {
+    struct TreeNode *left, *right;
+
+    int val;
+
+    explicit TreeNode(int val) : val(val), left(left), right(right) {
+        auto x = &TreeNode::left;
+    }
+};
+
+enum Order {
+    PRE,
+    IN,
+    POST,
+};
+
+vector<TreeNode *TreeNode::*> children = {&TreeNode::left, &TreeNode::right, nullptr};
+
+void traversal(TreeNode *root, Order order) {
+    if (nullptr == root) {
+        return;
+    }
+    for (auto next: children) {
+        if (next == children[order]) {
+            cout << root->val << "\t";
+        }
+        if (next == nullptr) {
+            return;
+        }
+        traversal(root->*next, order);
+    }
+}
+
+bool isNULL(const string &s) {
+    return s == "null";
+}
+
+TreeNode *makeNode(string value) {
+    if (isNULL(value)) {
+        return nullptr;
+    }
+    return new TreeNode(atoi(value.c_str()));
+}
+
+TreeNode *makeTree(const vector<std::string> &data) {
+    if (data.empty()) {
+        return NULL;
+    }
+
+    int cur_available_pos = 0;
+    TreeNode *root = makeNode(data[cur_available_pos++]);
+
+    assert(root != nullptr);
+
+    queue<pair<TreeNode *, int>> q;
+    q.push(make_pair(root, cur_available_pos));
+    cur_available_pos += 2;
+
+    auto addChild = [&](TreeNode *node, int idx, TreeNode *TreeNode::* child) {
+        if (idx >= data.size()) {
+            return;
+        }
+        auto newNode = makeNode(data[idx]);
+        node->*child = newNode;
+
+        // for child's children
+        if (nullptr != newNode) {
+            q.push(make_pair(newNode, cur_available_pos));
+            cur_available_pos += 2;
+        }
+    };
+
+    while (!q.empty()) {
+        int sz = q.size();
+        for (int i = 0; i < sz; i++) {
+            auto[node, start] = q.front();
+            q.pop();
+            // start 必定是合法的
+            addChild(node, start, &TreeNode::left);
+            addChild(node, start + 1, &TreeNode::right);
+        }
+    }
+    return root;
+}
+
+
+int main(int argc, char *argv[]) {
+    auto root = makeTree({"1", "2", "3", "null", "4", "null", "null", "5"});
+    traversal(root, PRE);
+    cout << endl;
+    traversal(root, IN);
+    cout << endl;
+    traversal(root, POST);
+    cout << endl;
+}
