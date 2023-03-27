@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <random>
 #include <chrono>
 
 using namespace std;
@@ -21,8 +22,8 @@ public:
         return duration_cast<chrono::seconds>(end - beg).count();
     }
 
-    int get_ns() {
-        return duration_cast<chrono::nanoseconds>(end - beg).count();
+    int get_us() {
+        return duration_cast<chrono::microseconds>(end - beg).count();
     }
 };
 
@@ -137,23 +138,26 @@ void _quickSort(vector<int>& data, int low, int high) {
     if (low >= high) {
         return;
     }
+#ifdef USE_STL_PARTITION
     int pivot = data[high];
     // p 为第一个不符合的位置， 前面都符合
     // 使用自带partition的
     // 1.这个函数为前[ ) 的区间
     // 2.返回值为第一个不符合预期的位置
     // 3.用作快排机注意死循环
-//    auto p = partition(data.begin() + low, data.begin() + high + 1, [&](int value) {
-//        return value < pivot;
-//    }) - data.begin();
-//    auto q = data.rend() - 1 -  partition(data.rbegin(), data.rend() - p, [&](int value) {
-//        return value > pivot;
-//    });
-//    _quickSort(data, q + 1, high);
-//    _quickSort(data, low, p - 1);
+    auto p = partition(data.begin() + low, data.begin() + high + 1, [&](int value) {
+        return value < pivot;
+    }) - data.begin();
+    auto q = data.rend() - 1 -  partition(data.rbegin(), data.rend() - p, [&](int value) {
+        return value > pivot;
+    });
+    _quickSort(data, q + 1, high);
+    _quickSort(data, low, p - 1);
+#else
     auto x = three_partition(data, low, high);
     _quickSort(data, low, x.first);
     _quickSort(data, x.second, high);
+#endif
 }
 
 void QuickSort(vector<int>& data) {
@@ -219,20 +223,34 @@ void HeapSort(vector<int>& data) {
     }
 }
 
-int main() {
-    vector<int> data = {4, 2, 5, 2, 1, 4, 4, 2, 1, 4};
-//    BubbleSort(data);
-//    InsertionSort(data);
-//    PickSort(data);
-//    mergeSort(data);
+void test(vector<int> data, void(*sorter)(vector<int>&), const char* msg) {
     myTimer timer;
     timer.start();
-    //QuickSort(data);
-    HeapSort(data);
+
+    sorter(data);
+
     timer.stop();
-    for (auto v : data) {
-        cout << v << "\t";
+    cout << msg << "\t";
+    cout << "cost: " << timer.get_us() << "(us)" << endl;
+}
+
+vector<int> random_vec(int n) {
+    vector<int> ans(n);
+    random_device rd{};
+    mt19937 mt(rd());
+    uniform_int_distribution<int> u;
+    for (int i = 0; i < n; i++) {
+        ans[i] = u(mt);
     }
-    cout << endl;
-    cout << "cost: " << timer.get_ns() << endl;
+    return ans;
+}
+
+int main() {
+    vector<int> data = random_vec(100000);
+    test(data, BubbleSort, "BubbleSort");
+    test(data, InsertionSort, "InsertionSort");
+    test(data, PickSort, "PickSort");
+    test(data, MergeSort, "MergeSort");
+    test(data, QuickSort, "QuickSort");
+    test(data, HeapSort, "HeapSort");
 }
