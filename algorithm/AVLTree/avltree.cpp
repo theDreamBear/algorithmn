@@ -153,6 +153,7 @@ void transPlant(AVLTree* tree, AVLTreeNode* u, AVLTreeNode* v) {
     AVLTreeNode* p = u->p;
     if (NULL == p) {
         tree->root = v;
+        v->h = 0;
         return;
     }
     if (p->left == u) {
