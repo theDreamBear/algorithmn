@@ -38,7 +38,8 @@
     "limits": "cpp",
     "valarray": "cpp",
     "complex": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "cmath": "cpp"
   },
   "bracket-pair-colorizer-2.excludedLanguages": [],
   "C_Cpp_Runner.msvcBatchPath": "",
