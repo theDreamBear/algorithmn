@@ -47,9 +47,9 @@ public:
     }
 };
 
-class Solution {
+class Solution2 {
 public:
-    bool dfs(int index, vector<int>& matchsticks, vector<int> &sums, int target) {
+    bool dfs(int index, vector<int> &matchsticks, vector<int> &sums, int target) {
         if (index >= matchsticks.size()) {
             return true;
         }
@@ -62,6 +62,53 @@ public:
                 return true;
             }
             sums[i] -= matchsticks[index];
+            // 当前为0 不考虑下一步了
+            if (sums[i] == 0) {
+                break;
+            }
+        }
+        return false;
+    }
+
+    bool makesquare(vector<int> &matchsticks) {
+        long long sum = accumulate(matchsticks.begin(), matchsticks.end(), 0);
+        if (sum % 4 != 0) {
+            return false;
+        }
+        int target = sum / 4;
+        vector<int> sums(4);
+        return dfs(0, matchsticks, sums, target);
+    }
+};
+
+class Solution {
+public:
+    bool dfs(int index, vector<int> &matchsticks, vector<int> &sums, int target) {
+        if (index >= matchsticks.size()) {
+            return true;
+        }
+        for (int i = 0; i < 4; i++) {
+            if (sums[i] + matchsticks[index] > target) {
+                continue;
+            }
+            int j = i;
+            while( --j >= 0) {
+                if (sums[i] == sums[j]) {
+                    break;
+                }
+            }
+            if (j >= 0) {
+                continue;
+            }
+            sums[i] += matchsticks[index];
+            if (dfs(index + 1, matchsticks, sums, target)) {
+                return true;
+            }
+            sums[i] -= matchsticks[index];
+            // 当前为0 不考虑下一步了
+            if (sums[i] == 0) {
+                break;
+            }
         }
         return false;
     }
