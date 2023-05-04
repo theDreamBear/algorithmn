@@ -107,7 +107,8 @@ public:
 
     // 枚举1
     // 逆序
-    bool find132pattern(vector<int> &nums) {
+    // 单调递减栈
+    bool find132pattern_stack(vector<int> &nums) {
         int n = nums.size();
         if (n < 3) {
             return false;
@@ -130,10 +131,65 @@ public:
                 m2 = max(m2, st.top());
                 st.pop();
             }
-            if (nums[i] > m2) {
-                st.push(nums[i]);
+            st.push(nums[i]);
+        }
+        return false;
+    }
+
+    // 枚举2
+    // lower_bound找到nums第一个不符合的
+    // upper_bound找到val第一个符合的
+    bool find132pattern(vector<int> &nums) {
+        int n = (int) nums.size();
+        if (n < 3) {
+            return false;
+        }
+        // 降序排列
+        vector<int> x{nums[0]};
+        vector<int> y{nums[0]};
+#ifdef GOODS
+        for (int i = 1; i < n; i++) {
+            int v = nums[i];
+            for (int j = 0; j < x.size(); j++) {
+                if (v > x[j] && v < y[j]) {
+                    return true;
+                }
+                if (v > y[j]) {
+                    y[j] = v;
+                    continue;
+                }
+                if (v < x[j]) {
+                    x.push_back(v);
+                    y.push_back(v);
+                }
             }
         }
+#else
+        for (int i = 1; i < n; i++) {
+            int v = nums[i];
+            auto itx = upper_bound(x.begin(), x.end(), v, greater<>{});
+            auto ity = lower_bound(y.begin(), y.end(), v, greater<>{});
+            if (itx != x.end()) {
+                int ix = itx - x.begin();
+                int iy = ity - y.begin();
+                if (ix < iy) {
+                    return true;
+                }
+            }
+            if (v < x.back()) {
+                x.push_back(v);
+                y.push_back(v);
+            } else if (v > y.back()) {
+                int last = x.back();
+                while (!y.empty() && y.back() <= v) {
+                    x.pop_back();
+                    y.pop_back();
+                }
+                x.push_back(last);
+                y.push_back(v);
+            }
+        }
+#endif
         return false;
     }
 };
