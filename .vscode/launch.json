@@ -1,18 +1,13 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-
-        {
-            "name": "(lldb) 启动",
-            "type": "cppdbg",
-            //"type": "lldb",
-            "request": "launch",
-            "program": "/Users/nichao/Code/algorithmn/leetcode1/a.out",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/leetcode1",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb"
-        },
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/nichao/Code/algorithmn/leetcode2",
+      "program": "/Users/nichao/Code/algorithmn/leetcode2/build/Debug/outDebug"
+    }
+  ]
+}
