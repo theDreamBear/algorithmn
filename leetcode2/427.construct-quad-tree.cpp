@@ -177,7 +177,7 @@ public:
 };
 
 
-class Solution {
+class Solution3 {
 public:
     struct One {
         int x, y, rows, cols;
@@ -338,6 +338,45 @@ public:
 
     Node* construct(vector<vector<int>>& grid) {
         return construct(grid, 0, 0, grid.size(), grid.size());
+    }
+};
+
+class Solution {
+public:
+   bool checkAllSame(const vector<vector<int>> &prefix, int r0, int c0, int r1, int c1) {
+       int sum = prefix[r1][c1] - prefix[r1][c0] - prefix[r0][c1] + prefix[r0][c0];
+       int total = (r1 - r0) * (c1 - c0);
+       return sum == 0 || sum == total;
+   }
+
+    Node* construct(const vector<vector<int>> &prefix, const vector<vector<int>>& grid, int r0, int c0, int r1, int c1) {
+        if (r0 >= r1 || c0 >= c1) {
+            assert("invalid");
+        }
+
+        if (r0 + 1 == r1 || checkAllSame(prefix, r0, c0, r1, c1)) {
+            return new Node(grid[r0][c0], true);
+        }
+        int nx = (r0 + r1) >> 1;
+        int ny = (c0 + c1) >> 1;
+        return new Node(true,
+                        false,
+                        construct(prefix, grid, r0, c0, nx, ny),
+                        construct(prefix, grid, r0, ny, nx, c1),
+                        construct(prefix, grid, nx, c0, r1, ny),
+                        construct(prefix, grid, nx, ny, r1, c1)
+                       );
+
+    }
+
+    Node* construct(vector<vector<int>>& grid) {
+        vector<vector<int>> prefix(grid.size() + 1, vector<int>(grid.size() + 1));
+        for (int i = 1; i < prefix.size(); i++) {
+            for (int j = 1; j < prefix[i].size(); j++) {
+                prefix[i][j] = prefix[i - 1][j] + prefix[i][j - 1] + grid[i - 1][j - 1] - prefix[i - 1][j - 1];
+            }
+        }
+        return construct(prefix, grid, 0, 0, grid.size(), grid.size());
     }
 };
 
