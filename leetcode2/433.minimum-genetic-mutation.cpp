@@ -63,7 +63,8 @@ class Solution {
 
 public:
     /*
-        算法分析， 时间复杂度和空间复杂度都不好
+        算法分析
+        时间复杂度: O(N * N * M) N是bank的长度，M是字符串的长度
 
     */
     int minMutation1(string startGene, string endGene, vector<string>& bank) {
@@ -129,7 +130,7 @@ public:
         bank[i].length == 8
         start、end 和 bank[i] 仅由字符 ['A', 'C', 'G', 'T'] 组成
     */
-    int minMutation(string startGene, string endGene, vector<string>& bank) {
+    int minMutation2(string startGene, string endGene, vector<string>& bank) {
         // 本来就想等
         if (startGene == endGene) {
             return 0;
@@ -181,6 +182,213 @@ public:
             }
         }
         return -1;
+    }
+
+    /*
+        时间复杂度:
+        m : bank size
+        n : startGene size
+        m * n * 4; 有点问题, 因为 string next = now; 这个位置复杂度为 n
+    */
+    int minMutation3(string startGene, string endGene, vector<string>& bank) {
+        if (startGene == endGene) {
+            return 0;
+        }
+        if (find(bank.begin(), bank.end(), endGene) == bank.end()) {
+            return -1;
+        }
+        unordered_set<string> bs(bank.begin(), bank.end());
+        unordered_map<string, int> visited;
+
+        queue<string> q;
+        visited[startGene] = 1;
+        q.push(startGene);
+
+        int ans = 0;
+        while (!q.empty()) {
+            ++ans;
+            int sz = q.size();
+            for (int i = 0; i < sz; i++) {
+                string now = move(q.front()); q.pop();
+                for (char ch : "ATCG") {
+                    for (int j = 0; j < 8; j++) {
+                        if (ch != now[j]) {
+                            string next = now;
+                            next[j] = ch;
+                            if (next == endGene) {
+                                return ans;
+                            }
+                            if (bs.count(next) && !visited[next]) {
+                                visited[next] = 1;
+                                q.push(next);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    int minMutation4(string startGene, string endGene, vector<string>& bank) {
+        if (startGene == endGene) {
+            return 0;
+        }
+        // 邻接表
+        int m = bank.size();
+        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
+            int diff = 0;
+            for (int i = 0; i <  lhs.size() && diff <= 1; i++) {
+                if (lhs[i] != rhs[i]) {
+                    ++diff;
+                }
+            }
+            return diff == 1;
+        };
+        // m * m * n
+        vector<vector<int>> adjacent(m, vector<int>{});
+        for (int i = 0; i < bank.size(); i++) {
+            for (int j = i + 1; j < bank.size(); j++) {
+                if (isDiffOneChar(bank[i], bank[j])) {
+                    adjacent[i].push_back(j);
+                    adjacent[j].push_back(i);
+                }
+            }
+        }
+        int visited[10] = {0};
+        auto it = find(bank.begin(), bank.end(), startGene);
+        if (it != bank.end()) {
+            bank[it - bank.begin()] = 1;
+        }
+        queue<int> q;
+        int eIndex = 0;
+        for (int i = 0; i < bank.size(); i++) {
+            if (bank[i] == endGene) {
+                eIndex = i;
+            }
+            if (isDiffOneChar(bank[i], startGene)) {
+                if (bank[i] == endGene) {
+                    return 1;
+                }
+                q.push(i);
+                visited[i] = 1;
+            }
+        }
+        int ans = 1;
+        while (!q.empty()) {
+            ++ans;
+            int sz = q.size();
+            while (sz-- > 0) {
+                int now = q.front(); q.pop();
+                for(const int next : adjacent[now]) {
+                    if (visited[next]) {
+                        continue;
+                    }
+                    if (next == eIndex) {
+                        return ans;
+                    }
+                    q.push(next);
+                    visited[next] = 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /*
+        双向 bfs , 这个实现太慢了
+    */
+    int minMutation5(string startGene, string endGene, vector<string>& bank) {
+        if (startGene == endGene) {
+            return 0;
+        }
+        if (find(bank.begin(), bank.end(), endGene) == bank.end()) {
+            return -1;
+        }
+        int visited[10]{0};
+        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
+            int diff = 0;
+            for (int i = 0; i < lhs.size() && diff <= 1; i++) {
+                if (lhs[i] != rhs[i]) {
+                    ++diff;
+                }
+            }
+            return diff == 1;
+        };
+        queue<int> lq, rq;
+        for (int i = 0; i < bank.size(); i++) {
+            if (bank[i] == startGene) {
+                visited[i] = 1;
+            }
+            if (isDiffOneChar(startGene, bank[i])) {
+                if (bank[i] == endGene) {
+                    return 1;
+                }
+                lq.push(i);
+                visited[i] = 1;
+            }
+        }
+        for (int i = 0; i < bank.size(); i++) {
+            if (bank[i] == endGene) {
+                visited[i] = 2;
+            }
+            if (isDiffOneChar(endGene, bank[i])) {
+                if (visited[i] == 1) {
+                    return 2;
+                }
+                rq.push(i);
+                visited[i] = 2;
+            }
+        }
+        int ans = 2;
+        auto search = [&](queue<int>& q, int target, int source) {
+            ++ans;
+            int sz = q.size();
+            while (sz-- > 0) {
+                int now = q.front();
+                q.pop();
+                for (int i = 0; i < bank.size(); i++) {
+                     if (isDiffOneChar(bank[i], bank[now])) {
+                        if (visited[i] == target) {
+                            return true;
+                        }
+                        if (visited[i] == 0) {
+                            q.push(i);
+                            visited[i] = source;
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+        while (!lq.empty() && !rq.empty()) {
+            if (search(lq, 2, 1)) {
+                return ans;
+            }
+            if (search(rq, 1, 2)) {
+                return ans;
+            }
+        }
+        return -1;
+    }
+
+    int minMutation(string startGene, string endGene, vector<string>& bank) {
+        if (startGene == endGene) {
+            return 0;
+        }
+        if (find(bank.begin(), bank.end(), endGene) == bank.end()) {
+            return -1;
+        }
+        unordered_map<string, int> visited;
+        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
+            int diff = 0;
+            for (int i = 0; i < lhs.size() && diff <= 1; i++) {
+                if (lhs[i] != rhs[i]) {
+                    ++diff;
+                }
+            }
+            return diff == 1;
+        };
     }
 };
 // @lc code=end
