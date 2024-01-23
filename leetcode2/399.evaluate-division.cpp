@@ -5,7 +5,6 @@
  * [399] 除法求值
  */
 
-
 // @lcpr-template-start
 using namespace std;
 #include <algorithm>
@@ -16,6 +15,7 @@ using namespace std;
 #include <functional>
 #include <iostream>
 #include <list>
+#include <numeric>
 #include <queue>
 #include <stack>
 #include <tuple>
@@ -26,74 +26,113 @@ using namespace std;
 // @lcpr-template-end
 // @lc code=start
 class Solution {
-public:
-     vector<double>
-    calcEquation(vector<vector<string>> &equations, vector<double> &values, vector<vector<string>> &queries) {
+  public:
+    class Alloc {
+      public:
         unordered_map<string, int> keyToIdx;
-        int maxIdx = 0;
-        auto Alloc = [&](const string &key) {
-            if (keyToIdx.count(key)) {
+        int                        maxIdx = 0;
+
+        int allocAndGet(const string& key) {
+            alloc(key);
+            return keyToIdx[key];
+        }
+
+        void alloc(const string& key) {
+            if (!contains(key)) {
+                keyToIdx[key] = maxIdx++;
+            }
+        }
+
+        int getId(const string& key) {
+            if (contains(key)) {
                 return keyToIdx[key];
             }
-            return keyToIdx[key] = maxIdx++;
-        };
-        auto contains = [&](const string &key) {
+            return -1;
+        }
+
+        bool contains(const string& key) const {
             return keyToIdx.count(key) > 0;
         };
+
+        int MaxIdx() const {
+            return maxIdx;
+        }
+    };
+
+    vector<double> calcEquation1(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        Alloc                  alloc;
         vector<vector<double>> grid(40, vector<double>(40, -1));
+        // 填值
         for (int i = 0; i < equations.size(); i++) {
-            int lhs = Alloc(equations[i][0]);
-            int rhs = Alloc(equations[i][1]);
-            double score = values[i];
+            int    lhs     = alloc.allocAndGet(equations[i][0]);
+            int    rhs     = alloc.allocAndGet(equations[i][1]);
+            double score   = values[i];
             grid[lhs][rhs] = score;
             grid[rhs][lhs] = 1.0 / score;
         }
-        for (int i = 0; i < maxIdx; i++) {
-            grid[maxIdx][maxIdx] = 1;
+        for (int i = 0; i < alloc.MaxIdx(); i++) {
+            grid[i][i] = 1;
         }
         auto bfs = [&](int start, int target) {
             queue<pair<int, double>> q;
-            unordered_map<int, int> visited;
-            q.push({start, 1});
+            vector<int>              visited(alloc.MaxIdx());
+
             visited[start] = 1;
+            q.push({start, 1});
+
             while (!q.empty()) {
-                int sz = 0;
+                int sz = q.size();
                 while (sz-- > 0) {
-                    auto [p, score] = q.front();
+                    auto [node, score] = q.front();
                     q.pop();
-                    for (int i = 0; i < maxIdx; i++) {
-                        // 可达， 且未被访问
-                        if (grid[p][i] != -1 && !visited.count(i)) {
-                            double now = p * grid[p][i];
+                    // 邻接点
+                    for (int i = 0; i < alloc.MaxIdx(); i++) {
+                        if (grid[node][i] != -1 && !visited[i]) {
+                            double now     = score * grid[node][i];
+                            grid[start][i] = now;
                             if (i == target) {
-                                return now;
+                                return;
                             }
+                            visited[i] = 1;
                             q.push({i, now});
                         }
                     }
                 }
             }
-            return -1.0;
+            return;
         };
         vector<double> ans((queries.size()), -1.0);
         for (int i = 0; i < queries.size(); i++) {
-            if (!contains(queries[i][0]) || !contains(queries[i][0])) {
+            if (!alloc.contains(queries[i][0]) || !alloc.contains(queries[i][1])) {
                 continue;
             }
-            int lhs = Alloc(queries[i][0]);
-            int rhs = Alloc(queries[i][1]);
-            if (grid[lhs][rhs] != -1) {
-                ans[i] = grid[lhs][rhs];
+            int lhs = alloc.getId(queries[i][0]);
+            int rhs = alloc.getId(queries[i][1]);
+            if (grid[lhs][rhs] == -1) {
+                bfs(lhs, rhs);
             }
-            auto score = bfs(lhs, rhs);
-            ans[i] = score;
+            ans[i] = grid[lhs][rhs];
         }
         return ans;
     }
+
+    class UnionFind {
+      public:
+        vector<int>    parent;
+        vector<double> weight;
+
+        UnionFind(int sz) : parent(sz), weight(sz) {
+            iota(parent.begin(), parent.end(), 0);
+            fill(weight.begin(), weight.end(), 1);
+        }
+
+    };
+
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+
+    }
 };
 // @lc code=end
-
-
 
 /*
 // @lcpr case=start
@@ -109,4 +148,3 @@ public:
 // @lcpr case=end
 
  */
-
