@@ -5,11 +5,11 @@
  * [433] 最小基因变化
  */
 
-
 // @lcpr-template-start
 using namespace std;
 #include <algorithm>
 #include <array>
+#include <assert.h>
 #include <bitset>
 #include <climits>
 #include <deque>
@@ -17,49 +17,48 @@ using namespace std;
 #include <iostream>
 #include <list>
 #include <queue>
+#include <set>
 #include <stack>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include <string>
-#include <set>
 // @lcpr-template-end
 // @lc code=start
 class Solution {
-        /*
-        这道题一共犯了三个致命问题
-        1、 while() 循环写成了 if
-        2、 队列的大小应该用 sz, 二不是q.size();
-        3、外层循环和内层循环的 循环变量用了一样的值 i
+    /*
+    这道题一共犯了三个致命问题
+    1、 while() 循环写成了 if
+    2、 队列的大小应该用 sz, 二不是q.size();
+    3、外层循环和内层循环的 循环变量用了一样的值 i
 
-            if (!q.empty()) {
-                ++ans;
-                int sz = q.size();
-                for (int i = 0; i < q.size(); i++) {
-                    string now = q.front();
-                    q.pop();
-                    // 寻找下一批
-                    for (int i = 0; i < bank.size(); i++) {
-                        if (visited[i]) {
-                            continue;
+        if (!q.empty()) {
+            ++ans;
+            int sz = q.size();
+            for (int i = 0; i < q.size(); i++) {
+                string now = q.front();
+                q.pop();
+                // 寻找下一批
+                for (int i = 0; i < bank.size(); i++) {
+                    if (visited[i]) {
+                        continue;
+                    }
+                    const string& next = bank[i];
+                    if (isDiffOneChar(now, bank[i])) {
+                        if (endGene == bank[i]) {
+                            return ans;
                         }
-                        const string& next = bank[i];
-                        if (isDiffOneChar(now, bank[i])) {
-                            if (endGene == bank[i]) {
-                                return ans;
-                            }
-                            visited[i] = 1;
-                            q.push(bank[i]);
-                        }
+                        visited[i] = 1;
+                        q.push(bank[i]);
                     }
                 }
             }
+        }
 
 
-        */
-
+    */
 
 public:
     /*
@@ -67,7 +66,7 @@ public:
         时间复杂度: O(N * N * M) N是bank的长度，M是字符串的长度
 
     */
-    int minMutation1(string startGene, string endGene, vector<string>& bank) {
+    int minMutation1(string startGene, string endGene, vector<string> &bank) {
         if (startGene == endGene) {
             return 0;
         }
@@ -75,9 +74,9 @@ public:
         // 查找 bank 里面和startGene 查一个字符的 子集
         // 取出每一个子集， 校验
         set<string> bs(bank.begin(), bank.end());
-        auto findInBank = [&](const string& now) {
+        auto findInBank = [&](const string &now) {
             set<string> candidate;
-            for (auto& str : bs) {
+            for (auto &str : bs) {
                 int diffcnt = 0;
                 for (int i = 0; i < str.size(); i++) {
                     if (str[i] != now[i]) {
@@ -111,7 +110,7 @@ public:
                     continue;
                 }
                 // 入队列
-                for (const string& str : candidate) {
+                for (const string &str : candidate) {
                     if (str == endGene) {
                         return ans;
                     }
@@ -130,13 +129,13 @@ public:
         bank[i].length == 8
         start、end 和 bank[i] 仅由字符 ['A', 'C', 'G', 'T'] 组成
     */
-    int minMutation2(string startGene, string endGene, vector<string>& bank) {
+    int minMutation2(string startGene, string endGene, vector<string> &bank) {
         // 本来就想等
         if (startGene == endGene) {
             return 0;
         }
         //
-        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
+        auto isDiffOneChar = [&](const string &lhs, const string &rhs) {
             if (lhs.size() != rhs.size()) {
                 return false;
             }
@@ -169,7 +168,7 @@ public:
                     if (visited[ib]) {
                         continue;
                     }
-                    const string& next = bank[ib];
+                    const string &next = bank[ib];
                     if (isDiffOneChar(now, next)) {
                         if (endGene == next) {
                             return ans;
@@ -178,7 +177,6 @@ public:
                         q.push(next);
                     }
                 }
-
             }
         }
         return -1;
@@ -190,7 +188,7 @@ public:
         n : startGene size
         m * n * 4; 有点问题, 因为 string next = now; 这个位置复杂度为 n
     */
-    int minMutation3(string startGene, string endGene, vector<string>& bank) {
+    int minMutation3(string startGene, string endGene, vector<string> &bank) {
         if (startGene == endGene) {
             return 0;
         }
@@ -209,7 +207,8 @@ public:
             ++ans;
             int sz = q.size();
             for (int i = 0; i < sz; i++) {
-                string now = move(q.front()); q.pop();
+                string now = move(q.front());
+                q.pop();
                 for (char ch : "ATCG") {
                     for (int j = 0; j < 8; j++) {
                         if (ch != now[j]) {
@@ -230,15 +229,15 @@ public:
         return -1;
     }
 
-    int minMutation4(string startGene, string endGene, vector<string>& bank) {
+    int minMutation4(string startGene, string endGene, vector<string> &bank) {
         if (startGene == endGene) {
             return 0;
         }
         // 邻接表
         int m = bank.size();
-        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
+        auto isDiffOneChar = [&](const string &lhs, const string &rhs) {
             int diff = 0;
-            for (int i = 0; i <  lhs.size() && diff <= 1; i++) {
+            for (int i = 0; i < lhs.size() && diff <= 1; i++) {
                 if (lhs[i] != rhs[i]) {
                     ++diff;
                 }
@@ -279,8 +278,9 @@ public:
             ++ans;
             int sz = q.size();
             while (sz-- > 0) {
-                int now = q.front(); q.pop();
-                for(const int next : adjacent[now]) {
+                int now = q.front();
+                q.pop();
+                for (const int next : adjacent[now]) {
                     if (visited[next]) {
                         continue;
                     }
@@ -298,7 +298,7 @@ public:
     /*
         双向 bfs , 这个实现太慢了
     */
-    int minMutation5(string startGene, string endGene, vector<string>& bank) {
+    int minMutation5(string startGene, string endGene, vector<string> &bank) {
         if (startGene == endGene) {
             return 0;
         }
@@ -306,7 +306,7 @@ public:
             return -1;
         }
         int visited[10]{0};
-        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
+        auto isDiffOneChar = [&](const string &lhs, const string &rhs) {
             int diff = 0;
             for (int i = 0; i < lhs.size() && diff <= 1; i++) {
                 if (lhs[i] != rhs[i]) {
@@ -341,14 +341,14 @@ public:
             }
         }
         int ans = 2;
-        auto search = [&](queue<int>& q, int target, int source) {
+        auto search = [&](queue<int> &q, int target, int source) {
             ++ans;
             int sz = q.size();
             while (sz-- > 0) {
                 int now = q.front();
                 q.pop();
                 for (int i = 0; i < bank.size(); i++) {
-                     if (isDiffOneChar(bank[i], bank[now])) {
+                    if (isDiffOneChar(bank[i], bank[now])) {
                         if (visited[i] == target) {
                             return true;
                         }
@@ -372,28 +372,86 @@ public:
         return -1;
     }
 
-    int minMutation(string startGene, string endGene, vector<string>& bank) {
+    int minMutation(string startGene, string endGene, vector<string> &bank) {
         if (startGene == endGene) {
             return 0;
         }
+        // 保证endGene 是合法的
         if (find(bank.begin(), bank.end(), endGene) == bank.end()) {
             return -1;
         }
         unordered_map<string, int> visited;
-        auto isDiffOneChar = [&](const string& lhs, const string& rhs) {
-            int diff = 0;
-            for (int i = 0; i < lhs.size() && diff <= 1; i++) {
-                if (lhs[i] != rhs[i]) {
-                    ++diff;
+        unordered_set<string> bs(bank.begin(), bank.end());
+
+        auto pushAndSet = [&](queue<string> &q, const string &now, int flag) {
+
+            q.push(now);
+            visited[now] = flag;
+        };
+
+        enum {
+            F_N = 0,
+            F_F = 1,
+            F_S = 2,
+        };
+
+        queue<string> lq, rq;
+        pushAndSet(lq, startGene, F_F);
+        pushAndSet(rq, endGene, F_S);
+        int ans = 0;
+        auto search = [&](queue<string> &q, int flag, int dFlag) {
+            ++ans;
+            int sz = q.size();
+            while (sz-- > 0) {
+                string now = q.front();
+                q.pop();
+                // 枚举
+                for (int i = 0; i < now.size(); i++) {
+                    for (auto ch : "ATCG") {
+                        if (ch == now[i]) {
+                            continue;
+                        }
+                        string next = now;
+                        next[i] = ch;
+                        // 没有任何人访问
+                        if (!visited.count(next)) {
+                            // 合法
+                            if (bs.count(next)) {
+                                pushAndSet(q, next, flag);
+                            }
+                            continue;
+                        }
+                        // 回退了
+                        if (visited[next] == flag) {
+                            continue;
+                        }
+                        if (visited[next] == dFlag) {
+                            return ans;
+                        }
+                        assert(false);
+                    }
                 }
             }
-            return diff == 1;
+            return 0;
         };
+
+        while (!lq.empty() && !rq.empty()) {
+            if (lq.size() <= rq.size()) {
+                int ret = search(lq, F_F, F_S);
+                if (ret) {
+                    return ret;
+                }
+                continue;
+            }
+            int ret = search(rq, F_S, F_F);
+            if (ret) {
+                return ret;
+            }
+        }
+        return -1;
     }
 };
 // @lc code=end
-
-
 
 /*
 // @lcpr case=start
@@ -409,4 +467,3 @@ public:
 // @lcpr case=end
 
  */
-
