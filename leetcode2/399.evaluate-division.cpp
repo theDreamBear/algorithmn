@@ -171,11 +171,15 @@ class Solution {
             int rhs = alloc.getId(vec[1]);
             int ret = -1;
             if (lhs != -1 && rhs != -1) {
-                BackGurad gurad(visited, lhs);
-                if (dfs(lhs, rhs, lhs)) {
-                    ret = grid[lhs][rhs];
+                // 不是直达
+                if (grid[lhs][rhs] != -1) {
+                    BackGurad gurad(visited, lhs);
+                    // 搜索一下
+                    dfs(lhs, rhs, lhs);
                 }
+                ret = grid[lhs][rhs];
             }
+            ans.push_back(ret);
         }
         return ans;
     }
