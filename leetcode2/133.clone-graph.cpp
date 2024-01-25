@@ -66,31 +66,57 @@ public:
 
 class Solution {
 public:
+    Node* cloneGraph1(Node* node) {
+        if (!node) {
+            return node;
+        }
+        unordered_map<int, Node*> g;
+        // q 里面的节点需要更新neighbor;
+        queue<Node*> q;
+
+        auto pushIfNeed = [&](Node* node) {
+            int id = node->val;
+            if (g.count(id)) {
+                return;
+            }
+            g[id] = new Node(id);
+            q.push(node);
+            return;
+        };
+        pushIfNeed(node);
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz--) {
+                auto node = q.front();q.pop();
+                auto nn = g[node->val];
+                for (auto nei : node->neighbors) {
+                    pushIfNeed(nei);
+                    nn->neighbors.push_back(g[nei->val]);
+                }
+            }
+        }
+        return g[node->val];
+    }
+
     Node* cloneGraph(Node* node) {
         if (!node) {
             return node;
         }
         unordered_map<int, Node*> g;
+        // q 里面的节点需要更新neighbor;
         queue<Node*> q;
-
-        g[node->val] = new Node(node->val);
-        q.push(node);
-
-        while (!q.empty()) {
-            int sz = q.size();
-            while (sz--) {
-                auto node = q.front();
-                q.pop();
-                auto nn = g[node->val];
-                for (auto nei : node->neighbors) {
-                    if (!g.count(nei->val)) {
-                        g[nei->val] = new Node(nei->val);
-                        q.push(nei);
-                    }
-                    nn->neighbors.push_back(g[nei->val]);
+        // dfs
+        function<void(Node* node)> dfs = [&](Node* node) {
+            // 处理当前节点
+            g[node->val] = new Node(node->val);
+            for (auto nei : node->neighbors) {
+                if (!g.count(nei->val)) {
+                    dfs(nei);
                 }
+                g[node->val]->neighbors.push_back(g[nei->val]);
             }
-        }
+        };
+        dfs(node);
         return g[node->val];
     }
 };
