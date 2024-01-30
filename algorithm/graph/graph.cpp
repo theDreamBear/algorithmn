@@ -44,6 +44,7 @@ public:
         }
         return find(adj(v).begin(), adj(v).end(), w) != adj(v).end();
     }
+
 };
 
 class Digraph {
@@ -72,5 +73,15 @@ public:
 
     int E() const {
         return ent;
+    }
+
+    Digraph reverse() const {
+        Digraph ng(V());
+        for (int v = 0; v < V(); v++) {
+            for (const auto w : adj(v)) {
+                ng.addEdge(w, v);
+            }
+        }
+        return ng;
     }
 };

@@ -52,6 +52,39 @@ public:
     }
 };
 
+class CC {
+private:
+    const Graph& g;
+    vector<int> marked;
+    int ct = 0;
+
+    void dfs(int v) {
+        marked[v] = ct;
+        for (const auto w : g.adj(v)) {
+            if (!marked[w]) {
+                dfs(w);
+            }
+        }
+    }
+public:
+    CC(const Graph& g):g(g), marked(g.V()), ct(0) {
+        for (int v = 0; v < g.V(); v++) {
+            if (!marked[v]) {
+                ++ct;
+                dfs(v);
+            }
+        }
+    }
+
+    int connected(int v, int w) const {
+        return marked[v] && marked[v] == marked[w];
+    }
+
+    int count() const {
+        return ct;
+    }
+};
+
 class DfsGSearch {
 private:
     void dfs(int v) {
@@ -78,14 +111,21 @@ public:
 };
 
 class DfsDSearch {
+public:
+    vector<int> pre;
+    vector<int> post;
+    stack<int> reverse_post;
 private:
     void dfs(int v) {
         marked[v] = 1;
+        pre.push_back(v);
         for (const auto w : g.adj(v)) {
             if (!marked[w]) {
                 dfs(w);
             }
         }
+        post.push_back(v);
+        reverse_post.push(v);
     }
 
 public:
@@ -98,6 +138,24 @@ public:
                 dfs(i);
             }
         }
+    }
+
+    vector<int> preOrder() const{
+        return pre;
+    }
+
+    vector<int> postOrder() const {
+        return post;
+    }
+
+    vector<int> reversePostOrder() const{
+        stack<int> tmp = reverse_post;
+        vector<int> ans;
+        while (!tmp.empty()) {
+            ans.push_back(tmp.top());
+            tmp.pop();
+        }
+        return ans;
     }
 };
 
@@ -157,6 +215,24 @@ public:
 class TologySearch {
 private:
     const Digraph& g;
+    vector<int> ans;
+public:
+    TologySearch(const Digraph& g):g(g) {
+        CycleSearch cs(g);
+        if (!cs.hasCycle()) {
+            DfsDSearch ds(g);
+            ans = ds.reversePostOrder();
+        }
+    }
+
+    vector<int> topologySort() {
+        return ans;
+    }
+};
+
+class TologySearchSp {
+private:
+    const Digraph& g;
     vector<int> marked;
     vector<int> onStack;
     stack<int> revese_post;
@@ -179,7 +255,7 @@ private:
         onStack[v] = 0;
     }
 public:
-    TologySearch(const Digraph& g):g(g), marked(g.V()), onStack(g.V()) {
+    TologySearchSp(const Digraph& g):g(g), marked(g.V()), onStack(g.V()) {
         has_loop = false;
         for (int v = 0; !has_loop && v < g.V(); v++) {
             if (!marked[v]) {
@@ -198,5 +274,41 @@ public:
             revese_post.pop();
         }
         return ans;
+    }
+};
+
+class SCC {
+private:
+    const Digraph& g;
+    vector<int> marked;
+    int ct;
+
+
+    void dfs(int v) {
+        marked[v] = ct;
+        for (const auto w : g.adj(v)) {
+            if (!marked[w]) {
+                dfs(w);
+            }
+        }
+    }
+public:
+    SCC(const Digraph& g):g(g), marked(g.V()), ct(0){
+        Digraph ng = g.reverse();
+        auto vec = DfsDSearch(ng).reversePostOrder();
+        for (const auto w : vec) {
+            if (!marked[w]) {
+                ++ct;
+                dfs(w);
+            }
+        }
+    }
+
+    bool connected(int v, int w) const {
+        return marked[v] && marked[v] == marked[w];
+    }
+
+    int count() const {
+        return ct;
     }
 };

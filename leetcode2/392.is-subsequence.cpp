@@ -116,8 +116,15 @@ public:
     }
 
     bool isSubsequence(string s, string t) {
-        map<pair<int, int>, int> visited;
-        return dfs(visited, s, t, 0, 0);
+        int i = 0, j = 0;
+        int m = s.size(), n = t.size();
+        while (i < m && j < n) {
+            if (s[i] == t[j]) {
+                i++;
+            }
+            j++;
+        }
+        return i == s.size();
     }
 };
 // @lc code=end
