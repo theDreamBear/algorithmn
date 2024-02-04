@@ -85,3 +85,44 @@ public:
         return ng;
     }
 };
+
+class WeightEdge {
+private:
+    int from, to;
+    double weight;
+
+public:
+    WeightEdge(int from = -1, int to = -1, double weight = -1):from(from), to(to), weight(weight){}
+
+    int From() {
+        return from;
+    }
+
+    int To() {
+        return to;
+    }
+
+    int Weight() {
+        return weight;
+    }
+};
+
+class WeightEdgeDigraph {
+public:
+    vector<vector<WeightEdge>> data;
+    int v;
+
+    WeightEdgeDigraph(int v):data(v), v(v){}
+
+    int V() const {
+        return v;
+    }
+
+    const vector<WeightEdge>& adj(int v) const {
+        return data[v];
+    }
+
+    void addEdge(int from, int to, double weight) {
+        data[from].emplace_back(from, to, weight);
+    }
+};

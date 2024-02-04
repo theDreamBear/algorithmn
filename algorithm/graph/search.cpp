@@ -1,5 +1,7 @@
 #include "graph.cpp"
+#include <climits>
 #include <numeric>
+#include <queue>
 #include <stack>
 #include <vector>
 
@@ -310,5 +312,35 @@ public:
 
     int count() const {
         return ct;
+    }
+};
+
+class DijkStraSP {
+    void visited(int v) {
+        for (auto e : g.adj(v)) {
+            int w  = e.To();
+            if (distTo[w] < distTo[v] + e.Weight()) {
+                pq.emplace(distTo[v] + e.Weight(), w);
+            }
+        }
+    }
+
+    void run(int s) {
+        distTo[s] = 0;
+        pq.emplace(0.0, s);
+        while (!pq.empty()) {
+            int [weight, v] = pq.top();
+            
+        }
+    }
+
+public:
+    WeightEdgeDigraph& g;
+    vector<WeightEdge> edgeTo;
+    vector<double> distTo;
+    priority_queue<pair<double, int>> pq;
+
+    DijkStraSP(WeightEdgeDigraph& g, int s):g(g), edgeTo(g.V()), distTo(g.V(), INT_MAX) {
+        run(s);
     }
 };
