@@ -67,9 +67,42 @@ public:
         2、 时刻保证子序列符合预期
         3、 怎么减枝
     */
-    int lengthOfLIS(vector<int>& nums) {
+    int lengthOfLIS_bad(vector<int>& nums) {
         vector<int> cur(25001, -100000);
         return dfs(nums, cur, 0, 0);
+    }
+
+    /*
+        状态： dp[i]以 nums[i] 结尾的最长递增子序列的长度
+        初始化： dp[0] = 1
+        状态转移方程：
+            dp[i] = max(dp[0...j]) + 1 (j < i and jnums[j] < nums[i])
+    */
+    int lengthOfLIS_dp(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, 1);
+        dp[0] = 1;
+        for (int i = 1; i < n; i++) {
+            int j = 0;
+            while (j < i) {
+                if (nums[j] < nums[i]) {
+                    dp[i] = max(dp[i], dp[j] + 1);
+                }
+                j++;
+            }
+        }
+        return *max_element(dp.begin(), dp.end());
+    }
+
+    int lengthOfLIS(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> dp(n, INT_MAX);
+        dp[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            auto pos = lower_bound(dp.begin(), dp.end(), nums[i]) - dp.begin();
+            dp[pos] = nums[i];
+        }
+        return lower_bound(dp.begin(), dp.end(), INT_MAX) - dp.begin();
     }
 };
 // @lc code=end
