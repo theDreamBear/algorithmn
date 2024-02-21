@@ -27,11 +27,23 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int findRepeatDocument(vector<int>& documents) {
+    int findRepeatDocument1(vector<int>& documents) {
         sort(documents.begin(), documents.end());
         for (int i = 1; i < documents.size(); i++) {
             if (documents[i] == documents[i - 1]) {
                 return documents[i];
+            }
+        }
+        return -1;
+    }
+
+    int findRepeatDocument(vector<int>& documents) {
+        unordered_set<int> exist;
+        for (auto v : documents) {
+            if (!exist.count(v)) {
+                exist.insert((v));
+            } else {
+                return v;
             }
         }
         return -1;

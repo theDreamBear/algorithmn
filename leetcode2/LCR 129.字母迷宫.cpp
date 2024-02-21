@@ -32,7 +32,7 @@ public:
 
     bool dfs(vector<vector<char>>& grid, int x, int y, int pos, const string& target) {
         if (pos >= target.size()) {
-            return pos >= target.size();
+            return true;
         }
         if (grid[x][y] != target[pos]) {
             return false;
@@ -48,6 +48,7 @@ public:
                 return true;
             }
         }
+        // 回溯
         grid[x][y] = target[pos];
         // 当前就是末尾
         return pos + 1 == target.size();
@@ -57,7 +58,7 @@ public:
         int m = grid.size(), n = grid[0].size();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (dfs(grid, i, j, 0, target)) {
+                if (grid[i][j] == target[0] and dfs(grid, i, j, 0, target)) {
                     return true;
                 }
             }

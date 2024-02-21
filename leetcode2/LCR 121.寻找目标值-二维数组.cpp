@@ -27,7 +27,7 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    bool findTargetIn2DPlants(vector<vector<int>>& plants, int target) {
+    bool findTargetIn2DPlants1(vector<vector<int>>& plants, int target) {
         if (plants.empty()) {
             return false;
         }
@@ -41,6 +41,15 @@ public:
                 y++;
             } else {
                 x--;
+            }
+        }
+        return false;
+    }
+
+    bool findTargetIn2DPlants(vector<vector<int>>& plants, int target) {
+        for (auto& vec : plants) {
+            if (binary_search(vec.begin(), vec.end(), target)) {
+                return true;
             }
         }
         return false;
