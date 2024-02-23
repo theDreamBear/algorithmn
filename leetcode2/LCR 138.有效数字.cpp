@@ -38,7 +38,7 @@ enum Status {
     suffix_sign,
     suffix_int,
     suffix_space,
-    end,
+    over,
 };
 
 enum CharType {
@@ -47,6 +47,7 @@ enum CharType {
     char_point,
     char_sign,
     char_space,
+    char_over,
     char_bad,
 };
 
@@ -79,6 +80,7 @@ unordered_map<Status, unordered_map<CharType, Status>> machine{
                 {char_exp, s_exp},
                 {char_number, prefix_int},
                 {char_space, suffix_space},
+                {char_over, over},
          }
         },
         {point,
@@ -86,6 +88,7 @@ unordered_map<Status, unordered_map<CharType, Status>> machine{
                  {char_number,  mid_int},
                  {char_exp, s_exp},
                  {char_space, suffix_space},
+                  {char_over, over},
          }
         },
         {empty_point,
@@ -97,7 +100,8 @@ unordered_map<Status, unordered_map<CharType, Status>> machine{
          {
                  {char_number, mid_int},
                  {char_exp, s_exp},
-                 {char_space, suffix_space}
+                 {char_space, suffix_space},
+                  {char_over, over},
          }
         },
         {s_exp,
@@ -115,11 +119,13 @@ unordered_map<Status, unordered_map<CharType, Status>> machine{
          {
                  {char_number, suffix_int},
                  {char_space, suffix_space},
+                  {char_over, over},
          }
         },
         {suffix_space,
          {
                  {char_space, suffix_space},
+                 {char_over, over},
          }
         },
 };
@@ -252,7 +258,11 @@ public:
             }
             st = machine[st][t];
         }
-        return st == prefix_int || st == point || st == mid_int || st == suffix_int || st == suffix_space;
+           if (!machine[st].count(char_over)) {
+            return false;
+        }
+        return over == machine[st][char_over];
+        //return st == prefix_int || st == point || st == mid_int || st == suffix_int || st == suffix_space;
     }
 };
 // @lc code=end
