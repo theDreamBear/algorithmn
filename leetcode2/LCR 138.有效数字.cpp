@@ -26,15 +26,133 @@ using namespace std;
 #include<regex>
 // @lcpr-template-end
 // @lc code=start
+enum Status {
+    init,
+    prefix_space,
+    prefix_sign,
+    prefix_int,
+    point,
+    empty_point,
+    mid_int,
+    s_exp,
+    suffix_sign,
+    suffix_int,
+    suffix_space,
+    end,
+};
+
+enum CharType {
+    char_number,
+    char_exp,
+    char_point,
+    char_sign,
+    char_space,
+    char_bad,
+};
+
+unordered_map<Status, unordered_map<CharType, Status>> machine{
+        {init,
+         {
+                 {char_space, prefix_space},
+                 {char_sign, prefix_sign},
+                 {char_number, prefix_int},
+                 {char_point, empty_point}
+         }
+        },
+        {prefix_space,
+         {
+                 {char_space, prefix_space},
+                 {char_sign, prefix_sign},
+                 {char_number, prefix_int},
+                 {char_point, empty_point},
+         }
+        },
+        {prefix_sign,
+         {
+                 {char_number, prefix_int},
+                 {char_point, empty_point},
+         }
+        },
+        {prefix_int,
+         {
+                {char_point, point},
+                {char_exp, s_exp},
+                {char_number, prefix_int},
+                {char_space, suffix_space},
+         }
+        },
+        {point,
+         {
+                 {char_number,  mid_int},
+                 {char_exp, s_exp},
+                 {char_space, suffix_space},
+         }
+        },
+        {empty_point,
+         {
+                 {char_number, mid_int},
+         }
+        },
+        {mid_int,
+         {
+                 {char_number, mid_int},
+                 {char_exp, s_exp},
+                 {char_space, suffix_space}
+         }
+        },
+        {s_exp,
+         {
+                 {char_sign, suffix_sign},
+                 {char_number, suffix_int},
+         }
+        },
+        {suffix_sign,
+         {
+                 {char_number, suffix_int},
+         }
+        },
+        {suffix_int,
+         {
+                 {char_number, suffix_int},
+                 {char_space, suffix_space},
+         }
+        },
+        {suffix_space,
+         {
+                 {char_space, suffix_space},
+         }
+        },
+};
+
+CharType toCharType(char ch) {
+    if (isdigit(ch)) {
+        return char_number;
+    }
+    if (ch == 'e' || ch == 'E') {
+        return char_exp;
+    }
+    if (ch == '.') {
+        return char_point;
+    }
+    if (ch == '+' || ch == '-') {
+        return char_sign;
+    }
+    if (ch == ' ') {
+        return char_space;
+    }
+    return char_bad;
+}
+
+
 class Solution {
 public:
     bool validNumber1(string s) {
         std::regex pattern(R"(^\s*[+-]?(\d+\.\d+|\.\d+|\d+\.|\d+)([eE][+-]?\d+)?\s*$)");
-        std::regex       p(R"(^\s*[+-]?(\d+|\d+\.\d+|\d+\.|\.\d+)([eE][+-]?\d+)?\s*$)");
+        std::regex p(R"(^\s*[+-]?(\d+|\d+\.\d+|\d+\.|\.\d+)([eE][+-]?\d+)?\s*$)");
         return regex_match(s, p);
     }
 
-    bool validNumber(string s) {
+    bool validNumber2(string s) {
         if (s.empty()) {
             return false;
         }
@@ -112,6 +230,29 @@ public:
             low++;
         }
         return low > high;
+    }
+
+    // (\d+ \d+\. | \d+\.\d+ | \.\d+) ([eE][+-]?\d+)?
+
+    /*
+    \d+
+    \d+\.
+    \d+\.\d+
+    or \.\d+
+    */
+    bool validNumber(string s) {
+        Status st = init;
+        for (int i = 0; i < s.size(); i++) {
+            CharType t = toCharType(s[i]);
+            if (char_bad == t) {
+                return false;
+            }
+            if (!machine[st].count(t)) {
+                return false;
+            }
+            st = machine[st][t];
+        }
+        return st == prefix_int || st == point || st == mid_int || st == suffix_int || st == suffix_space;
     }
 };
 // @lc code=end
