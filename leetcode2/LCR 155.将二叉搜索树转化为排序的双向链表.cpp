@@ -148,7 +148,7 @@ public:
         return {head, tail};
     }
 
-    Node* treeToDoublyList(Node* root) {
+    Node* treeToDoublyList3(Node* root) {
         if (!root) {
             return NULL;
         }
