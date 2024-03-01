@@ -27,7 +27,7 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int nthUglyNumber(int n) {
+    int nthUglyNumber1(int n) {
         if (n <= 1) {
             return 1;
         }
@@ -55,6 +55,63 @@ public:
             }
         }
         return 0;
+    }
+
+    bool check(int v, unordered_map<int, bool>& memo) {
+        bool flag = true;
+        int old = v;
+        while (flag) {
+            flag = false;
+            if (v % 5 == 0) {
+                flag = true;
+                v /= 5;
+                if (memo.count(v)) {
+                    return memo[old]  = memo[v];
+                }
+
+            }
+            if (v % 3 == 0) {
+                flag = true;
+                v /= 3;
+                if (memo.count(v)) {
+                    return memo[old]  = memo[v];
+                }
+            }
+            if (v % 2 == 0) {
+                flag = true;
+                v /= 2;
+                if (memo.count(v)) {
+                    return memo[old]  = memo[v];
+                }
+            }
+       }
+       return memo[old] = v ==  1;
+    }
+
+    // 超时
+    int nthUglyNumber_violatile(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        int ct = 1;
+        int v = 2;
+        unordered_map<int, bool> memo;
+        while (ct < n) {
+            if (check(v, memo)) {
+                if (++ct == n) {
+                    return v;
+                }
+            }
+            v++;
+        }
+        return 0;
+    }
+
+    int nthUglyNumber(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        
     }
 };
 // @lc code=end
