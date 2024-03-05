@@ -27,8 +27,32 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    // 模拟，
+    // 逆向模拟
     vector<double> statisticsProbability(int num) {
+        vector<double> tmp(6, 1.0 / 6);
+        if (num == 1) {
+            return tmp;
+        }
+        vector<double> dp(5 * num + 1);
+        for (int i = 0; i < 6; i++) {
+            dp[i] = 1.0 / 6;
+        }
+        for (int i = 2; i <= num; i++) {
+            int pre = 6 * (i - 1) - 1;
+            auto tp = dp;
+            for (int j = 0; j < 5 * i + 1; j++) {
+                tp[j] = 0;
+                for (int p = max(0, j - 5); p <= min(pre, j); p++) {
+                    tp[j] += dp[p] / 6;
+                }
+            }
+            dp = tp;
+        }
+        return dp;
+    }
+
+    // 模拟，
+    vector<double> statisticsProbability4(int num) {
         vector<double> tmp(6, 1.0 / 6);
         if (num == 1) {
             return tmp;
@@ -42,8 +66,8 @@ public:
             auto tp = dp;
             for (int j = low; j <= high; j++) {
                 tp[j] = 0;
-                for (int p = 1; p <= 6 && j - p <= pre; j++) {
-                    tp[j] += tmp[p] * dp[j - p];
+                for (int p = max(j - 6, i - 1); p <= min(j - 1, pre); p++) {
+                    tp[j] += dp[p] / 6;
                 }
             }
             dp = tp;
