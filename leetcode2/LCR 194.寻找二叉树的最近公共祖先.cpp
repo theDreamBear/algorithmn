@@ -23,6 +23,12 @@ using namespace std;
 #include <unordered_set>
 #include <utility>
 #include <vector>
+ struct TreeNode {
+     int val;
+     TreeNode *left;
+     TreeNode *right;
+     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ };
 // @lcpr-template-end
 // @lc code=start
 /**
