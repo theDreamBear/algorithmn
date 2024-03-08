@@ -41,11 +41,36 @@ public:
             if (mid >> i & 0x1) {
                 // 越界的问题 res + (base << i)  < a;
                 // 这个边界问题不好处理
-                if (a - res > (base << i) || (base << i) >= 0) {
+                // 1、base << i 可能溢出， 所以用 base < (INT_MIN >> i) 这个能保证不溢出
+                // 2、res + (base << i)可能溢出 所以用  a - res > (base << i) 这个保证不溢出
+                if (base < (INT_MIN >> i) || a - res > (base << i)) {
                     return false;
                 }
                 res += (base << i);
             }
+        }
+        return res >= a;
+    }
+
+    bool can2(int mid, int a, int b) {
+        // a < 0
+        // b < 0
+        // mid > 0
+        int res = 0;
+        int n = 32 - __builtin_clz(mid);
+        int base = b;
+        for (int i = 0; i < n; i++) {
+            if (mid >> i & 0x1) {
+                if (base < a - res) {
+                    return false;
+                }
+                res += base;
+            }
+            // 最好一个可能会溢出
+            if (i + 1 < n and base < a - base) {
+                return false;
+            }
+            base <<= 1;
         }
         return res >= a;
     }
@@ -73,13 +98,13 @@ public:
         int low = 0, high = INT_MAX;
         while (low + 1 < high) {
             int mid = low + ((high - low) >> 1);
-            if (can(mid, a, b)) {
+            if (can2(mid, a, b)) {
                 low = mid;
             } else {
                 high = mid;
             }
         }
-        if (can(high, a, b)) {
+        if (can2(high, a, b)) {
             if (sign > 0) {
                 return high;
             }
