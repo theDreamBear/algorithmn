@@ -27,20 +27,27 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    /*
+        这个边界问题不好处理
+    */
     bool can(int mid, int a, int b) {
+        // a < 0
+        // b < 0
         // mid > 0
         int res = 0;
         int n = 32 - __builtin_clz(mid);
+        int base = b;
         for (int i = 0; i < n; i++) {
-            if (mid & (0x1 << i)) {
-                res += b;
-                if (res < a) {
+            if (mid >> i & 0x1) {
+                // 越界的问题 res + (base << i)  < a;
+                // 这个边界问题不好处理
+                if (a - res > (base << i) || (base << i) >= 0) {
                     return false;
                 }
+                res += (base << i);
             }
-            b <<= 1;
         }
-        return res > a;
+        return res >= a;
     }
 
     int divide(int a, int b) {
@@ -56,14 +63,14 @@ public:
         if (a == 0) {
             return 0;
         }
-        int sign = ((a > 0) + (b > 0) == 0) ? -1 : 1;
+        int sign = (a >> 31 == b >> 31) ? 1 : -1;
         if (a > 0) {
             a = -a;
         }
         if (b > 0) {
             b = -b;
         }
-        int low = 1, high = INT_MAX;
+        int low = 0, high = INT_MAX;
         while (low + 1 < high) {
             int mid = low + ((high - low) >> 1);
             if (can(mid, a, b)) {
