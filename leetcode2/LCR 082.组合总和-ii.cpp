@@ -47,11 +47,31 @@ public:
         }
     }
 
+    void combinationSum2Helper(vector<vector<int>> &ans, vector<int> &tmp, vector<int>& candidates, int pos, int cur_sum, int target, int pre) {
+        if (cur_sum >= target || pos >= candidates.size()) {
+            if (cur_sum == target) {
+                ans.push_back(tmp);
+            }
+            return;
+        }
+        if (cur_sum + candidates[pos] <= target) {
+            // 选择
+            tmp.push_back(candidates[pos]);
+            combinationSum2Helper(ans, tmp, candidates, pos + 1, cur_sum + candidates[pos], target, candidates[pos]);
+            tmp.pop_back();
+        }
+        if (candidates[pos] != pre) {
+            // 不选择
+            combinationSum2Helper(ans, tmp, candidates, pos + 1, cur_sum, target, pre);
+        }
+    }
+
     vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
         sort(candidates.begin(), candidates.end());
         vector<vector<int>> ans;
         vector<int> tmp;
-        combinationSum2(ans, tmp, candidates, 0, 0, target);
+        //combinationSum2(ans, tmp, candidates, 0, 0, target);
+        combinationSum2Helper(ans, tmp, candidates, 0, 0, target, -1);
         return ans;
     }
 };
