@@ -48,12 +48,13 @@ public:
     }
 
     void combinationSum2Helper(vector<vector<int>> &ans, vector<int> &tmp, vector<int>& candidates, int pos, int cur_sum, int target, int pre) {
-        if (cur_sum >= target || pos >= candidates.size()) {
+        if ( pos >= candidates.size()) {
             if (cur_sum == target) {
                 ans.push_back(tmp);
             }
             return;
         }
+        // pre代表上一个选择的
         if (cur_sum + candidates[pos] <= target) {
             // 选择
             tmp.push_back(candidates[pos]);
