@@ -83,15 +83,14 @@ public:
         // 滑动窗口
         int left = 0, right = 0, product = 1;
         // [left, right), 乘积为product
-        for (;left <= right and right < nums.size(); right++) {
+        for (; right < nums.size(); right++) {
             product *= nums[right];
             while (left <= right and product >= k) {
                 product /= nums[left];
                 left++;
             }
-            if (left <= right) {
-                ans += (right - left + 1);
-            }
+            // 如果lleft > right 则结果为0
+            ans += (right - left + 1);
         }
         return ans;
     }
