@@ -75,7 +75,7 @@ public:
         return ans;
     }
 
-    int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+    int numSubarrayProductLessThanK_slidingWindows(vector<int>& nums, int k) {
         if (k <= 1) {
             return 0;
         }
@@ -91,6 +91,41 @@ public:
             }
             // 如果lleft > right 则结果为0
             ans += (right - left + 1);
+        }
+        return ans;
+    }
+
+        bool can(int i, int mid, vector<long long>& prefix, int k) {
+        return prefix[mid] / prefix[i] < k;
+    }
+
+    int numSubarrayProductLessThanK(vector<int>& nums, int k) {
+        if (k <= 1) {
+            return 0;
+        }
+        // 二分
+        int ans = 0;
+        vector<long long> prefix(nums.size() + 1, 1);
+        for (int i = 0; i < nums.size(); i++) {
+            prefix[i + 1] = prefix[i] * nums[i];
+        }
+        for (int i = 0; i < nums.size(); i++) {
+            // 找到 < k 的最大
+            // [i, mid] 实际代表着[i, mid - 1] 的乘积 = prefix[mid] / prefix[i]
+            int low = 0, high = nums.size();
+            while (low + 1 < high) {
+                int mid = low + (high - low) / 2;
+                if (can(i, mid, prefix, k)) {
+                    low = mid;
+                } else {
+                    high = mid;
+                }
+            }
+            if (can(i, high, prefix, k)) {
+                ans += high - i;
+            } else {
+                ans += low - i;
+            }
         }
         return ans;
     }
