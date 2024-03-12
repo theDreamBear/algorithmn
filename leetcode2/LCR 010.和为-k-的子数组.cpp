@@ -57,9 +57,32 @@ public:
         return ans;
     }
 
+    int subarraySum_暴力_超时(vector<int>& nums, int k) {
+        int ans = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            int sum = 0;
+            for (int j = i; j < nums.size(); j++) {
+                if ((sum += nums[j]) == k) {
+                    ++ans;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // 前缀和 +  hash
     int subarraySum(vector<int>& nums, int k) {
         int ans = 0;
-        
+        unordered_map<int, int> mp;
+        mp[0] = 1;
+        int pre = 0;
+        for (auto v : nums) {
+            pre += v;
+            if (mp.count(pre - k)) {
+                ans += mp[pre - k];
+            }
+            mp[pre]++;
+        }
         return ans;
     }
 };
