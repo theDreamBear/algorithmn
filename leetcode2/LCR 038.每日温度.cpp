@@ -29,7 +29,25 @@ class Solution {
 public:
     vector<int> dailyTemperatures(vector<int>& temperatures) {
         // 寻找每个第一个大于的下标差
-        
+        int n = temperatures.size();
+
+        vector<int> ans(n);
+        stack<int> st;
+        // [pos, n) 有序且单调递增区间
+
+        st.push(n - 1);
+        for (int i = n  - 2; i >= 0; i--) {
+            while (!st.empty() and temperatures[st.top()] <= temperatures[i]) {
+                st.pop();
+            }
+            if (!st.empty()) {
+                ans[i] = st.top() - i;
+            } else {
+                ans[i] = 0;
+            }
+            st.push(i);
+        }
+        return ans;
     }
 };
 // @lc code=end
