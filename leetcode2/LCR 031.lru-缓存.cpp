@@ -27,14 +27,48 @@ using namespace std;
 // @lc code=start
 class LRUCache {
 private:
-    int capacity;
-    struct Node {
-        int key, value;
+
+    struct HashList {
+        int capacity, sz;
+        struct Node {
+            int val;
+            Node* next;
+
+            Node(int val):val(), next(nullptr){}
+        };
+
+        Node dummy;
+        unordered_map<int, Node*> hash;
+
+        HashList(int capacity):capacity(capacity) {
+            sz = 0;
+        }
+
+        int get(int key) {
+            if (!hash.count(key)) {
+                return -1;
+            }
+            Node* pre = hash[key];
+            Node* now = pre->next;
+            // 摘除now
+            pre->next = pre->next->next;
+            // 头插
+            now->next = dummy.next;
+            dummy.next = now;
+            return now->val;
+        }
+
+        void put(int key, int value) {
+            if (!hash.count(key)) {
+                hash[key] = new Node(value);
+            }
+            
+        }
     };
-    
+
 public:
     LRUCache(int capacity) {
-        this->capacity = capacity;
+
     }
 
     int get(int key) {
