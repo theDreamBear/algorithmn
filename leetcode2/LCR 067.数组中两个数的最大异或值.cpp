@@ -40,8 +40,11 @@ public:
 
     int findMaximumXOR(vector<int>& nums) {
         int ans = 0;
-        for (int i = 0; i < nums.size(); i++) {
+        for (int idx = 31; idx >= 0; idx--) {
             
+            for (int i = 0; i < nums.size(); i++) {
+
+            }
         }
         return ans;
     }
