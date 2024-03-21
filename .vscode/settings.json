@@ -59,6 +59,7 @@
   "files.associations": {
     "vector": "cpp",
     "iosfwd": "cpp",
-    "unordered_map": "cpp"
+    "unordered_map": "cpp",
+    "limits": "cpp"
   }
 }
