@@ -60,6 +60,7 @@
     "vector": "cpp",
     "iosfwd": "cpp",
     "unordered_map": "cpp",
-    "limits": "cpp"
+    "limits": "cpp",
+    "queue": "cpp"
   }
 }
