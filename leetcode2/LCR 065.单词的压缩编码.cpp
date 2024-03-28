@@ -125,11 +125,13 @@ public:
                     flag = true;
                 }
                 node = node->children[idx];
+                // 遇到非叶节点
                 if (i != 0 and node->sz > 0) {
                     ans -= node->sz;
-                    // -1 代表复用过了
-                    node->sz = -1;
+                    // 非叶节点sz为0
+                    node->sz = 0;
                 }
+                // 叶节点
                 if (i == 0 && flag) {
                     node->sz = str.size() + 1;
                     ans += node->sz;
