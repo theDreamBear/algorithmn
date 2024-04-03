@@ -61,6 +61,7 @@
     "iosfwd": "cpp",
     "unordered_map": "cpp",
     "limits": "cpp",
-    "queue": "cpp"
+    "queue": "cpp",
+    "set": "cpp"
   }
 }
