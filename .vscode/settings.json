@@ -69,6 +69,8 @@
     "list": "cpp",
     "xhash": "cpp",
     "xstring": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "valarray": "cpp",
+    "map": "cpp"
   }
 }

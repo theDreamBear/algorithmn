@@ -38,12 +38,36 @@ using namespace std;
  */
 class Solution {
 public:
-    int sumNumbers(TreeNode* root) {
-
+    void preorder(TreeNode* node, int pre, int& ans) {
+        if (!node) {
+            return;
+        }
+        pre = pre * 10 + node->val;
+        if (!node->left and !node->right) {
+            ans += pre;
+            return;
+        }
+        preorder(node->left, pre, ans);
+        preorder(node->right, pre, ans);
     }
 
-    int sumNumbers(TreeNode* root) {
+    int preorder(TreeNode* node, int pre) {
+        if (!node) {
+            return 0;
+        }
+        pre = pre * 10 + node->val;
+        if (!node->left and !node->right) {
+            return pre;
+        }
+        return preorder(node->left, pre) + preorder(node->right, pre);
+    }
 
+
+    int sumNumbers(TreeNode* root) {
+        int ans = 0;
+        // preorder(root, 0, ans);
+        //return ans;
+        return preorder(root, 0);
     }
 };
 // @lc code=end
