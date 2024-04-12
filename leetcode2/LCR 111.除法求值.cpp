@@ -6,7 +6,7 @@
  */
 
 
-// @lcpr-template-start
+ // @lcpr-template-start
 using namespace std;
 #include <algorithm>
 #include <array>
@@ -26,83 +26,83 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
- class Alloc {
-     public:
-        int idx = 0;
-        unordered_map<string, int> mp;
+class Alloc {
+public:
+    int idx = 0;
+    unordered_map<string, int> mp;
 
-        int alloc(const string& key) {
-            if (!contains(key)) {
-                mp[key] = idx++;
-            }
+    int alloc(const string& key) {
+        if (!contains(key)) {
+            mp[key] = idx++;
+        }
+        return mp[key];
+    }
+
+    bool contains(const string& key) {
+        return mp.count(key) > 0;
+    }
+
+    int getId(const string& key) {
+        if (contains(key)) {
             return mp[key];
         }
+        return -1;
+    }
 
-        bool contains(const string& key) {
-            return mp.count(key) > 0;
+    int MAXID() {
+        return idx;
+    }
+};
+
+class Graph {
+public:
+    int n;
+    vector<vector<pair<int, double>>> adj;
+
+    Graph(int n) : n(n), adj(n) {}
+
+
+    void addEdge(int v, int w, double score) {
+        adj[v].emplace_back(w, score);
+        adj[w].emplace_back(v, 1 / score);
+    }
+
+    const vector<pair<int, double>>& adjacent(int v) {
+        return adj[v];
+    }
+
+    int V() {
+        return n;
+    }
+};
+
+class Dfs {
+public:
+    Graph& g;
+    vector<int> marked;
+
+    Dfs(Graph& g) :g(g), marked(g.V()) {}
+
+    double dfs(int v, int w) {
+        if (v == w) {
+            return 1;
         }
-
-        int getId(const string& key) {
-            if (contains(key)) {
-                return mp[key];
-            }
-            return -1;
-        }
-
-        int MAXID() {
-            return idx;
-        }
-    };
-
-    class Graph {
-     public:
-        int n;
-        vector<vector<pair<int, double>>> adj;
-
-        Graph(int n) : n(n), adj(n) {}
-
-
-        void addEdge(int v, int w, double score) {
-            adj[v].emplace_back(w, score);
-            adj[w].emplace_back(v, 1 / score);
-        }
-
-        const vector<pair<int, double>>& adjacent(int v) {
-            return adj[v];
-        }
-
-        int V() {
-            return n;
-        }
-    };
-
-    class Dfs {
-     public:
-        Graph& g;
-        vector<int> marked;
-
-        Dfs(Graph& g):g(g), marked(g.V()) {}
-
-        double dfs(int v, int w) {
-            if (v == w) {
-                return 1;
-            }
-            marked[v] = 1;
-            for (auto& adj : g.adjacent(v)) {
-                if (!marked[adj.first]) {
-                    double res = dfs(adj.first, w);
-                    if (res >= 0) {
-                        return res * adj.second;
-                    }
+        marked[v] = 1;
+        for (auto& adj : g.adjacent(v)) {
+            if (!marked[adj.first]) {
+                double res = dfs(adj.first, w);
+                if (res >= 0) {
+                    return res * adj.second;
                 }
             }
-            return -1;
         }
+        return -1;
+    }
 
-        double solve(int v, int w) {
-            return dfs(v, w);
-        }
-    };
+    double solve(int v, int w) {
+        return dfs(v, w);
+    }
+};
 
 
 class Solution {
@@ -129,9 +129,10 @@ public:
                 ans.push_back(-1);
                 continue;
             }
-            if (memo.count({f, t})) {
+            if (memo.count({ f, t })) {
                 ans.push_back(memo[{f, t}]);
-            } else {
+            }
+            else {
                 Dfs dfs(g);
                 ans.push_back(dfs.solve(f, t));
                 memo[{f, t}] = ans.back();
@@ -142,7 +143,7 @@ public:
     }
 
     // 并查集
-    
+
 };
 // @lc code=end
 
