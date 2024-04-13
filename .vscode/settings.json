@@ -70,7 +70,7 @@
     "xhash": "cpp",
     "xstring": "cpp",
     "xtree": "cpp",
-    "valarray": "cpp",
-    "map": "cpp"
+    "numeric": "cpp",
+    "utility": "cpp"
   }
 }
