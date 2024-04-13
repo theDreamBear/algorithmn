@@ -71,6 +71,7 @@
     "xstring": "cpp",
     "xtree": "cpp",
     "numeric": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "ios": "cpp"
   }
 }
