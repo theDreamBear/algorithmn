@@ -27,16 +27,51 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    int coinChange1(vector<int>& coins, int amount) {
+        int n = coins.size();
+        vector<int> memo(amount + 1, 0);
+        sort(coins.begin(), coins.end());
+
+        function<int(int)> dfs = [&](int left) {
+            if (left < 0) {
+                return -1;
+            }
+            if (left == 0) {
+                return 0;
+            }
+            if (memo[left] != 0) {
+                return memo[left];
+            }
+            int ans = INT_MAX;
+            for (int i = 0; i < coins.size(); i++) {
+                if (left < coins[i]) {
+                    break;
+                }
+                int res = dfs(left - coins[i]);
+                if (res >= 0) {
+                    if (ans > res + 1) {
+                        ans = res + 1;
+                    }
+                }
+            }
+            return ans == INT_MAX ? memo[left] = -1 : memo[left] = ans;
+        };
+        dfs(amount);
+        return memo[amount];
+    }
+
     int coinChange(vector<int>& coins, int amount) {
         int n = coins.size();
-        vector<vector<int>> dp(n + 1, vector<int>(amount + 1, INT_MAX));
-        dp[0][0] = 0;
-        for (int i = 0; i < coins.size(); i++) {
-            for (int j = coins[i]; j <= amount; j++) {
-                
+        vector<int> memo(amount + 1, INT_MAX);
+        memo[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (auto v : coins) {
+                if (i >= v and memo[i - v] != INT_MAX) {
+                    memo[i] = min(memo[i], memo[i - v] + 1);
+                }
             }
         }
-        return dp[n][amount] == INT_MAX ? 0 : dp[n][amount];
+        return memo[amount] == INT_MAX ? -1 : memo[amount];
     }
 };
 // @lc code=end
