@@ -75,7 +75,7 @@ public:
         return ans;
     }
 
-    vector<int> findOriginalArray2(vector<int>& changed) {
+    vector<int> findOriginalArray3(vector<int>& changed) {
         int n = changed.size();
         if (n % 2 != 0) {
             return {};
@@ -111,7 +111,7 @@ public:
         return ans.size() == (n >> 1) ? ans : vector<int>{};
     }
 
-    vector<int> findOriginalArray(vector<int>& changed) {
+    vector<int> findOriginalArray2(vector<int>& changed) {
         int n = changed.size();
         if (n % 2 != 0) {
             return {};
@@ -144,6 +144,67 @@ public:
             }
         }
         return ans.size() == (n >> 1) ? ans : vector<int>{};
+    }
+
+    vector<int> findOriginalArray4(vector<int>& changed) {
+        unordered_map<int, int> cnt;
+        for (int x : changed) {
+            cnt[x]++;
+        }
+
+        // 单独处理 0
+        int cnt0 = cnt[0];
+        if (cnt0 % 2) {
+            return {};
+        }
+        cnt.erase(0);
+        vector<int> ans(cnt0 / 2);
+
+        for (auto [key, _] : cnt) {
+            int x = key;
+            // 如果 x/2 在 cnt 中，则跳过
+            if (x % 2 == 0 && cnt.contains(x / 2)) {
+                continue;
+            }
+            // 把 x, 2x, 4x, 8x, ... 全部配对
+            while (cnt.contains(x)) {
+                // 每次循环，把 cnt_x 个 x 和 cnt_x 个 2x 配对
+                int cnt_x = cnt[x];
+                // 无法配对，至少要有 cnt_x 个 2x
+                if (cnt_x > cnt[x * 2]) {
+                    return {};
+                }
+                ans.insert(ans.end(), cnt_x, x);
+                if (cnt_x < cnt[x * 2]) {
+                    // 还剩下一些 2x
+                    cnt[x * 2] -= cnt_x;
+                    x *= 2;
+                } else {
+                    x *= 4;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // 空间换时间
+    vector<int> findOriginalArray(vector<int>& changed) {
+        int counts[100001]{};
+        for(int x:changed) ++counts[x];
+        if(counts[0]&1) return {};
+        vector<int> ans(counts[0]>>1,0);
+        for(int i=1;i<100001;++i){
+            if(counts[i]<0){
+                return {};
+            }else if(counts[i]>0){
+                if(2*i>100000) return {};
+                counts[2*i]-=counts[i];
+                while(counts[i]--){
+                    ans.push_back(i);
+                }
+            }
+        }
+        return ans;
     }
 };
 // @lc code=end
