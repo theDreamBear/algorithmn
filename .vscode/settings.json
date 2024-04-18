@@ -73,6 +73,7 @@
     "numeric": "cpp",
     "utility": "cpp",
     "ios": "cpp",
-    "format": "cpp"
+    "format": "cpp",
+    "map": "cpp"
   }
 }
