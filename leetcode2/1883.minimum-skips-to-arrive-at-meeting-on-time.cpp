@@ -29,6 +29,8 @@ using namespace std;
 class Solution {
 public:
     // 万恶的浮点精度
+    // 向上取 ，就-eps
+    // 向下取， +eps
     int minSkips(vector<int>& dist, int speed, int hoursBefore) {
         // y
         int total = accumulate(dist.begin(), dist.end(), 0);
