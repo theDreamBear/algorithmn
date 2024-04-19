@@ -99,8 +99,7 @@ public:
         vector<int> dp(n, INT_MAX);
         dp[0] = nums[0];
         for (int i = 1; i < n; i++) {
-            auto pos = lower_bound(dp.begin(), dp.end(), nums[i]) - dp.begin();
-            dp[pos] = nums[i];
+            *lower_bound(dp.begin(), dp.end(), nums[i]) = nums[i];
         }
         return lower_bound(dp.begin(), dp.end(), INT_MAX) - dp.begin();
     }
