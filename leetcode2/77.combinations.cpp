@@ -78,7 +78,7 @@ public:
         }
     }
 
-    vector<vector<int>> combine(int n, int k) {
+    vector<vector<int>> combine4(int n, int k) {
         vector<vector<int>> ans;
         if (n < k) {
             return ans;
@@ -149,6 +149,30 @@ public:
         }
         return ans;
     }
+
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> ans;
+        int comb = (1 << k) - 1;
+        do {
+            // 计算
+            int v = comb;
+            vector<int> tmp(k);
+            int idx = 0;
+            while (v) {
+                int pos = __builtin_ffs(v) - 1;
+                tmp[idx++] = pos + 1;
+                v ^= (1 << pos);
+            }
+            ans.push_back(tmp);
+            // 枚举下一个
+            int x = comb & -comb;
+            int y = comb + x;
+            comb = (comb & ~y) / x >> 1 | y;
+            //
+        } while (comb <= (1 << n) - 1);
+        return ans;
+    }
+
 };
 // @lc code=end
 
