@@ -22,17 +22,18 @@ using namespace std;
 #include <unordered_map>
 #include <map>
 #include <unordered_set>
+#include <set>
 #include <utility>
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
 class null_param {
 };
-template<bool, typename Sig, class F>
+template<typename Sig, class F>
 class memoize_helper;
 
 template<typename R, typename... Args, class F>
-class memoize_helper<false, R(Args...), F> {
+class memoize_helper<R(Args...), F> {
 private:
     using function_type = F;
     using args_tuple_type = tuple<Args...>;
@@ -57,21 +58,21 @@ public:
     }
 };
 
-template<typename R, typename Arg, class F>
-class memoize_helper<true, R(Arg), F> {
+template<int Dim, typename R, class F>
+class memoize_vec_helper;
+
+// 一维数组的特化
+template<typename R, typename ...Args, class F>
+class memoize_vec_helper<1, R(Args...), F> {
 private:
     using function_type = F;
-    using args_tuple_type = Arg;
-
     function_type f;
-    mutable vector<vector<R>> cache;
+    mutable vector<R> cache;
     R dv;
 
 public:
     template<class Function>
-    memoize_helper(Function &&f, int sz, R r) : f(std::forward<Function>(f)), cache(sz, vector<R>(sz, r)), dv(r) {}
-
-    memoize_helper(const memoize_helper &other) : f(other.f) {}
+    memoize_vec_helper(Function &&f, int sz, R r, R bad) : f(std::forward<Function>(f)), cache(sz, r), dv(r) {}
 
     template<class InnerArgs>
     R operator()(InnerArgs && arg) const {
@@ -82,20 +83,72 @@ public:
     }
 };
 
+// 二维数组的特化
+template<typename R, typename ...Args, class F>
+class memoize_vec_helper<2, R(Args...), F> {
+private:
+    using function_type = F;
+    function_type f;
+    mutable vector<vector<R>> cache;
+    R dv;
+
+public:
+    template<class Function>
+    memoize_vec_helper(Function &&f, int fs, int ss, R r) : f(std::forward<Function>(f)), cache(fs, vector<R>(ss, r)), dv(r){}
+
+    template<typename IndexType>
+    R operator()(IndexType first, IndexType second) const {
+        // 这里需要修改，因为arg现在是一个pair或者tuple
+        if (cache[first][second] != dv) {
+            return cache[first][second];
+        }
+        return cache[first][second] = f(*this, first, second);
+    }
+};
+
+/**
+ * @brief  cache使用map
+ * 
+ * @tparam Sig 
+ * @tparam F 
+ * @param f 
+ * @return memoize_helper<Sig, std::decay_t<F>> 
+ */
 template<class Sig, class F>
-memoize_helper<false,Sig, std::decay_t<F>> cache(F &&f) {
-    return memoize_helper<false,Sig, std::decay_t<F>>(std::forward<F>(f), null_param{});
+memoize_helper<Sig, std::decay_t<F>> cache(F &&f) {
+    return memoize_helper<Sig, std::decay_t<F>>(std::forward<F>(f), null_param{});
 }
 
+// 创建一维数组的函数
+/***
+ * @brief  chache 使用一维数组
+ * @param f 函数
+ * @param sz 数组大小
+ * @param default_value 默认值
+ * @return
+ */
 template<class Sig, class F>
-memoize_helper<true,Sig, std::decay_t<F>> cache_vec(F &&f, int sz, int dv = 0) {
-    return memoize_helper<true, Sig, std::decay_t<F>>(std::forward<F>(f), sz, dv);
+memoize_vec_helper<1, Sig, std::decay_t<F>> cache_vec(F &&f, int sz, int default_value) {
+    return memoize_vec_helper<1, Sig, std::decay_t<F>>(std::forward<F>(f), sz, default_value);
 }
 
+// 创建二维数组的函数
+/***
+ * @brief cache 使用二维数组
+ * @param f 函数
+ * @param sz 第一维数组大小
+ * @param sz2 第二维数组大小
+ * @param default_value 默认值
+ * @return
+ */
+template<class Sig, class F>
+memoize_vec_helper<2, Sig, std::decay_t<F>> cache_vec2(F &&f, int sz, int sz2, int default_value) {
+    return memoize_vec_helper<2, Sig, std::decay_t<F>>(std::forward<F>(f), sz, sz2, default_value);
+}
 
 class Solution {
 public:
-    int minFallingPathSum(vector<vector<int>>& grid) {
+    int minFallingPathSum2(vector<vector<int>>& grid) {
         int m = grid.size(), n = grid[0].size();
         int t = 0;
         auto memo = [&](auto& dfs, int i , int j)->int {
@@ -117,7 +170,7 @@ public:
             return ans;
         };
         int ans = INT_MAX;
-        auto f = cache_vec<int(int, int)>(memo, 200, -10000);
+        auto f = cache_vec2<int(int, int)>(memo, 200, 200, -100000);
         for (int j = 0; j < n; j++) {
             ans = min(ans, f(0, j));
         }
@@ -136,6 +189,57 @@ public:
                 }
                 grid[i][j] += res;
             }
+        }
+        return ranges::min(grid.back());
+    }
+
+    int minFallingPathSum3(vector<vector<int>>& grid) {
+        map<int, int> mm;
+        for (auto v : grid[0]) {
+            mm[v]++;
+        } 
+        for (int i = 1; i < grid.size(); i++) {
+            map<int, int> next;
+            for (int j = 0; j < grid[0].size(); j++) {
+                int v = grid[i - 1][j];
+                int res;
+                auto it = mm.begin();
+                if (it->first != v || it->second > 1) {
+                    res = it->first;
+                } else {
+                    res = (++it)->first;
+                }
+                grid[i][j] += res;
+                next[grid[i][j]]++;
+            }
+            mm = next;
+        }
+        return ranges::min(grid.back());
+    }
+
+    int minFallingPathSum(vector<vector<int>>& grid) {
+        int mm = INT_MAX, nmm = INT_MAX;
+        for (int j = 0; j < grid[0].size(); j++) {
+            if (grid[0][j] < mm) {
+                swap(mm, nmm);
+                mm = grid[0][j];
+            } else if (grid[0][j] < nmm) {
+                nmm = grid[0][j];
+            }
+        }
+        for (int i = 1; i < grid.size(); i++) {
+            int xmm = INT_MAX, xnmm = INT_MAX;
+            for (int j = 0; j < grid[0].size(); j++) {
+                grid[i][j] += grid[i - 1][j] == mm ? nmm : mm;
+                if (grid[i][j] < xmm) {
+                    swap(xmm, xnmm);
+                    xmm = grid[i][j];
+                } else if (grid[i][j] < xnmm) {
+                    xnmm = grid[i][j];
+                }
+            }
+            mm = xmm;
+            nmm = xnmm;
         }
         return ranges::min(grid.back());
     }
