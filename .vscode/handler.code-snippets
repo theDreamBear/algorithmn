@@ -1,0 +1,52 @@
+{
+	// Place your algorithmn workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"handler": {
+		"scope": "cpp",
+		"prefix": "handler",
+		"body": [
+			"        auto handler = [&](int i, int h)->pair<bool, int> {",
+"            if (i < 0) {",
+"                return {true, h == 0 ? 0 : INT_MIN / 2};",
+"            }",
+"            return {false, 0};",
+"        };",
+"        int n = prices.size();",
+"        int dp[n][2];",
+"        fill_array(&dp[0][0], INT_MIN / 2, n, 2);",
+"        auto get_v = [&](int i, int h) {",
+"            if (auto res = handler(i, h); res.first) {",
+"                return res.second;",
+"            }",
+"            return dp[i][h];",
+"        };",
+		],
+		"description": "Log output to console"
+	},
+	"memo": {
+		"scope": "cpp",
+		"prefix": "memo",
+		"body": [
+			"        auto handler = [&](int i) -> pair<bool, int> {",
+"            if (i < 0) {",
+"                return {true, };",
+"            }",
+"            return {false, };",
+"        };",
+"",
+"        auto memo = [&](auto&& dfs, int i) {",
+"            if (h) {",
+"                return max(dfs(i - 1), dfs(i - 2));",
+"            }",
+"            return max(dfs(i - 1), dfs(i - 1);",
+"        };",
+"        return cache_nvec<1, int(int)>(memo, {}, INT_MAX, handler)();",
+		],
+		"description": "Log output to console"
+	}
+}
