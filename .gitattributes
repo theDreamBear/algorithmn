@@ -1,0 +1,3 @@
+# 在项目根目录创建.gitattributes文件，添加如下内容：
+*.cpp text=auto
+*.h text=auto
