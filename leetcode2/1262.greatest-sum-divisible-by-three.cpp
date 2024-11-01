@@ -353,6 +353,21 @@ class Solution {
   public:
     int maxSumDivThree(vector<int>& nums) {
         int dp[2][3]{};
+        dp[0][0] = dp[0][1] = dp[0][2] = INT_MIN;
+        int ft = 0, st = 1;
+        for (auto v : nums) {
+            int idx = v % 3;
+            // looks beautful
+            dp[st][0] = max({dp[ft][0], dp[ft][(3 - idx) % 3] + v, idx == 0 ? v : 0});
+            dp[st][1] = max({dp[ft][1], dp[ft][(4 - idx) % 3] + v, idx == 1 ? v : INT_MIN});
+            dp[st][2] = max({dp[ft][2], dp[ft][(2 - idx) % 3] + v, idx == 2 ? v : INT_MIN});
+            swap(ft, st);
+        }
+        return dp[ft][0];
+    }
+
+    int maxSumDivThree8(vector<int>& nums) {
+        int dp[2][3]{};
         int ft = 0, st = 1;
         for (auto v : nums) {
             int idx = v % 3;
@@ -388,7 +403,7 @@ class Solution {
         return dp[ft][0];
     }
 
-    int maxSumDivThree5(vector<int>& nums) {
+    int maxSumDivThree6(vector<int>& nums) {
         auto handler = [&](int i, int j) -> pair<bool, int> {
             if (i < 0) {
                 return {true, j ? INT_MIN / 2 : 0};
