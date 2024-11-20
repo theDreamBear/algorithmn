@@ -6,8 +6,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/nichao/Code/algorithmn/leetcode2",
-      "program": "/Users/nichao/Code/algorithmn/leetcode2/build/Debug/outDebug"
+      "cwd": "D:/work/code/algorithmn/leetcode2",
+      "program": "D:/work/code/algorithmn/leetcode2/a.exe"
     }
   ]
 }

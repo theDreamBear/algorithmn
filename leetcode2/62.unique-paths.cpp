@@ -1,3 +1,10 @@
+// @lcpr-before-debug-begin
+
+
+
+
+// @lcpr-before-debug-end
+
 /*
  * @lc app=leetcode.cn id=62 lang=cpp
  * @lcpr version=30122
@@ -27,7 +34,8 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int uniquePaths(int m, int n) {
+    // 数学
+    int uniquePaths1(int m, int n) {
         int start = m + n - 2;
         int t = min(m, n) - 1;
         long long fz = 1, fm = 1;
@@ -41,10 +49,22 @@ public:
         }
         return fz / fm;
     }
+
+    int uniquePaths(int m, int n) {
+        int start = m + n - 2;
+        int t = min(m, n) - 1;
+        long long fz = 1;
+        for (int i = 1; i <= t; i++) {
+            fz = fz * (start - i + 1) / i;
+        }
+        return fz;
+    }
 };
 // @lc code=end
 
-
+int main() {
+    cout << Solution{}.uniquePaths(3, 3) << endl;
+}
 
 /*
 // @lcpr case=start
