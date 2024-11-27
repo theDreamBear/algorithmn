@@ -176,14 +176,14 @@ public:
 
 class Solution {
 public:
-    vector<int> findOrder1(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
         Digraph g(numCourses);
         g.addEdge(prerequisites);
         TopologySearch ts(g);
         return ts.topologySort();
     }
 
-    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<int> findOrder1(int numCourses, vector<vector<int>>& prerequisites) {
         DigraphDegree g(numCourses);
         g.addEdge(prerequisites);
         BfsTopologySearch bs(g);
