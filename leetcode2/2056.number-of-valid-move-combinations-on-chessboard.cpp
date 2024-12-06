@@ -167,6 +167,84 @@ public:
         };
         return dfs(dfs, 0);
     }
+
+    class MoveMent{
+        public:
+        int x, y, dx, dy, step;
+
+        MoveMent(int x, int y, int dx, int dy, int step):x(x), y(y), dx(dx), dy(dy),step(step){}
+
+        bool isCross(MoveMent& other) {
+            int x1 = x, y1 = y;
+            int x2 = other.x, y2 = other.y;
+            for (int i = 0; i < max(step, other.step); i++) {
+                if (i < step) {
+                    x1 += dx;
+                    y1 += dy;
+                }
+                if (i < other.step) {
+                    x2 += other.dx;
+                    y2 += other.dy;
+                }
+                if (x1 == x2 and y1 == y2) return true;
+            }
+            if (x1 == x2 and y1 == y2) return true;
+            return false;
+        }
+    };
+
+    vector<vector<int>> rook_dire_ = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    vector<vector<int>> bishop_dire_ = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    vector<vector<int>> queen_dire_ = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    int countCombinations(vector<string>& pieces, vector<vector<int>>& positions) {
+        int n = pieces.size();
+        vector<MoveMent> stk;
+        int ans = 0;
+        auto isCross = [&](int u) {
+            for (int v = 0; v < u; v++) {
+                if (stk[u].isCross(stk[v])) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        auto dfs = [&](auto&& dfs, int u) {
+            if (u == n) {
+                ans++;
+                return;
+            }
+            vector<vector<int>> dire;
+            if (pieces[u] == "rook") {
+                dire = rook_dire_;
+            } else if (pieces[u] == "queen") {
+                dire = queen_dire_;
+            } else if (pieces[u] == "bishop") {
+                dire = bishop_dire_;
+            }
+            stk.push_back(MoveMent(positions[u][0], positions[u][1], 0, 0, 0));
+            if (!isCross(u)) {
+                dfs(dfs, u + 1);
+            }
+            stk.pop_back();
+            for (int i = 0; i < dire.size(); i++) {
+                int x = positions[u][0], y = positions[u][1];
+                int dx = dire[i][0], dy = dire[i][1];
+                for (int j = 1; j < 8; j++) {
+                    int nx = x + dx * j;
+                    int ny = y + dy * j;
+                    if (nx < 1 or nx > 8 or ny < 1 or ny > 8) break;
+                    stk.push_back(MoveMent(x, y, dx, dy, j));
+                    if (!isCross(u)) {
+                        dfs(dfs, u + 1);
+                    }
+                    stk.pop_back();
+                }
+            }
+        };
+        dfs(dfs, 0);
+        return ans;
+    }
 };
 // @lc code=end
 
