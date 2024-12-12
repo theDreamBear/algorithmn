@@ -28,7 +28,28 @@ using namespace std;
 class Solution {
 public:
     int maximizeSquareArea(int m, int n, vector<int>& hFences, vector<int>& vFences) {
-        
+        auto f = [&](vector<int>& a, int mx) {
+            a.push_back(1);
+            a.push_back(mx);
+            ranges::sort(a);
+            unordered_set<int> set;
+            for (int i = 0; i < a.size(); i++) {
+                for (int j = i + 1; j < a.size(); j++) {
+                    set.insert(a[j] - a[i]);
+                }
+            }
+            return set;
+        };
+        auto hs = f(hFences, m);
+        auto hv = f(vFences, n);
+        if (hs.size() > hv.size()) swap(hs, hv);
+        int ans = 0;
+        for (auto x: hs) {
+            if (hv.contains(x)) {
+                ans = max(ans, x);
+            }
+        }
+        return ans ? (long long) ans * ans % (int)(1e9 + 7) : -1;
     }
 };
 // @lc code=end

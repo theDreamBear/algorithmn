@@ -27,8 +27,37 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    // 纯暴力
     int punishmentNumber(int n) {
-        
+        int ans = 0;
+        auto isOK = [](string& s, int target) {
+            // 递归所有情况
+            auto dfs = [&](auto&& dfs, int i, int v)->bool {
+                if (i >= s.size()) {
+                    return v == target;
+                }
+                if (v > target) {
+                    return false;
+                }
+                int val = 0;
+                for (int j = i; j < s.size(); j++) {
+                    val = val * 10 + (s[j] - '0');
+                    if (dfs(dfs, j + 1, v + val)) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            return dfs(dfs, 0, 0);
+        };
+        for (int i = 1; i <= n; i++) {
+            int x = i * i;
+            auto sx = to_string(x);
+            if (isOK(sx, i)) {
+                ans += x;
+            }
+        }
+        return ans;
     }
 };
 // @lc code=end
