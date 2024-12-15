@@ -1,3 +1,4 @@
+
 /*
  * @lc app=leetcode.cn id=2550 lang=cpp
  * @lcpr version=30204
@@ -28,7 +29,18 @@ using namespace std;
 class Solution {
 public:
     int monkeyMove(int n) {
-        
+        int mod = 1e9 + 7;
+        auto fast = [&](long long exp) {
+            long long res = 1;
+            long long base = 2;
+            while (exp) {
+                if (exp & 1) res = res * base % mod;
+                base = base * base % mod;
+                exp >>= 1;
+            }
+            return res;
+        };
+        return (fast(n) - 2 + mod) % mod;
     }
 };
 // @lc code=end
