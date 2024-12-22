@@ -35,7 +35,9 @@ public:
         for (int i = 0; i < n; i++) {
             nums1[i] -= nums2[i];
         }
+        // 最大子序列和, 为正是nums2可以增加最多的
         int ma = nums1[0], mas = nums1[0];
+        // 最小子序和, 为负是nums1 可以增加最多的
         int mn = nums1[0], mns = nums1[0];
         for (int i = 1; i < n; i++) {
             mas = max(mas + nums1[i], nums1[i]);

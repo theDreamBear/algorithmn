@@ -45,7 +45,7 @@ public:
     }
 
      // 离线合并
-    vector<int> smallestTrimmedNumbers(vector<string>& nums, vector<vector<int>>& queries) {
+    vector<int> smallestTrimmedNumbers2(vector<string>& nums, vector<vector<int>>& queries) {
         int m = queries.size();
         int n = nums[0].size();
         unordered_map<int, vector<pair<int, int>>> q;
@@ -63,6 +63,32 @@ public:
             for (auto& [i, rk]: qk.second) {
                 ans[i] = res[rk - 1].second; 
             }
+        }
+        return ans;
+    }
+
+    // 基数排序
+    vector<int> smallestTrimmedNumbers(vector<string>& nums, vector<vector<int>>& queries) {
+        int n = nums.size(), m = nums[0].size();
+        vector<vector<int>> des(m + 1, vector<int>(n));
+        ranges::iota(des[0], 0);
+        for (int i = 1; i <= m; i++) {
+            // 桶
+            vector<int> B[10];
+            for (auto v: des[i - 1]) {
+                B[nums[v][m - i] - '0'].push_back(v);
+            }
+            // 按照桶收集
+            int p = 0;
+            for (int j = 0; j < 10; j++) {
+                for (auto x: B[j]) {
+                    des[i][p++] = x;
+                }
+            }
+        }
+        vector<int> ans;
+        for (auto& q: queries) {
+            ans.push_back(des[q[1]][q[0] - 1]);
         }
         return ans;
     }

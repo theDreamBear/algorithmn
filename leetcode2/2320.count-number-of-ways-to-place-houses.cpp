@@ -27,6 +27,8 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    //            // n 不放   n 放
+    // dp[n] = dp[n - 1] + dp[n - 2]
     int countHousePlacements(int n) {
         int MOD = 1e9 + 7;
         long long prepre = 1;
