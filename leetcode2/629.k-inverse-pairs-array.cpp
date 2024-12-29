@@ -31,7 +31,19 @@ public:
         // 好像会了
         // f[i, left, used]
         // 怎么快速判断使用 v, 会产生多少逆序对, 前面>v 的使用了多少个?
-        
+        vector<int> dp(k + 1);
+        const int mod = 1e9 + 7;
+        dp[0] = 1;
+        for (int i = 1; i < n; i++) {
+            vector<int> suf(k + 2);
+            for (int left = k; left >= 0; left--) {
+                suf[left] = (suf[left + 1] + dp[left]) % mod;
+            }
+            for (int left = 0; left <= k; left++) {
+                dp[left] = (suf[left - min(i, left)] - suf[left + 1] + mod) % mod;
+            }
+        }
+        return  dp[k];
     }
 };
 // @lc code=end

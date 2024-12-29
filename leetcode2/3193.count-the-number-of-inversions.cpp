@@ -28,7 +28,7 @@ using namespace std;
 int f[310][500];
 class Solution {
   public:
-    int numberOfPermutations(int n, vector<vector<int>>& requirements) {
+    int numberOfPermutations1(int n, vector<vector<int>>& requirements) {
         // 还是不会气死人了
         // 如果要记录前i个填了啥, 这个一定会超时的, 怎么避开这个陷阱呢?
         // 每个位置枚举可以生成的最多逆序对, 最多少i个
@@ -60,6 +60,70 @@ class Solution {
             return ans;
         };
         return dfs(dfs, n - 1, req[n - 1]);
+    }
+
+    int numberOfPermutations2(int n, vector<vector<int>>& requirements) {
+        // 还是不会气死人了
+        // 如果要记录前i个填了啥, 这个一定会超时的, 怎么避开这个陷阱呢?
+        // 每个位置枚举可以生成的最多逆序对, 最多少i个
+        // 好像会了
+        memset(f, 0, sizeof f);
+        vector<int> req(n, -1);
+        req[0] = 0;
+        for (auto& vec : requirements) {
+            req[vec[0]] = vec[1];
+        }
+        const int mod = 1e9 + 7;
+        if (req[0])
+            return 0;
+        f[0][0] = 1;
+        for (int i = 1; i < n; i++) {
+            vector<int> suf(402);
+            for (int left = 400; left >= 0; left--) {
+                suf[left] = (suf[left + 1] + f[i - 1][left]) % mod;
+            }
+            // f[i][j] = sum(f[i - 1][left - m])
+            for (int left = 0; left <= 400; left++) {
+                if (req[i] != -1 and req[i] != left) {
+                    f[i][left] = 0;
+                } else {
+                    f[i][left] = (suf[left - min(i, left)] - suf[left + 1] + mod) % mod;
+                }
+            }
+        }
+        return  f[n - 1][req[n - 1]];
+    }
+
+    int numberOfPermutations(int n, vector<vector<int>>& requirements) {
+        // 还是不会气死人了
+        // 如果要记录前i个填了啥, 这个一定会超时的, 怎么避开这个陷阱呢?
+        // 每个位置枚举可以生成的最多逆序对, 最多少i个
+        // 好像会了
+        int dp[500];
+        memset(dp, 0, sizeof dp);
+        vector<int> req(n, -1);
+        req[0] = 0;
+        for (auto& vec : requirements) {
+            req[vec[0]] = vec[1];
+        }
+        const int mod = 1e9 + 7;
+        if (req[0])
+            return 0;
+        dp[0] = 1;
+        for (int i = 1; i < n; i++) {
+            vector<int> suf(402);
+            for (int left = 400; left >= 0; left--) {
+                suf[left] = (suf[left + 1] + dp[left]) % mod;
+            }
+            for (int left = 0; left <= 400; left++) {
+                if (req[i] != -1 and req[i] != left) {
+                    dp[left] = 0;
+                } else {
+                    dp[left] = (suf[left - min(i, left)] - suf[left + 1] + mod) % mod;
+                }
+            }
+        }
+        return  dp[req[n - 1]];
     }
 };
 
