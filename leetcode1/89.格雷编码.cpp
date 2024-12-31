@@ -11,7 +11,7 @@ public:
         vector<int> ans;
         int sz = pow(2, n);
         vector<int> visited(sz);
-        function<bool(int)> backtrack = [&](int cur)->bool {
+        auto dfs = [&](auto&& dfs, int cur)->bool {
             // 终止条件
             if (ans.size() == sz) {
                 return true;
@@ -23,7 +23,7 @@ public:
                 }
                 visited[val] = 1;
                 ans.push_back(val);
-                if (backtrack(val)){
+                if (dfs(dfs, val)){
                     return true;
                 }
                 visited[val] = 0;
@@ -33,7 +33,7 @@ public:
         };
         visited[0] = 1;
         ans.push_back(0);
-        backtrack(0);
+        dfs(dfs, 0);
         return ans;
     }
 };
