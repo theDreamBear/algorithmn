@@ -27,24 +27,38 @@ using namespace std;
 // @lc code=start
 class TripleInOne {
 public:
+    vector<int> st;
+    vector<tuple<int, int, int>> seg;
     TripleInOne(int stackSize) {
-        
+        st.resize(stackSize * 3);
+        seg.resize(3);
+        seg[0] = {0, 0, stackSize - 1};
+        seg[1] = {stackSize, stackSize, stackSize * 2 - 1};
+        seg[2] = {stackSize * 2, stackSize * 2, stackSize * 3 - 1};
     }
     
     void push(int stackNum, int value) {
-        
+        auto& [left, top, right] = seg[stackNum];
+        if (top <= right) {
+            st[top++] = value;
+        }
     }
     
     int pop(int stackNum) {
-        
+        auto& [left, top, right] = seg[stackNum];
+        if (top == left) return -1;
+        return st[--top];
     }
     
     int peek(int stackNum) {
-        
+        auto& [left, top, right] = seg[stackNum];
+        if (top == left) return -1;
+        return st[top - 1];
     }
     
     bool isEmpty(int stackNum) {
-        
+        auto& [left, top, right] = seg[stackNum];
+        return left == top;
     }
 };
 
