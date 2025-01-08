@@ -29,13 +29,13 @@ class ATM {
 public:
     int cnt[5]{};
     int ref[5] = {20, 50, 100, 200, 500};
-    unordered_map<int, int> to;
+    //unordered_map<int, int> to;
     ATM() {
-        to[20] = 0;
-        to[50] = 1;
-        to[100] = 2;
-        to[200] = 3;
-        to[500] = 4;
+        // to[20] = 0;
+        // to[50] = 1;
+        // to[100] = 2;
+        // to[200] = 3;
+        // to[500] = 4;
     }
     
     void deposit(vector<int> banknotesCount) {

@@ -43,11 +43,46 @@ public:
         return;
     }
 
-    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+    vector<vector<int>> subsetsWithDup1(vector<int>& nums) {
         sort(nums.begin(), nums.end());
         vector<vector<int>> ans;
         vector<int> tmp;
         backtrack(ans, nums, tmp, 0);
+        return ans;
+    }
+
+    // 选或者不选
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+        vector<int>   tmp;
+        auto dfs = [&](auto&& dfs, int i, int status, int v) {
+            if (i >= nums.size()) {
+                ans.push_back(tmp);
+                return;
+            }
+            if (status == 0 or (v != nums[i])) {
+                tmp.push_back(nums[i]);
+                dfs(dfs, i + 1, 0, nums[i]);
+                tmp.pop_back();
+            }
+            dfs(dfs, i + 1, 1, nums[i]);
+        };
+        //dfs(dfs, 0, 0, -1);
+        // 优化下, 直接只使用v 表示上一个skip 的值
+        auto dfs2 = [&](auto&& dfs2, int i, int v) {
+            if (i >= nums.size()) {
+                ans.push_back(tmp);
+                return;
+            }
+            if (v != nums[i]) {
+                tmp.push_back(nums[i]);
+                dfs2(dfs2, i + 1, -100);
+                tmp.pop_back();
+            }
+            dfs2(dfs2, i + 1, nums[i]);
+        };
+        dfs2(dfs2, 0, -100);
         return ans;
     }
 };
