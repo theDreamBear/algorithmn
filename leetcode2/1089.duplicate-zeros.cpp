@@ -28,10 +28,31 @@ using namespace std;
 class Solution {
 public:
     void duplicateZeros(vector<int>& arr) {
-        int i = 0;
-        int top = 0, i = 0;
-        for (; i < arr.size() and top < arr.size(); i++) {
-            
+        int n = arr.size();
+        // [0, i) 保存的
+        // [0, top) 对应的需要的容量
+        int i = 0, top = 0;
+        for (; top < n; i++) {
+            if (arr[i] == 0) {
+                top += 2;
+            } else {
+                top++;
+            }
+        }
+        i--;
+        top--;
+        if (top == n) {
+            arr[n - 1] = arr[i--];
+            top = n - 2;
+        }
+        while (i >= 0) {
+            if (arr[i] != 0) {
+                arr[top--] = arr[i--];
+            } else {
+                arr[top--] = 0;
+                arr[top--] = 0;
+                i--;
+            }
         }
     }
 };

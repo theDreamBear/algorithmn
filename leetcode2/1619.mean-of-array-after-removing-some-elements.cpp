@@ -28,9 +28,10 @@ using namespace std;
 class Solution {
 public:
     double trimMean(vector<int>& arr) {
-        
-
-        
+        ranges::sort(arr);
+        int ct = arr.size() * 5 / 100;
+        int sum = accumulate(arr.begin() + ct, arr.end() - ct, 0);
+        return sum * 1.0 / (arr.size() - 2 * ct);
     }
 };
 // @lc code=end
