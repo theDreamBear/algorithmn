@@ -1,13 +1,12 @@
 /*
- * @lc app=leetcode.cn id=1332 lang=cpp
+ * @lc app=leetcode.cn id=139 lang=cpp
  * @lcpr version=30204
  *
- * [1332] 删除回文子序列
+ * [139] 单词拆分
  */
 
 
 // @lcpr-template-start
-
 using namespace std;
 #include <algorithm>
 #include <array>
@@ -28,11 +27,8 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int removePalindromeSub(string s) {
-        auto t = s;
-        ranges::reverse(t);
-        if (t == s) return 1;
-        return 2;
+    bool wordBreak(string s, vector<string>& wordDict) {
+        
     }
 };
 // @lc code=end
@@ -41,15 +37,15 @@ public:
 
 /*
 // @lcpr case=start
-// "ababa"\n
+// "leetcode"\n["leet", "code"]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// "abb"\n
+// "applepenapple"\n["apple", "pen"]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// "baabb"\n
+// "catsandog"\n["cats", "dog", "sand", "and", "cat"]\n
 // @lcpr case=end
 
  */

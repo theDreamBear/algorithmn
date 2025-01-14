@@ -1,13 +1,12 @@
 /*
- * @lc app=leetcode.cn id=1332 lang=cpp
+ * @lc app=leetcode.cn id=3065 lang=cpp
  * @lcpr version=30204
  *
- * [1332] 删除回文子序列
+ * [3065] 超过阈值的最少操作数 I
  */
 
 
 // @lcpr-template-start
-
 using namespace std;
 #include <algorithm>
 #include <array>
@@ -28,11 +27,15 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int removePalindromeSub(string s) {
-        auto t = s;
-        ranges::reverse(t);
-        if (t == s) return 1;
-        return 2;
+    int minOperations1(vector<int>& nums, int k) {
+        ranges::sort(nums);
+        return ranges::lower_bound(nums, k) - nums.begin();
+    }
+
+    int minOperations(vector<int>& nums, int k) {
+        return ranges::count_if(nums, [&](int v) {
+            return v < k;
+        });
     }
 };
 // @lc code=end
@@ -41,15 +44,15 @@ public:
 
 /*
 // @lcpr case=start
-// "ababa"\n
+// [2,11,10,1,3]\n10\n
 // @lcpr case=end
 
 // @lcpr case=start
-// "abb"\n
+// [1,1,2,4,9]\n1\n
 // @lcpr case=end
 
 // @lcpr case=start
-// "baabb"\n
+// [1,1,2,4,9]\n9\n
 // @lcpr case=end
 
  */

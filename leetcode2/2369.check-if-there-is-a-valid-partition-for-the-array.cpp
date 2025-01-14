@@ -14,6 +14,8 @@ using namespace std;
 #include <deque>
 #include <functional>
 #include <iostream>
+
+
 #include <list>
 #include <queue>
 #include <stack>
@@ -26,7 +28,7 @@ using namespace std;
 // @lc code=start
 class Solution {
   public:
-    bool validPartition(vector<int>& nums) {
+    bool validPartition1(vector<int>& nums) {
         int         n = nums.size();
         vector<int> dp(n + 1);
         dp[0] = 1;
@@ -43,6 +45,21 @@ class Solution {
             }
         }
         return dp[n];
+    }
+
+    bool validPartition(vector<int>& nums) {
+        int         n = nums.size();
+        vector<int> f(n + 1);
+        f[0] = 1;
+        for (int i = 1; i < n; i++) {
+            if (f[i - 1] and nums[i] == nums[i - 1] or i > 1 and f[i - 2] and 
+                (nums[i] == nums[i - 1] and nums[i] == nums[i - 2] || 
+                 nums[i] == nums[i - 1] + 1 and nums[i] == nums[i - 2] + 2
+            )) {
+                f[i + 1] = 1;
+            }
+        }
+        return f[n];
     }
 };
 // @lc code=end

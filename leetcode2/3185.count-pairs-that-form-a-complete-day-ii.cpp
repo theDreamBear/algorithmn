@@ -1,13 +1,12 @@
 /*
- * @lc app=leetcode.cn id=1332 lang=cpp
+ * @lc app=leetcode.cn id=3185 lang=cpp
  * @lcpr version=30204
  *
- * [1332] 删除回文子序列
+ * [3185] 构成整天的下标对数目 II
  */
 
 
 // @lcpr-template-start
-
 using namespace std;
 #include <algorithm>
 #include <array>
@@ -28,11 +27,8 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int removePalindromeSub(string s) {
-        auto t = s;
-        ranges::reverse(t);
-        if (t == s) return 1;
-        return 2;
+    long long countCompleteDayPairs(vector<int>& hours) {
+        
     }
 };
 // @lc code=end
@@ -41,15 +37,11 @@ public:
 
 /*
 // @lcpr case=start
-// "ababa"\n
+// [12,12,30,24,24]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// "abb"\n
-// @lcpr case=end
-
-// @lcpr case=start
-// "baabb"\n
+// [72,48,24,3]\n
 // @lcpr case=end
 
  */
