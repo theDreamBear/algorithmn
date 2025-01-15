@@ -27,8 +27,24 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
+    // x >= y, x + 2 * y
+    // x < y,  y + x * x;
+    //
     int minOperations(vector<int>& nums, int k) {
-        
+        priority_queue<long long, vector<long long>, greater<>> pq;
+        for (auto v: nums) {
+            pq.push(v);
+        }
+        int ans = 0;
+        while (!pq.empty() and pq.top() < k) {
+            auto x = pq.top(); pq.pop();
+            auto y = pq.top(); pq.pop();
+            ans++;
+            //if ((long long)y + (long long)2 * x < k) {
+            pq.push((long long)y + 2 * x);
+            //}
+        }
+        return ans;
     }
 };
 // @lc code=end
