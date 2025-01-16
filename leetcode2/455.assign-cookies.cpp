@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=440 lang=cpp
+ * @lc app=leetcode.cn id=455 lang=cpp
  * @lcpr version=30204
  *
- * [440] 字典序的第K小数字
+ * [455] 分发饼干
  */
 
 
@@ -27,9 +27,19 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int findKthNumber(int n, int k) {
-        // 10 叉数
-        
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        ranges::sort(g);
+        ranges::sort(s);
+        int j = 0;
+        int i = 0;
+        for (; i < g.size() and j < s.size(); i++, j++) {
+            while (j < s.size() and s[j] < g[i]) j++;
+            // 找不到
+            if (j >= s.size()) {
+                break;
+            }
+        }
+        return i;
     }
 };
 // @lc code=end
@@ -38,11 +48,11 @@ public:
 
 /*
 // @lcpr case=start
-// 13\n2\n
+// [1,2,3]\n[1,1]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// 1\n1\n
+// [1,2]\n[1,2,3]\n
 // @lcpr case=end
 
  */
