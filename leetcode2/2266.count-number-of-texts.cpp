@@ -35,6 +35,7 @@ public:
         vector<int> dp(pressedKeys.size() + 1);
         dp[0] = 1;
         for (int i = 0; i < pressedKeys.size(); i++) {
+            //  取 1 个
             dp[i + 1] = dp[i];
             int t = (pressedKeys[i] == '7' or pressedKeys[i] == '9') ? 4 : 3;
             for (int j = 1; j < t and i - j >= 0 and pressedKeys[i] == pressedKeys[i - j]; j++) {

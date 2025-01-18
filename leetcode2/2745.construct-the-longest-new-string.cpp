@@ -26,7 +26,7 @@ using namespace std;
 // @lc code=start
 class Solution {
   public:
-    int longestString(int x, int y, int z) {
+    int longestString1(int x, int y, int z) {
         auto handler = [&](int i, int j, int k) -> pair<bool, int> {
             if (i < 0 || j < 0 || k < 0) {
                 return {true, -2};
@@ -51,6 +51,10 @@ class Solution {
             }
         }
         return max({dp[x][y][z][0], dp[x][y][z][1], dp[x][y][z][2]});
+    }
+
+    int longestString(int x, int y, int z) {
+        return 2 * (min(x, y) * 2 + (x != y) + z);
     }
 };
 // @lc code=end
