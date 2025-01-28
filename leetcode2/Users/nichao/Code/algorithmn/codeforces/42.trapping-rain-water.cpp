@@ -31,8 +31,50 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int trap(vector<int>& height) {
+    int trap1(vector<int>& h) {
+        // 单调递减栈
+        // 左右第一个比自己大的
+        int ans = 0;
+        stack<int> st;
+        for (int i = 0; i < h.size(); i++) {
+            while (!st.empty() and h[st.top()] <= h[i]) {
+                int j = st.top();
+                st.pop();
+                if (!st.empty()) {
+                    int w = i - st.top() - 1;
+                    ans += w * (min(h[st.top()], h[i]) - h[j]);
+                }
+            }
+            st.push(i);
+        }
+        return ans;
+    }
 
+      // 错误
+            // if (h[i] < rm) {
+            //     ans += min(lm, rm) - h[i];
+            //     i++;
+            //     continue;
+            // }
+            // if (h[j] < lm) {
+            //     ans += min(lm, rm) - h[j];
+            //     j--;
+            // }
+    int trap(vector<int>& h) {
+        int ans = 0;
+        int lm = 0, rm = 0, n = h.size();
+        for (int i = 0, j = n - 1; i <= j;) {
+            lm = max(lm, h[i]);
+            rm = max(rm, h[j]);
+            if (lm <= rm) {
+                ans += lm - h[i];
+                i++;
+            } else {
+                ans += rm - h[j];
+                j--;
+            }
+        }
+        return ans;
     }
 };
 // @lc code=end
