@@ -65,7 +65,7 @@ memoize_helper<Sig, std::decay_t<F>> cache(F &&f) {
 
 class Solution {
 public:
-    bool canPartition(vector<int>& nums) {
+    bool canPartition1(vector<int>& nums) {
         if (nums.size() <= 1) {
             return false;
         }
@@ -85,6 +85,22 @@ public:
             return dfs(i + 1, j) || dfs(i + 1, j - nums[i]);
         };
         return cache<int(int, int)>(memo)(0, half);
+    }
+
+    bool canPartition(vector<int>& nums) {
+        if (nums.size() <= 1) {
+            return false;
+        }
+        int total = accumulate(nums.begin(), nums.end(), 0);
+        if ((total & 0x1) != 0) {
+            return false;
+        }
+        int half = total >> 1;
+        bitset<10001> dp(1);
+        for (auto v: nums) {
+            dp |= (dp << v);
+        }
+        return dp.test(half);
     }
 };
 // @lc code=end
