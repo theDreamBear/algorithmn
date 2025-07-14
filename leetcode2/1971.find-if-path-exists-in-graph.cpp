@@ -61,13 +61,12 @@ public:
         int e;
         bool dfs(int s, int e) {
             marked[s] = 1;
+            if (s == e) {
+                return true;
+            }
             for (const auto w : g.adj(s)) {
                 if (marked[w]) {
                     continue;
-                }
-                marked[w] = 1;
-                if (w == e) {
-                    return true;
                 }
                 if (dfs(w, e)) {
                     return true;
