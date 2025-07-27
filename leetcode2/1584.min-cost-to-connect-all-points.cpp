@@ -26,7 +26,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     class HashFn {
     public:
@@ -209,6 +209,63 @@ public:
             if (!marked[e.w]) {
                 visit(e.w);
             }
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    struct Edge {
+        int u, v, c;
+
+        bool operator< (const Edge& other) {
+            return c < other.c;
+        }
+    };
+
+    class UF{
+    public:
+        vector<int> fa;
+
+        UF(int n):fa(n){
+            iota(fa.begin(), fa.end(), 0);
+        }
+
+        int find(int u) {
+            if (fa[u] == u) return u;
+            return fa[u] = find(fa[u]);
+        }
+
+        void merge(int u, int v) {
+            int pu = find(u), pv = find(v);
+            if (pu == pv) return;
+            fa[pu] = pv;
+        }
+
+        bool isCon(int u, int v) {
+            return find(u) == find(v);
+        }
+    };
+
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<Edge> edges;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int d = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);
+                edges.emplace_back(i, j, d);
+            }
+        }
+        sort(edges.begin(), edges.end());
+        UF uf(n);
+        int ans = 0;
+        for (auto& [u, v, c]: edges) {
+            if (uf.isCon(u, v)) {
+                continue;
+            }
+            ans += c;
+            uf.merge(u, v);
         }
         return ans;
     }
