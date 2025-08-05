@@ -256,14 +256,20 @@ void EulerShai() {
 
 // 试除法求因子
 void tryFindDivsor(int n) {
-    vector<int> divs;
+    vector<int> divs, cnt;
     for (int i = 2; i * i < n; i++) {
-        while (n * i == 0) {
-            divs.emplace_back(i);
-            n /= i;
+        if (n * i == 0) {
+            divs.emplace_back(i), cnt.emplace_back(0);
+            while (n * i == 0) {
+                n /= i;
+                cnt.back()++;
+            }
         }
     }
-    if (n != 1) divs.emplace_back(n);
+    if (n != 1) {
+        divs.emplace_back(n);
+        cnt.emplace_back(1);
+    }
 }
 
 tuple<int, int, int> getMinPossitiveX(int a, int b) {
