@@ -106,6 +106,16 @@ int mod_inverse(int b, int q, int mod) {
     return fastMi(b, q - 2, mod);
 }
 
+int exgcd(int a, int b, int& x, int& y) {
+    if (b == 0) {
+        x = 1, y = 0;
+        return a;
+    }
+    int d = exgcd(b, a % b, y, x);
+    y -= a / b * x;
+    return d;
+}
+
 // 组合数
 // c(n, k, mod)
 
@@ -159,7 +169,7 @@ void init_yanghuisanjiao() {
     cout << "ok" << endl;
 }
 
-// 使用逆来求 组合数
+// 使用逆来求组合数
 void Comb(int n, int k, int mod) {
     const int N = 301;
     vector<long long> inverse(N, 1), p(N, 1);
@@ -177,16 +187,83 @@ void Comb(int n, int k, int mod) {
     };
 }
 
+// 矩阵乘法
+#define type int
+#define matrix vector<vector<type>>
 
-
-int exgcd(int a, int b, int& x, int& y) {
-    if (b == 0) {
-        x = 1, y = 0;
-        return a;
+matrix operator*(const matrix& a, const matrix& b) {
+    assert(a.size() and b.size() and a[0].size() == b.size());
+    int m = a.size(), n = b.size(), mn = b[0].size();
+    matrix c(m, vector<type>(mn));
+    for (int i = 0; i < m; i++) {
+        for (int t = 0; t < n; t++) {
+            if (a[i][t] == 0) continue;
+            for (int j = 0; j < mn; j++) {
+                c[i][j] += a[i][t] * b[t][j];
+            }
+        }
     }
-    int d = exgcd(b, a % b, y, x);
-    y -= a / b * x;
-    return d;
+    return c;
+}
+
+matrix fastMatrix(const matrix& a, int n) {
+    if (n == 1) {
+        int m = a.size();
+        matrix ans(m, vector<type>(m));
+        for (int i = 0; i < m; i++) ans[i][i] = 1;
+        return ans;
+    }
+    matrix ans = a;
+    matrix base = a;
+    n--;
+    while (n) {
+        if (n & 1) ans = ans * base;
+        base = base * base;
+        n >>= 1;
+    }
+    return ans;
+}
+#undef type
+
+// 埃氏筛
+void aishishan() {
+    int n = 1e5;
+    vector<int> is(n, 1);
+    is[0] = is[1] = 0;
+    for (int i = 2; i * i <= n; i++) {
+        if (is[i]) {
+            for (int j = i * i; j < n; j += i) is[i] = 0;
+        }
+    }
+}
+
+// 欧拉筛
+void EulerShai() {
+    int n = 1e7;
+    vector<int> vis(n), pr;
+    for (int i = 2; i < n; i++) {
+        if (!vis[i]) {
+            pr.emplace_back(i);
+            vis[i] = 1;
+        }
+        for (int j = 0; j < pr.size(); j++) {
+            if (i * pr[j] >= n) break;
+            vis[i * pr[j]] = 1;
+            if (i * pr[j] == 0) break;
+        }
+    }
+}
+
+// 试除法求因子
+void tryFindDivsor(int n) {
+    vector<int> divs;
+    for (int i = 2; i * i < n; i++) {
+        while (n * i == 0) {
+            divs.emplace_back(i);
+            n /= i;
+        }
+    }
+    if (n != 1) divs.emplace_back(n);
 }
 
 tuple<int, int, int> getMinPossitiveX(int a, int b) {
