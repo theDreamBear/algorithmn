@@ -101,6 +101,31 @@ long long fastMi(long long a, long long b, long long mod) {
     return ans;
 }
 
+long long mod_mul(long long a, long long b, long long mod) {
+    a %= mod;
+    b %= mod;
+    long long ans = 0;
+    while (b) {
+        if (b & 1) {
+            ans = (ans + a) % mod;
+        }
+        b >>= 1;
+        a = (a + a) % mod;
+    }
+    return ans;
+}
+
+long long fastMi2(long long a, long long b, long long mod) {
+    long long ans = 1;
+    a %= mod;
+    while (b) {
+        if (b & 1) ans = mod_mul(ans, a, mod);
+        a = mod_mul(a, a, mod);
+        b >>= 1;
+    }
+    return ans;
+}
+
 // 求逆, 费马小定理
 int mod_inverse(int b, int q, int mod) {
     return fastMi(b, q - 2, mod);
@@ -272,6 +297,72 @@ void tryFindDivsor(int n) {
     }
 }
 
+// 判断是不是素数, 试除法
+bool isPrime(long long n) {
+    if (n == 0 or n == 1) return false;
+    for (long long i = 2; i <= sqrt(n); i++) {
+        if (n % i == 0) {
+            //cout << i << endl;
+            return false;
+        }
+    }
+    return true;
+}
+
+bool isPrime_miller_rabin(long long n) {
+    if (n < 2) return false;
+    if (n  == 2) return true;
+    if (n % 2 == 0) return false;
+    auto is_prime = [&](long long a)->bool {
+        long long t = 0, u = n - 1;
+        while ((u & 1) == 0) {
+            t++;
+            u >>= 1;
+        }
+        auto x1 = fastMi2(a, u, n);
+        for (int i = 0; i < t; i++) {
+            auto x2 = fastMi2(x1, 2, n);
+            if (x2 == 1 and x1 != 1 and x1 != (n - 1)) return false;
+            x1 = x2;
+        }
+        // 费马小定理
+        return x1 == 1;
+    };
+    int s = 50;
+    for (int i = 0; i < s and i < n; i++) {
+        int a = rand() % (n - 1) + 1;
+        if (!is_prime(a)) return false;
+    }
+    return true;
+}
+
+void mul_test() {
+    mt19937 mt(random_device{}());
+    uniform_int_distribution<long long> u(1e12, 1e18);
+    long long mod = 1e9 + 7;
+    for (int i = 0; i < 10000; i++) {
+        long long a = u(mt), b = u(mt);
+        if (fastMi(a, b, mod) != fastMi2(a, b, mod)) {
+            cout << a << "\t" << b << endl;
+            return;
+        }
+    }
+}
+
+void primer_test() {
+    mt19937 mt(random_device{}());
+    uniform_int_distribution<long long> u(1e18, LLONG_MAX);
+    for (int i =  0; i < 1000; i++) {
+        long long n = u(mt);
+        //if (isPrime_miller_rabin(n)) {
+        if (isPrime(n) != isPrime_miller_rabin(n)) {
+            cout << n << "\t" << isPrime(n) << ", " << isPrime_miller_rabin(n) << endl;
+            //return;
+            //}
+        }
+    }
+}
+
 tuple<int, int, int> getMinPossitiveX(int a, int b) {
     int x, y;
     int d = exgcd(a, b, x, y);
@@ -297,5 +388,5 @@ void test_exgcd() {
 }
 
 int main() {
-    init_yanghuisanjiao();
+    primer_test();
 }
