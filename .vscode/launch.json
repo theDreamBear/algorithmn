@@ -1,13 +1,26 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "C/C++ Runner: Debug Session",
-      "type": "lldb",
-      "request": "launch",
-      "args": [],
-      "cwd": "D:/work/code/algorithmn/leetcode2",
-      "program": "D:/work/code/algorithmn/leetcode2/a.exe"
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C/C++ Runner: Debug Session",
+            "type": "lldb",
+            "request": "launch",
+            "args": ["-std=c++26"],
+            "cwd": "D:/work/code/algorithmn/leetcode2",
+            "program": "D:/work/code/algorithmn/leetcode2/a.exe"
+        },
+        {
+            "name": "C/C++: clang++ 构建和调试活动文件",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "C/C++: clang++ 生成活动文件"
+        }
+    ]
 }
