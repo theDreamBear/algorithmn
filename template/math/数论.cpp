@@ -250,92 +250,6 @@ matrix fastMatrix(const matrix& a, int n) {
 }
 #undef type
 
-// 埃氏筛
-void aishishan() {
-    int n = 1e5;
-    vector<int> is(n, 1);
-    is[0] = is[1] = 0;
-    for (int i = 2; i * i <= n; i++) {
-        if (is[i]) {
-            for (int j = i * i; j < n; j += i) is[i] = 0;
-        }
-    }
-}
-
-// 欧拉筛
-void EulerShai() {
-    int n = 1e7;
-    vector<int> vis(n), pr;
-    for (int i = 2; i < n; i++) {
-        if (!vis[i]) {
-            pr.emplace_back(i);
-            vis[i] = 1;
-        }
-        for (int j = 0; j < pr.size(); j++) {
-            if (i * pr[j] >= n) break;
-            vis[i * pr[j]] = 1;
-            if (i * pr[j] == 0) break;
-        }
-    }
-}
-
-// 试除法求因子
-void tryFindDivsor(int n) {
-    vector<int> divs, cnt;
-    for (int i = 2; i * i < n; i++) {
-        if (n * i == 0) {
-            divs.emplace_back(i), cnt.emplace_back(0);
-            while (n * i == 0) {
-                n /= i;
-                cnt.back()++;
-            }
-        }
-    }
-    if (n != 1) {
-        divs.emplace_back(n);
-        cnt.emplace_back(1);
-    }
-}
-
-// 判断是不是素数, 试除法
-bool isPrime(long long n) {
-    if (n == 0 or n == 1) return false;
-    for (long long i = 2; i <= sqrt(n); i++) {
-        if (n % i == 0) {
-            //cout << i << endl;
-            return false;
-        }
-    }
-    return true;
-}
-
-bool isPrime_miller_rabin(long long n) {
-    if (n < 2) return false;
-    if (n  == 2) return true;
-    if (n % 2 == 0) return false;
-    auto is_prime = [&](long long a)->bool {
-        long long t = 0, u = n - 1;
-        while ((u & 1) == 0) {
-            t++;
-            u >>= 1;
-        }
-        auto x1 = fastMi2(a, u, n);
-        for (int i = 0; i < t; i++) {
-            auto x2 = fastMi2(x1, 2, n);
-            if (x2 == 1 and x1 != 1 and x1 != (n - 1)) return false;
-            x1 = x2;
-        }
-        // 费马小定理
-        return x1 == 1;
-    };
-    int s = 50;
-    for (int i = 0; i < s and i < n; i++) {
-        int a = rand() % (n - 1) + 1;
-        if (!is_prime(a)) return false;
-    }
-    return true;
-}
-
 void mul_test() {
     mt19937 mt(random_device{}());
     uniform_int_distribution<long long> u(1e12, 1e18);
@@ -345,20 +259,6 @@ void mul_test() {
         if (fastMi(a, b, mod) != fastMi2(a, b, mod)) {
             cout << a << "\t" << b << endl;
             return;
-        }
-    }
-}
-
-void primer_test() {
-    mt19937 mt(random_device{}());
-    uniform_int_distribution<long long> u(1e18, LLONG_MAX);
-    for (int i =  0; i < 1000; i++) {
-        long long n = u(mt);
-        //if (isPrime_miller_rabin(n)) {
-        if (isPrime(n) != isPrime_miller_rabin(n)) {
-            cout << n << "\t" << isPrime(n) << ", " << isPrime_miller_rabin(n) << endl;
-            //return;
-            //}
         }
     }
 }
@@ -388,5 +288,5 @@ void test_exgcd() {
 }
 
 int main() {
-    primer_test();
+    
 }
