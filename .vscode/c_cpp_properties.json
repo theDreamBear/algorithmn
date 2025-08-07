@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**"
             ],
-            "compilerPath": "D:/x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0/mingw64/bin/gcc.exe",
+            //"compilerPath": "D:/x86_64-13.2.0-release-posix-seh-ucrt-rt_v11-rev0/mingw64/bin/gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++26",
             "intelliSenseMode": "macos-clang-x64",

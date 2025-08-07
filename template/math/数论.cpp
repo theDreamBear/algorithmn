@@ -20,10 +20,8 @@
 #if __cplusplus >= 201103L
 #include <ccomplex>
 #include <cfenv>
-#include <cinttypes>
 // #include <cstdalign>
 #include <cstdbool>
-#include <cstdint>
 #include <ctgmath>
 #include <cwchar>
 #include <cwctype>
@@ -85,13 +83,14 @@
 #include <random>
 using namespace std;
 
+#define ll long long
 // 随机
 mt19937 mt(random_device{}());
-uniform_int_distribution<int> u;
+uniform_int_distribution<ll> u;
 
 // 快速幂_mod
-long long fastMi(long long a, long long b, long long mod) {
-    long long ans = 1;
+ll fastMi(ll a, ll b, ll mod) {
+    ll ans = 1;
     a %= mod;
     while (b) {
         if (b & 1) ans = (ans * a) % mod;
@@ -101,10 +100,10 @@ long long fastMi(long long a, long long b, long long mod) {
     return ans;
 }
 
-long long mod_mul(long long a, long long b, long long mod) {
-    a %= mod;
-    b %= mod;
-    long long ans = 0;
+ll mod_mul(ll a, ll b, ll mod) {
+    a = (a % mod + mod) % mod;
+    b = (b % mod + mod) % mod;
+    ll ans = 0;
     while (b) {
         if (b & 1) {
             ans = (ans + a) % mod;
@@ -115,8 +114,8 @@ long long mod_mul(long long a, long long b, long long mod) {
     return ans;
 }
 
-long long fastMi2(long long a, long long b, long long mod) {
-    long long ans = 1;
+ll fastMi2(ll a, ll b, ll mod) {
+    ll ans = 1;
     a %= mod;
     while (b) {
         if (b & 1) ans = mod_mul(ans, a, mod);
@@ -127,16 +126,16 @@ long long fastMi2(long long a, long long b, long long mod) {
 }
 
 // 求逆, 费马小定理
-int mod_inverse(int b, int q, int mod) {
-    return fastMi(b, q - 2, mod);
+ll mod_inverse(ll b, ll mod) {
+    return fastMi(b, mod - 2, mod);
 }
 
-int exgcd(int a, int b, int& x, int& y) {
+ll exgcd(ll a, ll b, ll& x, ll& y) {
     if (b == 0) {
         x = 1, y = 0;
         return a;
     }
-    int d = exgcd(b, a % b, y, x);
+    ll d = exgcd(b, a % b, y, x);
     y -= a / b * x;
     return d;
 }
@@ -146,12 +145,12 @@ int exgcd(int a, int b, int& x, int& y) {
 
 // 1 杨辉三角
 void init_yanghuisanjiao() {
-    const int N = 300;
-    const int mod = 1e9 + 7;
-    vector<vector<long long>> f(N + 1, vector<long long>(N + 1));
-    for (int i = 1; i < N; i++) {
+    const ll N = 300;
+    const ll mod = 1e9 + 7;
+    vector<vector<ll>> f(N + 1, vector<ll>(N + 1));
+    for (ll i = 1; i < N; i++) {
         f[i][0] = f[i][i] = 1;
-        for (int j = 1; j < i; j++) {
+        for (ll j = 1; j < i; j++) {
             // 这个可以用动态规划选或者不选来理解
             // c(i, j) 选j 位置的 有 c(i - 1, j - 1)
             //         不选位置的 有 c(i - 1, j)
@@ -161,31 +160,31 @@ void init_yanghuisanjiao() {
 
     // 测试部分***************************
     // 暴力测试
-    auto brute = [&](int n, int k) {
-        long long ans = 1;
-        for (int i = 1; i <= k; i++) {
+    auto brute = [&](ll n, ll k) {
+        ll ans = 1;
+        for (ll i = 1; i <= k; i++) {
             ans = (ans * (n - i + 1)) / i;
         }
         return ans;
     };
 
     // 利用逆来求
-    vector<long long> inverse(N, 1), p(N, 1);
-    for (int i = 1; i < N; i++) {
+    vector<ll> inverse(N, 1), p(N, 1);
+    for (ll i = 1; i < N; i++) {
         p[i] = (p[i - 1] * i) % mod;
     }
 
     inverse[N - 1] = fastMi(p[N - 1], mod - 2, mod);
-    for (int i = N - 2; i >= 0; i--) {
+    for (ll i = N - 2; i >= 0; i--) {
         inverse[i] = (inverse[i + 1] * (i + 1)) % mod;
     }
 
-    auto get = [&](int n, int k) {
+    auto get = [&](ll n, ll k) {
         return (p[n] * inverse[k]) % mod * inverse[n - k] % mod;
     };
 
-    for (int i = 1; i < 5; i++) {
-        for (int j = 0; j <= i; j++) {
+    for (ll i = 1; i < 5; i++) {
+        for (ll j = 0; j <= i; j++) {
             if (f[i][j] != get(i, j)) {
                 cout << "(" << i << "," << j << ") = " << f[i][j] << "------" << get(i, j) << endl;
             }
@@ -195,35 +194,35 @@ void init_yanghuisanjiao() {
 }
 
 // 使用逆来求组合数
-void Comb(int n, int k, int mod) {
-    const int N = 301;
-    vector<long long> inverse(N, 1), p(N, 1);
-    for (int i = 1; i < N; i++) {
+void Comb(ll n, ll k, ll mod) {
+    const ll N = 301;
+    vector<ll> inverse(N, 1), p(N, 1);
+    for (ll i = 1; i < N; i++) {
         p[i] = (p[i - 1] * i) % mod;
     }
 
     inverse[N - 1] = fastMi(p[N - 1], mod - 2, mod);
-    for (int i = N - 2; i >= 0; i--) {
+    for (ll i = N - 2; i >= 0; i--) {
         inverse[i] = (inverse[i + 1] * (i + 1)) % mod;
     }
 
-    auto get = [&](int n, int k) {
+    auto get = [&](ll n, ll k) {
         return (p[n] * inverse[k]) % mod * inverse[n - k] % mod;
     };
 }
 
 // 矩阵乘法
-#define type int
+#define type ll
 #define matrix vector<vector<type>>
 
 matrix operator*(const matrix& a, const matrix& b) {
     assert(a.size() and b.size() and a[0].size() == b.size());
-    int m = a.size(), n = b.size(), mn = b[0].size();
+    ll m = a.size(), n = b.size(), mn = b[0].size();
     matrix c(m, vector<type>(mn));
-    for (int i = 0; i < m; i++) {
-        for (int t = 0; t < n; t++) {
+    for (ll i = 0; i < m; i++) {
+        for (ll t = 0; t < n; t++) {
             if (a[i][t] == 0) continue;
-            for (int j = 0; j < mn; j++) {
+            for (ll j = 0; j < mn; j++) {
                 c[i][j] += a[i][t] * b[t][j];
             }
         }
@@ -231,11 +230,11 @@ matrix operator*(const matrix& a, const matrix& b) {
     return c;
 }
 
-matrix fastMatrix(const matrix& a, int n) {
+matrix fastMatrix(const matrix& a, ll n) {
     if (n == 1) {
-        int m = a.size();
+        ll m = a.size();
         matrix ans(m, vector<type>(m));
-        for (int i = 0; i < m; i++) ans[i][i] = 1;
+        for (ll i = 0; i < m; i++) ans[i][i] = 1;
         return ans;
     }
     matrix ans = a;
@@ -252,10 +251,10 @@ matrix fastMatrix(const matrix& a, int n) {
 
 void mul_test() {
     mt19937 mt(random_device{}());
-    uniform_int_distribution<long long> u(1e12, 1e18);
-    long long mod = 1e9 + 7;
-    for (int i = 0; i < 10000; i++) {
-        long long a = u(mt), b = u(mt);
+    uniform_int_distribution<ll> u(1e12, 1e18);
+    ll mod = 1e9 + 7;
+    for (ll i = 0; i < 10000; i++) {
+        ll a = u(mt), b = u(mt);
         if (fastMi(a, b, mod) != fastMi2(a, b, mod)) {
             cout << a << "\t" << b << endl;
             return;
@@ -263,22 +262,22 @@ void mul_test() {
     }
 }
 
-tuple<int, int, int> getMinPossitiveX(int a, int b) {
-    int x, y;
-    int d = exgcd(a, b, x, y);
+tuple<ll, ll, ll> getMinPossitiveX(ll a, ll b) {
+    ll x, y;
+    ll d = exgcd(a, b, x, y);
     x *= d;
-    int delta = b / d;
+    ll delta = b / d;
     x = (x  + delta) % delta;
     y = (1 - a * x) / b;
     return {x, y, d};
 }
 
 void test_exgcd() {
-     for (int i = 0; i < 30; i++) {
-        int a = u(mt) % 100 + 1;
-        int b = u(mt) % 100 + 1;
+     for (ll i = 0; i < 30; i++) {
+        ll a = u(mt) % 100 + 1;
+        ll b = u(mt) % 100 + 1;
         if (gcd(a, b) == 1) {
-            int c = u(mt) % 20 + 1;
+            ll c = u(mt) % 20 + 1;
             auto [x, y, d] = getMinPossitiveX(a, b);
             if (a * x + b * y != 1) {
                 cout << "(" << a << "," << b << "," << c << ") = " << x << ", " << y << "," << d << endl;
@@ -287,6 +286,69 @@ void test_exgcd() {
     }
 }
 
+// 中国剩余定理
+// 这个解法要求 a 的每个数, 两两互质
+ll Chinese_Left(vector<ll>& a, vector<ll>& b) {
+    ll M = 1;
+    for (auto v: a) {
+        M *= v;
+    }
+    ll ans = 0;
+    for (ll i = 0; i < b.size(); i++) {
+        ll m1 = M / a[i];
+        ll m2 = mod_inverse(m1, a[i]);
+        ans = (ans + b[i] * m1 * m2) % M;
+    }
+    return ans;
+}
+
+// 迭代法
+ll Chinese_Left_Ite(vector<ll>& ms, vector<ll>& as) {
+    ll m1 = ms[0], a1 = as[0];
+    ll x, y, ans;
+    for (ll i = 1; i < ms.size(); i++) {
+        ll m2 = ms[i], a2 = as[i];
+        ll a = m1, b = m2, c = ((a2 - a1) % m2 + m2) % m2;
+        ll d = exgcd(a, b, x, y);
+        if (c % d != 0) {
+            return -1;
+        }
+        ll x1 = mod_mul(x, c / d, b / d);
+        ans = m1 * x1 + a1;
+        m1 = m1 / gcd(m1, m2) * m2;
+        a1 = (ans % m1 + m1) % m1;
+        ans = a1;
+    }
+    return ans;
+}
+
+void Chinese_Left_test() {
+    mt19937 mt(random_device{}());
+    uniform_int_distribution<ll> u(0, 1e2);
+    for (ll i = 0; i < 20; i++) {
+        vector<ll> a, b;
+        for (ll j = 0; j < 3; j++) {
+            a.push_back(u(mt) + 2);
+            b.push_back(rand() % a.back());
+            cout << "(" << a.back() << "," << b.back() << ")=";
+        }
+        ll x = Chinese_Left_Ite(a, b);
+        if (x == -1) {
+            cout << "-1" << endl;
+            continue;
+        }
+        cout << x << endl;
+        for (ll j = 0; j < a.size(); j++) {
+            if (x % a[j] != b[j]) {
+                cout << "bad" << endl;
+                return;
+            }
+        }
+    }
+    cout << "success" << endl;
+}
+
+
 int main() {
-    
+    Chinese_Left_test();
 }
