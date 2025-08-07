@@ -25,7 +25,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     int networkDelayTime_dij1(vector<vector<int>>& times, int n, int k) {
         // 单源最短路径
@@ -155,6 +155,184 @@ public:
         }
         int ma = ranges::max(dis);
         if (ma == INT_MAX / 2) return -1;
+        return ma;
+    }
+};
+
+// dijkstra
+// 适用于稠密图
+// 顶点数等于 n, 边数等于 e
+// 复杂度 n^2
+vector<int> dijkstra(vector<vector<pair<int, int>>>& g, int s) {
+    int n = g.size();
+    const int inf = INT_MAX / 2;
+    vector<int> dis(n, inf), closed(n);
+    dis[s] = 0;
+    for (int i = 0; i < n; i++) {
+        int v = -1;
+        for (int j = 0; j < n; j++) {
+            if (!closed[j] and (v == -1 or dis[j] < dis[v])) {
+                v = j;
+            }
+        }
+        if (v == -1) {
+            return dis;
+        }
+        closed[v] = 1;
+        for (auto& [to, c]: g[v]) {
+            if (c + dis[v] < dis[to]) {
+                dis[to] = c + dis[v];
+            }
+        }
+    }
+    return dis;
+}
+
+// dijkstra
+// 适用于稀疏图
+// 顶点数等于 n, 边数等于 e
+// 复杂度 nlge
+vector<int> dijkstra_pq(vector<vector<pair<int, int>>>& g, int s) {
+    int n = g.size();
+    const int inf = INT_MAX / 2;
+    vector<int> dis(n, inf), closed(n);
+    dis[s] = 0;
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    pq.emplace(0, s);
+    while (!pq.empty()) {
+        auto [c, u] = pq.top(); pq.pop();
+        if (dis[u] < c) continue;
+        for (auto& [to, c2]: g[u]) {
+            if (c + c2 < dis[to]) {
+                dis[to] = c + c2;
+                pq.emplace(dis[to], to);
+            }
+        }
+    }
+    return dis;
+}
+
+// bf算法
+// 优点, 可以检测到负环
+vector<int> bf(vector<vector<int>>& g, int n, int s) {
+    vector<int> dis(n, INT_MAX / 2);
+    dis[s] = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < g.size(); j++) {
+            int u = g[j][0], v = g[j][1], c = g[j][2];
+            if (dis[u] + c < dis[v]) {
+                dis[v] = dis[u] + c;
+            }
+        }
+    }
+    return dis;
+}
+
+// spfa
+vector<int> spfa(vector<vector<pair<int, int>>>& g, int s) {
+    vector<int> dis(g.size(), INT_MAX / 2), onstack(g.size());
+    dis[s] = 0;
+    queue<int> q;
+    q.push(s);
+    onstack[s] = 1;
+    while (!q.empty()) {
+        auto u = q.front(); q.pop();
+        onstack[u] = 0;
+        for (auto& [v, c]: g[u]) {
+            if (dis[u] + c < dis[v]) {
+                dis[v] = dis[u] + c;
+                if (!onstack[v]) {
+                    onstack[v] = 1;
+                    q.push(v);
+                }
+            }
+        }
+    }
+    return dis;
+}
+
+// floyd
+vector<int> floyd(vector<vector<int>>& edges, int n, int s) {
+    vector<vector<int>> g(n, vector<int>(n, INT_MAX / 2));
+    for (int i = 0; i < n; i++) {
+        g[i][i] = 0;
+    }
+    for (auto e: edges) {
+        int u = e[0], v = e[1], c = e[2];
+        g[u][v] = c;
+    }
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                g[i][j] = min(g[i][j], g[i][k] + g[k][j]);
+            }
+        }
+    }
+    vector<int> ans(n);
+    for (int i = 0; i < n; i++) {
+        ans[i] = g[s][i];
+    }
+    return ans;
+}
+
+class Solution {
+public:
+    int networkDelayTime_dij1(vector<vector<int>>& times, int n, int k) {
+        vector<vector<pair<int, int>>> g(n);
+        for (auto& arr: times) {
+            int u = arr[0] - 1, v = arr[1] - 1, w = arr[2];
+            g[u].emplace_back(v, w);
+        }
+        auto dis = dijkstra(g, k - 1);
+        int ma = ranges::max(dis);
+        if (ma >= INT_MAX / 2) return -1;
+        return ma;
+    }
+
+    int networkDelayTime_dij2(vector<vector<int>>& times, int n, int k) {
+        vector<vector<pair<int, int>>> g(n);
+        for (auto& arr: times) {
+            int u = arr[0] - 1, v = arr[1] - 1, w = arr[2];
+            g[u].emplace_back(v, w);
+        }
+        auto dis = dijkstra_pq(g, k - 1);
+        int ma = ranges::max(dis);
+        if (ma >= INT_MAX / 2) return -1;
+        return ma;
+    }
+
+    int networkDelayTime_bf(vector<vector<int>>& times, int n, int k) {
+        vector<vector<int>> edges;
+        for (auto& arr: times) {
+            edges.push_back(vector<int>{arr[0] - 1, arr[1] - 1, arr[2]});
+        }
+        auto dis = bf(edges, n, k - 1);
+        int ma = ranges::max(dis);
+        if (ma >= INT_MAX / 2) return -1;
+        return ma;
+    }
+
+    int networkDelayTime_spfa(vector<vector<int>>& times, int n, int k) {
+        vector<vector<pair<int, int>>> g(n);
+        for (auto& arr: times) {
+            int u = arr[0] - 1, v = arr[1] - 1, w = arr[2];
+            g[u].emplace_back(v, w);
+        }
+        auto dis = spfa(g, k - 1);
+        int ma = ranges::max(dis);
+        if (ma >= INT_MAX / 2) return -1;
+        return ma;
+    }
+
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        vector<vector<int>> g;
+        for (auto& arr: times) {
+            int u = arr[0] - 1, v = arr[1] - 1, w = arr[2];
+            g.push_back({u, v, w});
+        }
+        auto dis = floyd(g, n, k - 1);
+        int ma = ranges::max(dis);
+        if (ma >= INT_MAX / 2) return -1;
         return ma;
     }
 };
