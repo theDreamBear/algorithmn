@@ -25,7 +25,7 @@ using namespace std;
 #include <vector>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     vector<vector<int>> criticalConnections1(int n, vector<vector<int>>& connections) {
         vector<vector<int>> g(n);
@@ -86,6 +86,47 @@ public:
         };
         dfs(dfs, 0, -1);
         return ans;
+    }
+};
+
+using vi = vector<int>;
+// 无线图
+// 割边
+vector<vector<int>> find_cut_edge(vector<vector<int>>& g) {
+    int n = g.size();
+    vi low(n), num(n);
+    int dfn = 0, root = 0;
+    vector<vi> ans;
+    auto dfs = [&](auto&& dfs, int u, int fa)->void {
+        num[u] = low[u] = ++dfn;
+        for (auto v: g[u]) {
+            // tree边
+            if (!num[v]) {
+                dfs(dfs, v, u);
+                // 割点
+                if (low[v] > num[u]) {
+                    ans.push_back({min(u, v), max(u, v)});
+                }
+                low[u] = min(low[u], low[v]);
+            // back边
+            } else if (v != fa) {
+                low[u] = min(low[u], num[v]);
+            }
+        }
+    };
+    dfs(dfs, root, -1);
+    return ans;
+}
+class Solution {
+public:
+    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+        vector<vi> g(n);
+        for (auto& con: connections) {
+            int u = con[0], v = con[1];
+            g[u].emplace_back(v);
+            g[v].emplace_back(u);
+        }
+        return find_cut_edge(g);
     }
 };
 // @lc code=end
