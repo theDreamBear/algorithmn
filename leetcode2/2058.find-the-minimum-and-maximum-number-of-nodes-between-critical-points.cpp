@@ -42,7 +42,38 @@ using namespace std;
 class Solution {
 public:
     vector<int> nodesBetweenCriticalPoints(ListNode* head) {
-        
+        if (!head or !head->next) return {-1, -1};
+        int first = -1, last = -1;
+        int val = -1;
+        int mm = INT_MAX, ma = -1;
+        ListNode* node = head;
+        int id = 0;
+        while (node->next) {
+            ListNode* next = node->next;
+            // pre节点
+            if (val != -1) {
+                if ((val > node->val and next->val > node->val) or (val < node->val and next->val < node->val)) {
+                    if (first == -1) {
+                        first = id;
+                    } else {
+                        ma = id - first;
+                    }
+                    if (last == -1) {
+                        last = id;
+                    } else {
+                        mm = min(mm, id - last);
+                    }
+                    last = id;
+                }
+            }
+            val = node->val;
+            node = next;
+            id++;
+        }
+        if (mm == INT_MAX) {
+            return {-1, -1};
+        }
+        return {mm, ma};
     }
 };
 // @lc code=end
