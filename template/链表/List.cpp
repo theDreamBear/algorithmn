@@ -106,6 +106,7 @@ namespace My_List {
     4. kth pre
     5. left mid
     6. right mid
+    7. 合并两个有序链表
     */
     int size(ListNode *node) {
         if (!node) return 0;
@@ -214,6 +215,19 @@ namespace My_List {
         }
         return dummy.next;
     }
+
+    ListNode* splitKList(ListNode* node, int k) {
+        assert(k > 0);
+        if (!node) return node;
+        ListNode* cur = node;
+        while (--k) {
+            cur = cur->next;
+        }
+        ListNode* nh = cur->next;
+        cur->next = nullptr;
+        return nh;
+    }
+    
 
     struct List {
         ListNode *head = nullptr, *tail = nullptr;
