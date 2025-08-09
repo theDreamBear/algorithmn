@@ -1,102 +1,44 @@
-// C
-#ifndef _GLIBCXX_NO_ASSERT
-#include <cassert>
-#endif
-#include <cctype>
-#include <cerrno>
-#include <cfloat>
-#include <ciso646>
-#include <climits>
-#include <clocale>
-#include <cmath>
-#include <csetjmp>
-#include <csignal>
-#include <cstdarg>
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#if __cplusplus >= 201103L
-#include <ccomplex>
-#include <cfenv>
-#include <cinttypes>
-// #include <cstdalign>
-#include <cstdbool>
-#include <cstdint>
-#include <ctgmath>
-#include <cwchar>
-#include <cwctype>
-#endif
-// C++
+/*
+ * @lc app=leetcode.cn id=2816 lang=cpp
+ * @lcpr version=30204
+ *
+ * [2816] 翻倍以链表形式表示的数字
+ */
+
+
+// @lcpr-template-start
+using namespace std;
 #include <algorithm>
-#include <bitset>
-#include <complex>
-#include <deque>
-#include <exception>
-#include <fstream>
-#include <functional>
-#include <iomanip>
-#include <ios>
-#include <iosfwd>
-#include <iostream>
-#include <istream>
-#include <iterator>
-#include <limits>
-#include <list>
-#include <locale>
-#include <map>
-#include <memory>
-#include <new>
-#include <numeric>
-#include <ostream>
-#include <queue>
-#include <set>
-#include <sstream>
-#include <stack>
-#include <stdexcept>
-#include <streambuf>
-#include <string>
-#include <typeinfo>
-#include <utility>
-#include <valarray>
-#include <vector>
-#if __cplusplus >= 201103L
 #include <array>
-#include <atomic>
-#include <chrono>
-#include <condition_variable>
-#include <forward_list>
-#include <future>
-#include <initializer_list>
-#include <mutex>
-#include <random>
-#include <ratio>
-#include <regex>
-#include <scoped_allocator>
-#include <system_error>
-#include <thread>
+#include <bitset>
+#include <climits>
+#include <deque>
+#include <functional>
+#include <iostream>
+#include <list>
+#include <queue>
+#include <stack>
 #include <tuple>
-#include <typeindex>
-#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
-#endif
-using namespace std;
-
-struct ListNode {
-    int val;
-    ListNode *next;
-
-    ListNode() : val(0), next(nullptr) {
-    }
-
-    ListNode(int x) : val(x), next(nullptr) {
-    }
-
-    ListNode(int x, ListNode *next) : val(x), next(next) {
-    }
-};
+#include <utility>
+#include <vector>
+#include <map>
+#include <set>
+#include <string>
+#include <string.h>
+// @lcpr-template-end
+// @lc code=start
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 
 namespace My_List {
     /*
@@ -220,44 +162,39 @@ namespace My_List {
 
 using namespace My_List;
 
-vector<int> random_vec() {
-    mt19937 mt(random_device{}());
-    uniform_int_distribution<int> u(1, 1000);
-    int n = u(mt);
-    vector<int> a(n);
-    for (int i = 0; i < n; i++) {
-        a[i] = u(mt);
-    }
-    return a;
-}
-
-
-ListNode *makeList(const vector<int> &a) {
-    ListNode dummy;
-    ListNode *tail = &dummy;
-    for (auto v: a) {
-        tail->next = new ListNode(v);
-        tail = tail->next;
-    }
-    return dummy.next;
-}
-
-// 通过
-void test_mid() {
-    for (int i = 0; i < 1000; i++) {
-        auto head = makeList(random_vec());
-        if (find_left_mid(head) != find_left_mid2(head)) {
-            cout << "bad" << endl;
-            return;
+class Solution {
+public:
+    ListNode* doubleIt(ListNode* head) {
+        head = reverse(head);
+        int carry = 0;
+        ListNode* cur = head;
+        ListNode* pre = nullptr;
+        while (cur or carry) {
+            if (!cur) {
+                pre->next = new ListNode(1);
+                break;
+            }
+            int val = (cur ? cur->val * 2 : 0) + carry;
+            carry = val / 10;
+            cur->val = val % 10;
+            pre = cur;
+            cur = cur->next;
         }
-        if (find_right_mid(head) != find_right_mid2(head)) {
-            cout << "bad2" << endl;
-            return;
-        }
+        return reverse(head);
     }
-    cout << "success" << endl;
-}
+};
+// @lc code=end
 
-int main() {
-    test_mid();
-}
+
+
+/*
+// @lcpr case=start
+// [1,8,9]\n
+// @lcpr case=end
+
+// @lcpr case=start
+// [9,9,9]\n
+// @lcpr case=end
+
+ */
+

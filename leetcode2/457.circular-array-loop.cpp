@@ -28,7 +28,29 @@ using namespace std;
 class Solution {
 public:
     bool circularArrayLoop(vector<int>& nums) {
-        
+        int n = nums.size();
+        vector<int> vis(n);
+        auto dfs = [&](auto&& dfs, int i, int fa)->bool {
+            vis[i] = fa;
+            int j = ((i + nums[i]) % n + n) % n;
+            // 自环
+            if (i == j) return false;
+            // 如果不能保持同正负, 提前结束
+            if (nums[i] * nums[j] < 0) {
+                return false;
+            }
+            if (vis[j]) {
+                // 是否是本次的节点
+                return vis[j] == fa;
+            }
+            return dfs(dfs, j, fa);
+        };
+        for (int i = 0; i < n; i++) {
+            if (!vis[i] and dfs(dfs, i, i + 1)) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 // @lc code=end
