@@ -31,21 +31,17 @@ using namespace std;
 // @lc code=start
 class AllOne {
 public:
-    unordered_map<string, int> cnt;
-
 
     AllOne() {
 
     }
 
     void inc(string key) {
-       cnt[key]++;
+
     }
 
     void dec(string key) {
-        if (--cnt[key] == 0) {
-            cnt.erase(key);
-        }
+
     }
 
     string getMaxKey() {
