@@ -81,10 +81,9 @@ public:
             };
         };
         auto g1 = gen(root1), g2 = gen(root2);
-        TreeNode* left, *right;
         while (1) {
-            left = g1();
-            right = g2();
+            auto left = g1();
+            auto right = g2();
             if (!left and !right ) break;
             if (!left or !right) return false;
             if (left->val != right->val) return false;

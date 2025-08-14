@@ -56,7 +56,7 @@ public:
     /*
         bfs
     */
-    int maxDepth(TreeNode* root) {
+    int maxDepth1(TreeNode* root) {
         if (!root) {
             return 0;
         }
