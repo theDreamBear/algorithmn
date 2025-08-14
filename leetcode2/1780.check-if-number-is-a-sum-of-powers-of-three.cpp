@@ -29,7 +29,7 @@ using namespace std;
 #include <string.h>
 // @lcpr-template-end
 // @lc code=start
-class Solution {
+class Solution1 {
 public:
     using ll = long long;
     bool checkPowersOfThree(int n) {
@@ -46,6 +46,39 @@ public:
             size = idx;
         }
         return n == 0;
+    }
+};
+
+class Solution2 {
+public:
+    using ll = long long;
+    bool checkPowersOfThree(int n) {
+        ll i = 1;
+        while (i <= n) {
+            i *= 3;
+        }
+        i /= 3;
+        while(i and n) {
+            if (i <= n) {
+                n -= i;
+            }
+            // 换一个更小的
+            i /= 3;
+            while (i and i > n) i /= 3;
+        }
+        return n == 0;
+    }
+};
+
+class Solution {
+public:
+    using ll = long long;
+    bool checkPowersOfThree(int n) {
+        while (n) {
+            if (n % 3 == 2) return false;
+            n /= 3;
+        }
+        return true;
     }
 };
 // @lc code=end
