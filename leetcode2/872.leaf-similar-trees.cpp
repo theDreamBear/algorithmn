@@ -38,7 +38,7 @@ using namespace std;
  */
 class Solution {
 public:
-    bool leafSimilar(TreeNode* root1, TreeNode* root2) {
+    bool leafSimilar1(TreeNode* root1, TreeNode* root2) {
         auto get = [&](auto&& get, TreeNode* node, vector<int>& ans) {
             if (!node) {
                 return;
@@ -53,6 +53,43 @@ public:
         get(get, root1, left);
         get(get, root2, right);
         return left == right;
+    }
+
+    bool leafSimilar(TreeNode* root1, TreeNode* root2) {
+        auto gen = [](TreeNode* node) {
+            stack<TreeNode*> st;
+            while (node) {
+                st.push(node);
+                node = node->left;
+            }
+            return [st]() mutable ->TreeNode* {
+                if (st.empty()) return nullptr;
+                while (!st.empty()) {
+                    auto nd = st.top();
+                    st.pop();
+                    // 找到了页节点
+                    if (!nd->left and !nd->right) {
+                        return nd;
+                    }
+                    nd = nd->right;
+                    while (nd) {
+                        st.push(nd);
+                        nd = nd->left;
+                    }
+                }
+                return nullptr;
+            };
+        };
+        auto g1 = gen(root1), g2 = gen(root2);
+        TreeNode* left, *right;
+        while (1) {
+            left = g1();
+            right = g2();
+            if (!left and !right ) break;
+            if (!left or !right) return false;
+            if (left->val != right->val) return false;
+        }
+        return true;
     }
 };
 // @lc code=end
