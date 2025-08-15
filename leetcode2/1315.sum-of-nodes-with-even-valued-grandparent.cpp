@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=1457 lang=cpp
+ * @lc app=leetcode.cn id=1315 lang=cpp
  * @lcpr version=30204
  *
- * [1457] 二叉树中的伪回文路径
+ * [1315] 祖父节点值为偶数的节点和
  */
 
 
@@ -40,53 +40,51 @@ using namespace std;
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Is{
-    array<int, 10> cnt;
-    int size = 0, odd = 0;
-public:
-    bool is() {
-        if (size % 2 == 0 and odd == 0) return true;
-        if ((size & 1) and odd == 1) return true;
-        return false;
-    }
-
-    void push(int val) {
-        size++;
-        int old = cnt[val]++;
-        if (old % 2 == 0) {
-            odd++;
-        } else {
-            odd--;
-        }
-    }
-
-    void pop(int val) {
-        size--;
-        int old = cnt[val]--;
-        if (old % 2 == 0) {
-            odd++;
-        } else {
-            odd--;
-        }
-    }
-};
 class Solution {
 public:
-    int pseudoPalindromicPaths (TreeNode* root) {
+    int sumEvenGrandparent1(TreeNode* root) {
+        unordered_map<TreeNode*, TreeNode*> fa;
         int ans = 0;
-        Is xx;
+
+        auto pre = [&](this auto&& dfs, TreeNode* node, TreeNode* p) {
+            if (!node) return;
+            if (p) {
+                fa[node] = p;
+            }
+            if (p and fa.count(p) and fa[p]->val % 2 == 0) {
+                ans += node->val;
+            }
+            dfs(node->left, node);
+            dfs(node->right, node);
+        };
+
+        pre(root, nullptr);
+        return ans;
+    }
+
+    int sumEvenGrandparent(TreeNode* root) {
+        int ans = 0;
+
+        auto add = [&](TreeNode* node) {
+            if (!node) return;
+            if (node->left) {
+                ans += node->left->val;
+            }
+            if (node->right) {
+                ans += node->right->val;
+            }
+        };
+
         auto pre = [&](this auto&& dfs, TreeNode* node) {
             if (!node) return;
-            xx.push(node->val);
-            if (!node->left and !node->right) {
-                if (xx.is()) {
-                    ans++;
-                }
+            if (node->val % 2 == 0) {
+                add(node->left);
+                add(node->right);
             }
             dfs(node->left);
             dfs(node->right);
-            xx.pop(node->val);
         };
+
         pre(root);
         return ans;
     }
@@ -97,15 +95,7 @@ public:
 
 /*
 // @lcpr case=start
-// [2,3,1,3,1,null,1]\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [2,1,1,1,3,null,null,null,null,null,1]\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [9]\n
+// [6,7,8,2,7,1,3,9,null,1,4,null,null,null,5]\n
 // @lcpr case=end
 
  */

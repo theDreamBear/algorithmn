@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=1457 lang=cpp
+ * @lc app=leetcode.cn id=988 lang=cpp
  * @lcpr version=30204
  *
- * [1457] 二叉树中的伪回文路径
+ * [988] 从叶结点开始的最小字符串
  */
 
 
@@ -40,54 +40,36 @@ using namespace std;
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Is{
-    array<int, 10> cnt;
-    int size = 0, odd = 0;
-public:
-    bool is() {
-        if (size % 2 == 0 and odd == 0) return true;
-        if ((size & 1) and odd == 1) return true;
-        return false;
-    }
-
-    void push(int val) {
-        size++;
-        int old = cnt[val]++;
-        if (old % 2 == 0) {
-            odd++;
-        } else {
-            odd--;
-        }
-    }
-
-    void pop(int val) {
-        size--;
-        int old = cnt[val]--;
-        if (old % 2 == 0) {
-            odd++;
-        } else {
-            odd--;
-        }
-    }
-};
 class Solution {
 public:
-    int pseudoPalindromicPaths (TreeNode* root) {
-        int ans = 0;
-        Is xx;
+    string smallestFromLeaf(TreeNode* root) {
+        string ans(1, char('z' + 1));
+        string t;
+
+        auto cmp = [&]() {
+            int i = t.size() - 1, j = ans.size() - 1;
+            for (; i >= 0 and j >= 0; i--, j--) {
+                if (t[i] < ans[j]) return true;
+                if (t[i] > ans[j]) return false;
+            }
+            if (j >= 0) return true;
+            return false;
+        };
+
         auto pre = [&](this auto&& dfs, TreeNode* node) {
             if (!node) return;
-            xx.push(node->val);
+            t.push_back(char(node->val + 'a'));
             if (!node->left and !node->right) {
-                if (xx.is()) {
-                    ans++;
+                if (cmp()) {
+                    ans = t;
                 }
             }
             dfs(node->left);
             dfs(node->right);
-            xx.pop(node->val);
+            t.pop_back();
         };
         pre(root);
+        reverse(ans.begin(), ans.end());
         return ans;
     }
 };
@@ -97,15 +79,15 @@ public:
 
 /*
 // @lcpr case=start
-// [2,3,1,3,1,null,1]\n
+// [0,1,2,3,4,3,4]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [2,1,1,1,3,null,null,null,null,null,1]\n
+// [25,1,3,1,3,0,2]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [9]\n
+// [2,2,1,null,1,0,null,0]\n
 // @lcpr case=end
 
  */
