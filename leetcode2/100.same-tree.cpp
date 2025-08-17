@@ -38,7 +38,7 @@ using namespace std;
  */
 class Solution {
 public:
-    bool isSameTree(TreeNode* p, TreeNode* q) {
+    bool isSameTree1(TreeNode* p, TreeNode* q) {
         // 空节点
         int ct = (NULL == p )+ (NULL == q);
         if (ct) {
@@ -51,6 +51,13 @@ public:
         }
         // 比较子树
         return isSameTree(p->left, q->left) and isSameTree(p->right, q->right);
+    }
+
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if (! p and ! q) return true;
+        if (!p or !q) return false;
+        // 比较子树
+        return isSameTree(p->left, q->left) and isSameTree(p->right, q->right) and p->val == q->val;
     }
 };
 // @lc code=end

@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=971 lang=cpp
+ * @lc app=leetcode.cn id=951 lang=cpp
  * @lcpr version=30204
  *
- * [971] 翻转二叉树以匹配先序遍历
+ * [951] 翻转等价二叉树
  */
 
 
@@ -42,27 +42,12 @@ using namespace std;
  */
 class Solution {
 public:
-    vector<int> flipMatchVoyage(TreeNode* root, vector<int>& voyage) {
-        vector<int> ans;
-        int index = 0;
-
-        auto check = [&](this auto&& dfs,  TreeNode* node) {
-            if (!node) return true;
-            if (index >= voyage.size()) return true;
-            if (node->val !=  voyage[index++]) {
-                ans.clear();
-                return false;
-            }
-            if (node->left and node->left->val != voyage[index]) {
-                ans.push_back(node->val);
-                return dfs(node->right) and dfs(node->left);
-            }
-            return dfs(node->left) and dfs(node->right);
-        };
-        if (!check(root)) {
-            return {-1};
-        }
-        return ans;
+    bool flipEquiv(TreeNode* root1, TreeNode* root2) {
+        if (!root1 and !root2) return true;
+        if (!root1 or !root2) return false;
+        if (root1->val != root2->val) return false;
+        return flipEquiv(root1->left, root2->left) and flipEquiv(root1->right, root2->right) or
+               flipEquiv(root1->right, root2->left) and flipEquiv(root1->left, root2->right);
     }
 };
 // @lc code=end
@@ -71,15 +56,15 @@ public:
 
 /*
 // @lcpr case=start
-// [1,2]\n[2,1]\n
+// [1,2,3,4,5,6,null,null,null,7,8]\n[1,3,2,null,6,4,5,null,null,null,null,8,7]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,2,3]\n[1,3,2]\n
+// []\n[]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,2,3]\n[1,2,3]\n
+// []\n[1]\n
 // @lcpr case=end
 
  */

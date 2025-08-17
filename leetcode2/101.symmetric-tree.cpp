@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=971 lang=cpp
+ * @lc app=leetcode.cn id=101 lang=cpp
  * @lcpr version=30204
  *
- * [971] 翻转二叉树以匹配先序遍历
+ * [101] 对称二叉树
  */
 
 
@@ -42,27 +42,14 @@ using namespace std;
  */
 class Solution {
 public:
-    vector<int> flipMatchVoyage(TreeNode* root, vector<int>& voyage) {
-        vector<int> ans;
-        int index = 0;
-
-        auto check = [&](this auto&& dfs,  TreeNode* node) {
-            if (!node) return true;
-            if (index >= voyage.size()) return true;
-            if (node->val !=  voyage[index++]) {
-                ans.clear();
-                return false;
-            }
-            if (node->left and node->left->val != voyage[index]) {
-                ans.push_back(node->val);
-                return dfs(node->right) and dfs(node->left);
-            }
-            return dfs(node->left) and dfs(node->right);
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        auto check = [&](this auto&& dfs, TreeNode* p, TreeNode* q) {
+            if (!p and !q) return true;
+            if (!p or !q) return false;
+            return p->val == q->val and dfs(p->left, q->right) and dfs(p->right, q->left);
         };
-        if (!check(root)) {
-            return {-1};
-        }
-        return ans;
+        return check(root, root);
     }
 };
 // @lc code=end
@@ -71,15 +58,11 @@ public:
 
 /*
 // @lcpr case=start
-// [1,2]\n[2,1]\n
+// [1,2,2,3,4,4,3]\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [1,2,3]\n[1,3,2]\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [1,2,3]\n[1,2,3]\n
+// [1,2,2,null,3,null,3]\n
 // @lcpr case=end
 
  */

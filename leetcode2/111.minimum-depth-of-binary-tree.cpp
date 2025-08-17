@@ -42,7 +42,7 @@ using namespace std;
  */
 class Solution {
 public:
-    int minDepth(TreeNode* root) {
+    int minDepth1(TreeNode* root) {
         int ans = 2e5;
         auto pre = [&](this auto&& dfs, TreeNode* node, int depth) {
             if (!node) {
@@ -56,6 +56,30 @@ public:
         };
         pre(root, 1);
         return ans == 2e5 ? 0: ans;
+    }
+
+    int minDepth(TreeNode* root) {
+        int inf = INT_MAX / 2;
+        int ans = inf;
+        auto post = [&](this auto&& dfs, TreeNode* node) {
+            // 边界
+            if (!node) {
+                return 0;
+            }
+            if (!node->left and !node->right) {
+                return 1;
+            }
+            if (!node->left) {
+                return 1 + dfs(node->right);
+            }
+            if (!node->right) {
+                return 1 + dfs(node->left);
+            }
+            int l = dfs(node->left);
+            int r = dfs(node->right);
+            return 1 + min(l, r);
+        };
+        return post(root);
     }
 };
 // @lc code=end
