@@ -180,7 +180,7 @@ public:
         return dfs(cur) - 1;
     }
 
-    int amountOfTime(TreeNode* root, int start) {
+    int amountOfTime2(TreeNode* root, int start) {
         int ans = 0;
         function<int(TreeNode*)> height = [&](TreeNode* node) {
             if (!node) {
@@ -199,6 +199,26 @@ public:
             return min(llen, rlen) - 1;
         };
         height(root);
+        return ans;
+    }
+
+    int amountOfTime(TreeNode* root, int start) {
+        int ans = 0;
+        auto post = [&](this auto&& dfs, TreeNode* node) {
+            if (!node) return 0;
+            int left = dfs(node->left);
+            int right = dfs(node->right);
+            if (node->val == start) {
+                ans =  max(-min(left, right), ans);
+                return 1;
+            }
+            if (left > 0 || right > 0) {
+                ans = max(abs(left - right), ans);
+                return left > 0 ? left + 1 : right + 1;
+            }
+            return min(left, right) - 1;
+        };
+        post(root);
         return ans;
     }
 };
