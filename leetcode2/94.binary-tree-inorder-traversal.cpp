@@ -108,7 +108,7 @@ class Solution {
         return ans;
     }
 
-    vector<int> inorderTraversal(TreeNode* root) {
+    vector<int> inorderTraversal4(TreeNode* root) {
         vector<int> ans;
         if (!root) {
             return ans;
@@ -131,6 +131,30 @@ class Solution {
                     q.push(node);
                     node = node->left;
                 }
+            }
+        }
+        return ans;
+    }
+
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if (!root) {
+            return ans;
+        }
+        while (root) {
+            if (root->left) {
+                auto left = root->left;
+                auto right = left;
+                while (right and right->right) {
+                    right = right->right;
+                }
+                right->right = root;
+                root->left = nullptr;
+                root = left;
+            } else {
+                // 访问 root
+                ans.push_back(root->val);
+                root = root->right;
             }
         }
         return ans;

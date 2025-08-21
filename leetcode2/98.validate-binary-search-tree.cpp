@@ -38,7 +38,8 @@ using namespace std;
  */
 class Solution {
 public:
-    bool isValidBST(TreeNode* root) {
+    // 中序
+    bool isValidBST1(TreeNode* root) {
         if (!root) {
             return true;
         }
@@ -51,6 +52,18 @@ public:
             return dfs(node->left) and ((!pre || pre->val < node->val) ? (pre = node, true) : false) and dfs(node->right);
         };
         return dfs(root);
+    }
+
+    bool isValidBST(TreeNode* root) {
+        if (!root) {
+            return true;
+        }
+        auto pre = [&](this auto&& dfs, TreeNode* node, long long mm = LLONG_MIN, long long mx = LLONG_MAX) {
+            if (!node) return true;
+            long long x = node->val;
+            return mm < x and x < mx and dfs(node->left, mm, x) and dfs(node->right, x, mx);
+        };
+        return pre(root);
     }
 };
 // @lc code=end

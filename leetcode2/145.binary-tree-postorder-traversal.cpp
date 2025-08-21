@@ -105,7 +105,7 @@ public:
         return ans;
     }
 
-    vector<int> postorderTraversal(TreeNode* root) {
+    vector<int> postorderTraversal4(TreeNode* root) {
         if (!root) {
             return {};
         }
@@ -127,6 +127,62 @@ public:
             }
             cur = node->right;
         }
+        return ans;
+    }
+
+    vector<int> postorderTraversal5(TreeNode* root) {
+        if (!root) {
+            return {};
+        }
+        vector<int> ans;
+        while (root) {
+            if (root->val != INT_MIN) ans.push_back(root->val);
+            root->val = INT_MIN;
+            if (root->right) {
+                auto left = root->right;
+                auto right = left;
+                while (right and right->left) {
+                    right = right->left;
+                }
+                right->left = root;
+                root->right = nullptr;
+                root = left;
+            } else {
+                root = root->left;
+            }
+        }
+        ranges::reverse(ans);
+        return ans;
+    }
+
+    vector<int> postorderTraversal(TreeNode* root) {
+        if (!root) {
+            return {};
+        }
+        vector<int> ans, rev;
+        while (root) {
+            bool f = false;
+            // 找最左一个
+            if (root->left) {
+                auto left = root->left;
+                auto right = left;
+                while (right and right->right) {
+                    right = right->right;
+                }
+                right->right = root;
+                root->left = nullptr;
+                root = left;
+                f = true;
+            }
+            if (f) {
+                ans.push_back(root->val);
+            } else {
+                rev.push_back(root->val);
+            }
+            root = root->right;
+        }
+        //ranges::reverse(rev);
+        ans.insert(ans.end(), rev.rbegin(), rev.rend());
         return ans;
     }
 };

@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=897 lang=cpp
+ * @lc app=leetcode.cn id=230 lang=cpp
  * @lcpr version=30204
  *
- * [897] 递增顺序搜索树
+ * [230] 二叉搜索树中第 K 小的元素
  */
 
 
@@ -23,6 +23,10 @@ using namespace std;
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <map>
+#include <set>
+#include <string>
+#include <string.h>
 // @lcpr-template-end
 // @lc code=start
 /**
@@ -38,28 +42,22 @@ using namespace std;
  */
 class Solution {
 public:
-    TreeNode* increasingBST(TreeNode* root) {
-        TreeNode dummy;
-        TreeNode* tail = &dummy, *node = root;
+    int kthSmallest(TreeNode* root, int k) {
+        int ans = -1;
 
-        while (node) {
-            if (node->left) {
-                auto left = node->left;
-                auto right = left;
-
-                while (right->right) {
-                    right = right->right;
-                }
-                right->right = node;
-                node->left = nullptr;
-                node = left;
-            } else {
-                tail->right = node;
-                tail = tail->right;
-                node = node->right;
+        auto in = [&](this auto&& dfs, TreeNode* node) {
+            if (!node) return false;
+            if (dfs(node->left)) {
+                return true;
             }
-        }
-        return dummy.right;
+            if (k-- == 1) {
+                ans = node->val;
+                return true;
+            }
+            return dfs(node->right);
+        };
+        if (in(root)) return ans;
+        return -1;
     }
 };
 // @lc code=end
@@ -68,11 +66,11 @@ public:
 
 /*
 // @lcpr case=start
-// [5,3,6,2,4,null,8,1,null,null,null,7,9]\n
+// [3,1,4,null,2]\n1\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [5,1,7]\n
+// [5,3,6,2,4,null,null,1]\n3\n
 // @lcpr case=end
 
  */

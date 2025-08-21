@@ -96,7 +96,7 @@ public:
         return ans;
     }
 
-     vector<int> preorderTraversal(TreeNode* root) {
+     vector<int> preorderTraversal4(TreeNode* root) {
         vector<int> ans;
         if (nullptr == root) {
             return ans;
@@ -118,6 +118,31 @@ public:
                     st.push(node);
                     node = node->left;
                 }
+            }
+        }
+        return ans;
+    }
+
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+        if (nullptr == root) {
+            return ans;
+        }
+        while (root) {
+            // 访问 root
+            if (root->val != INT_MIN) ans.push_back(root->val);
+            root->val = INT_MIN;
+            if (root->left) {
+                auto left = root->left;
+                auto right = left;
+                while (right and right->right) {
+                    right = right->right;
+                }
+                right->right = root;
+                root->left = nullptr;
+                root = left;
+            } else {
+                root = root->right;
             }
         }
         return ans;

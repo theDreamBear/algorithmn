@@ -1,8 +1,8 @@
 /*
- * @lc app=leetcode.cn id=897 lang=cpp
+ * @lc app=leetcode.cn id=700 lang=cpp
  * @lcpr version=30204
  *
- * [897] 递增顺序搜索树
+ * [700] 二叉搜索树中的搜索
  */
 
 
@@ -23,6 +23,10 @@ using namespace std;
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <map>
+#include <set>
+#include <string>
+#include <string.h>
 // @lcpr-template-end
 // @lc code=start
 /**
@@ -38,28 +42,10 @@ using namespace std;
  */
 class Solution {
 public:
-    TreeNode* increasingBST(TreeNode* root) {
-        TreeNode dummy;
-        TreeNode* tail = &dummy, *node = root;
-
-        while (node) {
-            if (node->left) {
-                auto left = node->left;
-                auto right = left;
-
-                while (right->right) {
-                    right = right->right;
-                }
-                right->right = node;
-                node->left = nullptr;
-                node = left;
-            } else {
-                tail->right = node;
-                tail = tail->right;
-                node = node->right;
-            }
-        }
-        return dummy.right;
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if (!root) return nullptr;
+        if (root->val == val) return root;
+        return searchBST(root->val > val ? root->left: root->right, val);
     }
 };
 // @lc code=end
@@ -68,11 +54,11 @@ public:
 
 /*
 // @lcpr case=start
-// [5,3,6,2,4,null,8,1,null,null,null,7,9]\n
+// [4,2,7,1,3]\n2\n
 // @lcpr case=end
 
 // @lcpr case=start
-// [5,1,7]\n
+// [4,2,7,1,3]\n5\n
 // @lcpr case=end
 
  */

@@ -154,7 +154,8 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "variant": "cpp",
-    "__node_handle": "cpp"
+    "__node_handle": "cpp",
+    "stack": "cpp"
   },
   "cmake.sourceDirectory": "D:/work/code/algorithmn/leet"
 }
