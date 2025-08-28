@@ -1,71 +1,88 @@
-/*
- * @lc app=leetcode.cn id=1 lang=cpp
- * @lcpr version=30113
- *
- * [1] 两数之和
- */
-
-
-// @lcpr-template-start
-using namespace std;
-#include <algorithm>
-#include <array>
-#include <bitset>
+// C
+#ifndef _GLIBCXX_NO_ASSERT
+#include <cassert>
+#endif
+#include <cctype>
+#include <cerrno>
+#include <cfloat>
+#include <ciso646>
 #include <climits>
+#include <clocale>
+#include <cmath>
+#include <csetjmp>
+#include <csignal>
+#include <cstdarg>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#if __cplusplus >= 201103L
+#include <ccomplex>
+#include <cfenv>
+#include <cinttypes>
+// #include <cstdalign>
+#include <cstdbool>
+#include <cstdint>
+#include <ctgmath>
+#include <cwchar>
+#include <cwctype>
+#endif
+// C++
+#include <algorithm>
+#include <bitset>
+#include <complex>
 #include <deque>
+#include <exception>
+#include <fstream>
 #include <functional>
-#include <iostream>
-#include <list>
+#include <iomanip>
+#include <ios>
+#include <ostream>
 #include <queue>
+#include <set>
+#include <sstream>
 #include <stack>
+#include <stdexcept>
+#include <streambuf>
+#include <string>
+#include <typeinfo>
+#include <utility>
+#include <valarray>
+#include <vector>
+#if __cplusplus >= 201103L
+#include <array>
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <forward_list>
+#include <future>
+#include <initializer_list>
+#include <mutex>
+#include <random>
+#include <ratio>
+#include <regex>
+#include <scoped_allocator>
+#include <system_error>
+#include <thread>
 #include <tuple>
+#include <typeindex>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
-#include <utility>
-#include <vector>
-// @lcpr-template-end
-// @lc code=start
-class Solution1 {
-public:
-    /**
-     * @brief 时间或空间换取，空间换时间，使用哈希表
-     *
-     * @param nums
-     * @param target
-     * @return vector<int>
-     */
-    vector<int> twoSum(vector<int>& nums, int target) {
-        unordered_map<int, int> mp;
-        for (int i = 0; i < nums.size(); i++) {
-            mp[nums[i]] = i;
-        }
-        for (int i = 0; i < nums.size(); i++) {
-            int another = target - nums[i];
-            if (mp.count(another) > 0 && mp[another] > i) {
-                return {i, mp[another]};
-            }
-        }
-        return {};
-    }
+#endif
+#include <iostream>
+using namespace std;
 
-    /**
-     * @brief 暴力
-     *
-     * @param nums
-     * @param target
-     * @return vector<int>
-     */
-    vector<int> twoSum_violate(vector<int>& nums, int target) {
-        for (int i = 0; i < nums.size(); i++) {
-            for (int j = i + 1; j < nums.size(); j++) {
-                if (nums[i] + nums[j] == target) {
-                    return {i, j};
-                }
-            }
-        }
-        return {};
+vector<int> random_vec(int n, int maxv = 100000) {
+    mt19937 rng(random_device{}());
+    uniform_int_distribution<> dis(0, maxv);
+    vector<int> ans;
+    for (int i = 0; i < n; ++i) {
+        ans.push_back(dis(rng));
     }
-};
+    return ans;
+}
 
 template<typename Key, typename Value>
 class RedBlackTree {
@@ -326,20 +343,6 @@ public:
         return find(find, root);
     }
 
-    // >= key的
-    Node *lower_bound(const Key &key) {
-        auto find = [&](auto &&dfs, Node *h)-> Node * {
-            if (!h) return nullptr;
-            auto mx = max(h->left);
-            if (mx and mx->key >= key) return dfs(dfs, h->left);
-            if (h->key == key) return h;
-            mx = max(h->right);
-            if (mx and mx->key >= key) return dfs(dfs, h->right);
-            return nullptr;
-        };
-        return find(find, root);
-    }
-
     vector<pair<Key, Value> > traversal() {
         vector<pair<Key, Value> > res;
         auto dfs = [&](auto &&dfs, Node *h) {
@@ -352,16 +355,33 @@ public:
         return res;
     }
 
+    // >= key的
+    Node *lower_bound(const Key &key) {
+        auto find = [&](auto &&dfs, Node *h)-> Node * {
+            if (!h) return nullptr;
+            if (h->key == key) return h;
+            if (key < h->key) {
+                auto x = dfs(dfs, h->left);
+                if (x) return x;
+                return h;
+            }
+            return dfs(dfs, h->right);
+        };
+        return find(find, root);
+    }
+
     // > key的
     Node *upper_bound(const Key &key) {
         auto find = [&](auto &&dfs, Node *h)-> Node * {
             if (!h) return nullptr;
-            auto mx = max(h->left);
-            if (mx and mx->key > key) return dfs(dfs, h->left);
-            if (h->key > key) return h;
-            mx = max(h->right);
-            if (mx and mx->key > key) return dfs(dfs, h->right);
-            return nullptr;
+            if (h->key > key) {
+                auto x = dfs(dfs, h->left);
+                if (x) {
+                    return x;
+                }
+                return h;
+            }
+            return dfs(dfs, h->right);
         };
         return find(find, root);
     }
@@ -383,46 +403,95 @@ public:
     }
 };
 
-class Solution {
-public:
-    /**
-     * @brief 时间或空间换取，空间换时间，使用哈希表
-     *
-     * @param nums
-     * @param target
-     * @return vector<int>
-     */
-    vector<int> twoSum(vector<int>& nums, int target) {
-        RedBlackTree<int, int> mp;
-        for (int i = 0; i < nums.size(); i++) {
-            mp.put(nums[i], i);
+void test_balance() {
+    for (int j = 0; j < 100; ++j) {
+        vector<int> ans = random_vec(1000, 10000000);
+        RedBlackTree<int, int> tree;
+        for (auto v: ans) {
+            tree.put(v, v);
         }
-        for (int i = 0; i < nums.size(); i++) {
-            int another = target - nums[i];
-            auto x = mp.find_by_key(another);
-            if (x and x->value > i) {
-                return {i, x->value};
+        if (!tree.isBalance(tree.root)) {
+            cout << "bad balanced" << endl;
+            throw;
+        }
+        //cout << tree.root->ct / pow(2, tree.tall(tree.root)) << endl;
+    }
+    cout << "balanced" << endl;
+}
+
+void test_rank() {
+    for (int j = 0; j < 100; ++j) {
+        vector<int> ans = random_vec(1000, 10000000);
+        RedBlackTree<int, int> tree;
+        for (auto v: ans) {
+            tree.put(v, v);
+        }
+        auto rks = tree.traversal();
+        for (int i = -100; i < tree.root->ct + 100; i++) {
+            if (i < 0) {
+                auto x = tree.find_by_rank(i + 1);
+                if (x != nullptr) {
+                    throw logic_error("bad rank1");
+                    return;
+                }
+            } else {
+                auto x = tree.find_by_rank(i + 1);
+                if (x != nullptr) {
+                    if (x->key != rks[i].first or x->value != rks[i].second) {
+                        throw logic_error("bad rank2");
+                    }
+                }
             }
         }
-        return {};
     }
-};
-// @lc code=end
+    cout << "ranked" << endl;
+}
 
+void test_find() {
+    for (int j = 0; j < 100; ++j) {
+        vector<int> ans = random_vec(1000, 10000000);
+        RedBlackTree<int, int> tree;
+        for (auto v: ans) {
+            tree.put(v, v);
+        }
+        auto rks = tree.traversal();
+        sort(rks.begin(), rks.end());
+        for (auto x: rks) {
+            if (!tree.find_by_key(x.first)) {
+                throw logic_error("bad find_by_key");
+            }
+        }
+    }
+    cout << "found" << endl;
+}
 
+void test_binary_bound() {
+    for (int j = 0; j < 100; ++j) {
+        vector<int> ans = random_vec(1000, 10000000);
+        RedBlackTree<int, int> tree;
+        for (auto v: ans) {
+            tree.put(v, v);
+        }
+        auto rks = tree.traversal();
+        sort(rks.begin(), rks.end());
+        for (auto x: rks) {
+            auto l1 = tree.lower_bound(x.first);
+            if (!l1 or l1->key != x.first) {
+                throw logic_error("bad lower_bound");
+            }
+            auto l2 = tree.upper_bound(x.second);
+            auto it = upper_bound(rks.begin(), rks.end(), x) - rks.begin();
+            if (it != rks.size() and rks[it].first != l2->key) {
+                throw logic_error("bad upper_bound");
+            }
+        }
+    }
+    cout << "binaried" << endl;
+}
 
-/*
-// @lcpr case=start
-// [2,7,11,15]\n9\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [3,2,4]\n6\n
-// @lcpr case=end
-
-// @lcpr case=start
-// [3,3]\n6\n
-// @lcpr case=end
-
- */
-
+int main() {
+    test_rank();
+    test_find();
+    test_balance();
+    test_binary_bound();
+}

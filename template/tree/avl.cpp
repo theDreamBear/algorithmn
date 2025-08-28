@@ -168,20 +168,22 @@ public:
         return node;
     }
 
-    void transplant(Node* u, Node* v) {
-        if (!u) return;
-        Node* p = u->p;
-        if (!p) {
-            root = v;
+    Node* find(int val) {
+        if (!root) {
+            return root;
         }
-        if (p->left == u) {
-            p->left = v;
-        } else {
-            p->right = v;
+        Node *cur = root;
+        while (cur) {
+            if (cur->val == val) {
+                return cur;
+            }
+            if (cur->val < val) {
+                cur = cur->right;
+            } else {
+                cur = cur->left;
+            }
         }
-        if (!v) {
-            v->p = p;
-        }
+        return nullptr;
     }
 
     void remove(int val) {
