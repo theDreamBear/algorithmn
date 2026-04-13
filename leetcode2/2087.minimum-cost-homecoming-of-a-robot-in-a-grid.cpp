@@ -23,11 +23,12 @@ using namespace std;
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <numeric>
 // @lcpr-template-end
 // @lc code=start
 class Solution {
 public:
-    int minCost(vector<int>& startPos, vector<int>& homePos, vector<int>& rowCosts, vector<int>& colCosts) {
+    int minCost1(vector<int>& startPos, vector<int>& homePos, vector<int>& rowCosts, vector<int>& colCosts) {
         if (startPos == homePos) return 0;
         int ans = 0;
         int x = startPos[0], y = startPos[1];
@@ -50,6 +51,16 @@ public:
                 ans += colCosts[i];
             }
         }
+        return ans;
+    }
+
+    int minCost(vector<int>& startPos, vector<int>& homePos, vector<int>& rowCosts, vector<int>& colCosts) {
+        if (startPos == homePos) return 0;
+        int x = startPos[0], y = startPos[1];
+        int nx = homePos[0], ny = homePos[1];
+        int ans = -rowCosts[x] - colCosts[y];
+        ans += reduce(rowCosts.begin() + min(x, nx), rowCosts.begin() + max(x, nx) + 1);
+        ans += reduce(colCosts.begin() + min(y, ny), colCosts.begin() + max(y, ny) + 1);
         return ans;
     }
 };
