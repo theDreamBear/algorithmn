@@ -41,7 +41,7 @@ using namespace std;
  */
 class Solution {
 public:
-    ListNode* deleteMiddle(ListNode* head) {
+    ListNode* deleteMiddle1(ListNode* head) {
         auto findMidPre = [](ListNode* node)->ListNode* {
             if (!node or !node->next) {
                 return nullptr;
@@ -58,6 +58,19 @@ public:
         auto x  = findMidPre(head);
         if (!x) return nullptr;
         x->next = x->next->next;
+        return head;
+    }
+
+    ListNode* deleteMiddle(ListNode* head) {
+        if (!head or !head->next) return nullptr;
+        ListNode* pre = nullptr;
+        ListNode* slow = head, *fast = head;
+        while (fast and fast->next) {
+            pre = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        pre->next = pre->next->next;
         return head;
     }
 };

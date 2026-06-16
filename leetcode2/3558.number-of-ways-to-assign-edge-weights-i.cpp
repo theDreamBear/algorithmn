@@ -40,16 +40,15 @@ public:
         }
         int start = 0;
         int max_depth = 1;
-        vector<int> mark(n);
-        auto dfs = [&](auto&& dfs, int x, int depth)->void {
-            mark[x] = 1;
+        // vector<int> mark(n);
+        auto dfs = [&](auto&& dfs, int x, int fa, int depth)->void {
             max_depth = max(max_depth, depth);
             for (auto y: matrix[x]) {
-                if (mark[y]) continue;
-                dfs(dfs, y, depth + 1);
+                if (y == fa) continue;
+                dfs(dfs, y, x, depth + 1);
             }
         };
-        dfs(dfs, 0, 0);
+        dfs(dfs, 0, -1, 0);
 
         auto fast = [&](long long x, long long y, int mod) {
             long long ans = 1;
