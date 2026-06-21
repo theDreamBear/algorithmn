@@ -31,7 +31,7 @@ using namespace std;
 // @lc code=start
 class Solution {
 public:
-    int maxIceCream(vector<int>& costs, int coins) {
+    int maxIceCream1(vector<int>& costs, int coins) {
         int mx = 1e5 + 1;
         vector<int> cnt(mx);
         for (auto v: costs) cnt[v]++;
@@ -49,6 +49,15 @@ public:
             }
         }
         return ans;
+    }
+
+    int maxIceCream(vector<int>& costs, int coins) {
+        ranges::sort(costs);
+        int i = 0;
+        for (int left = coins; i < costs.size() and left >= costs[i]; i++) {
+            left -= costs[i];
+        }
+        return i;
     }
 };
 // @lc code=end
